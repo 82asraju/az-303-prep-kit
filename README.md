@@ -19,11 +19,10 @@ To put this in perspective, here is a random distribtion of questions based on w
 
 | Area | Number of Questions | Percentage |
 | ---  | :---:                 | ---        |
-| Deploy and configure infrastructure | 26 | 41,67% |
-| Implement workloads and security | 16 | 26,67% |
-| Create and deploy apps | 6 | 10,00% |
-| Implement authentication and secure data | 6 | 10,00% |
-| Develop for the cloud and for Azure storage | 7 | 11,67%
+| Implement and Monitor an Azure Infrastructure | 30-33 | (50-55%) |
+| Implement Management and Security Solutions | 15-18 | (25-30%) |
+| Implement Solutions for Apps | 6-9 | (10-15%) |
+| Implement and Manage Data Platforms  | 6-9 | (10-15%) |
 
 See below announcement from exam page
 
@@ -33,15 +32,13 @@ See below announcement from exam page
 Each section of the exam material has its own README file linked below with links to Azure documentation, Plularsight videos (free), labs and other useful info.
 There is also [Exercises folder](/Exercises) with a few scripts (mostly Azure CLI) to deploy resources on Azure quicker.
 
-* [x] [Deploy and configure infrastructure (40-45%)](/1-infrastructure/README.md)
+* [ ] [Implement and Monitor an Azure Infrastructure (50-55%)](/1-infrastructure/README.md)
 
-* [x] [Implement workloads and security (25-30%)](/2-workloads-&-security/README.md)
+* [ ] [Implement Management and Security Solutions (25-30%)](/2-management-&-security/README.md)
 
-* [x] [Create and deploy apps (5-10%)](/3-create-&-deploy-apps/README.md)
+* [ ] [Implement Solutions for Apps (10-15%)](/3-solutions-for-apps/README.md)
 
-* [x] [Implement authentication and secure data (5-10%)](/4-authentication-&-security/README.md)
-
-* [x] [Develop for the cloud and for Azure storage (15-20%)](/5-develop-cloud-&-storage/README.md)
+* [ ] [Implement and Manage Data Platforms (10-15%)](/4-data-platforms/README.md)
 
 ## Resources
 

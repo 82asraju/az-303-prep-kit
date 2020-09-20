@@ -1,16 +1,101 @@
-# Deploy and configure infrastructure (40-45%)
+# Implement and Monitor an Azure Infrastructure (50-55%)
 
-## Analyze resource utilization and consumption
+## Implement cloud infrastructure monitoring 
 
-[Section Documentation on Azure Docs](https://docs.microsoft.com/en-gb/azure/azure-monitor/)
+[Azure Monitor on Azure Docs](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)
 
-- [x] __configure diagnostic settings on resources__
+- [ ] monitor security
+- [ ] monitor performance
+  - [ ] [configure diagnostic settings on resources](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/diagnostic-settings)
+	- [ ] [create a performance baseline for resources](https://www.lynda.com/Azure-tutorials/Create-baseline-resources/782139/5010821-4.html)
+	-	[ ] monitor for unused resources - [Use Azure Advisor](https://docs.microsoft.com/en-us/azure/advisor/)
+	-	[ ] monitor performance capacity
+	-	[ ] visualize diagnostics data using Azure Monitor
+- [ ] monitor health and availability
+	- [ ] monitor networking
+	- [ ] monitor service health
+- [ ] monitor cost
+  - [ ] [monitor spend](https://docs.microsoft.com/en-us/azure/cost-management/cost-mgt-alerts-monitor-usage-spending)
+  - [ ] report on spend - [Using Cloudyn](https://docs.microsoft.com/en-us/azure/cost-management/tutorial-manage-costs)
+- [ ] configure advanced logging
+  - implement and configure Azure Monitor insights, including App Insights, Networks, Containers
+	- configure a Log Analytics workspace
+- [ ] configure logging for workloads
+  - initiate automated responses by using Action Groups
+- [ ] configure and manage advanced alerts
+	- collect alerts and metrics across multiple subscriptions
+	- view Alerts in Azure Monitor logs
 
-  - [Diagnostic settings](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/diagnostic-settings)
+## Implement storage accounts
 
-- [x] __create baseline for resources__
+[Storage account overview - Azure Docs](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-overview)
+	
+- [ ] select storage account options based on a use case
+- [ ] configure Azure Files and blob storage
+- [ ] configure network access to the storage account
+- [ ] implement Shared Access Signatures and access policies
+- [ ] implement Azure AD authentication for storage
+- [ ] manage access keys
+- [ ] implement Azure storage replication
+- [ ] implement Azure storage account failover
 
-  - [Lynda video](https://www.lynda.com/Azure-tutorials/Create-baseline-resources/782139/5010821-4.html)
+## Implement VMs for Windows and Linux
+
+[Virtual Machines - Azure Docs](https://docs.microsoft.com/en-us/azure/virtual-machines/)
+
+- [ ] configure High Availability
+- [ ] configure storage for VMs
+- [ ] select virtual machine size
+- [ ] implement Azure Dedicated Hosts
+- [ ] deploy and configure scale sets
+- [ ] configure Azure Disk Encryption
+
+## Automate deployment and configuration of resources 
+
+[Azure Resource Manager - Azure Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/)
+
+- [ ] save a deployment as an Azure Resource Manager template
+- [ ] modify Azure Resource Manager template
+- [ ] evaluate location of new resources
+- [ ] configure a virtual disk template
+- [ ] deploy from a template
+- [ ] manage a template library
+- [ ] create and execute an automation runbook
+
+## Implement virtual networking
+
+[Azure networking - Azure Docs](https://docs.microsoft.com/en-us/azure/networking/)
+
+- [ ] implement VNet to VNet connections
+- [ ] implement VNet peering
+
+## Implement Azure Active Directory
+
+[Azure Active Directory - Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/)
+
+- [ ]	add custom domains
+- [ ] configure Azure AD Identity Protection
+- [ ] implement self-service password reset
+- [ ] implement Conditional Access including MFA
+- [ ] configure user accounts for MFA
+- [ ] configure fraud alerts
+- [ ] configure bypass options
+- [ ] configure Trusted Ips
+- [ ] configure verification methods
+- [ ] implement and manage guest accounts
+- [ ] manage multiple directories
+	
+## Implement and manage hybrid identities
+
+[What is Azure AD Connect - Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/hybrid/whatis-azure-ad-connect)
+
+- [ ] install and configure Azure AD Connect
+- [ ] identity synchronization options
+- [ ] configure and manage password sync and password writeback
+- [ ] configure single sign-on
+- [ ] use Azure AD Connect Health
+
+
 
 - [x] __create and test alerts__
 
