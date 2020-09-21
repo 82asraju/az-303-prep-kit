@@ -1,149 +1,91 @@
 # Implement workloads and security (25-30%)
 
-## Migrate servers to Azure
-
-- [System Center Data Protection Manager](https://docs.microsoft.com/en-us/system-center/dpm/dpm-overview?view=sc-dpm-2019)
-
-- [Intro to Azure Backup](https://docs.microsoft.com/en-us/azure/backup/backup-introduction-to-azure-backup)
-
-- [x] __migrate servers using Azure Migrate__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/design-your-migration-to-azure/index)
-
-  - [Documentaiton](https://docs.microsoft.com/en-us/azure/migrate/migrate-services-overview)
-
-- [x] __backup and restore data__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/backup-restore-azure-sql/index)
-
-  - [Documentaiton](https://docs.microsoft.com/en-us/azure/backup/backup-architecture)
-
-## Configure serverless computing
-
-- [x] __create and manage objects__
-
-  - [Documentation](https://azure.microsoft.com/en-us/overview/serverless-computing/)
-
-- [x] __manage a Logic App resource__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/route-and-process-data-logic-apps/index)
-
-  - [Documentation](https://docs.microsoft.com/en-us/azure/logic-apps/)
-
-- [x] __manage Azure Function app settings__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/create-serverless-logic-with-azure-functions/index)
-
-  - [Documentation](https://docs.microsoft.com/en-us/azure/azure-functions/)
-
-- [x] __manage Event Grid__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/choose-a-messaging-model-in-azure-to-connect-your-services/4-choose-event-grid)
-
-  - [Documentation](https://docs.microsoft.com/en-us/azure/event-grid/overview)
-
-- [x] __manage Service Bus__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/choose-a-messaging-model-in-azure-to-connect-your-services/3-choose-azure-storage-queues)
-
-  - [Service Bus](https://docs.microsoft.com/en-us/azure/service-bus-messaging/)
-
-## Implement application load balancing
-
-- [WAF FAQ](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-faq)
-
-- [Multi-Site Listener](https://docs.microsoft.com/en-us/azure/application-gateway/multiple-site-overview)
-
-- [x] __configure application gateway__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/load-balance-web-traffic-with-application-gateway/index)
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview)
-
-- [x] __configure Azure Front Door service__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/frontdoor/front-door-overview)
-
-- [x] __configure Azure Traffic Manager__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/distribute-load-with-traffic-manager/index)
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/traffic-manager/traffic-manager-routing-methods)
-
-## Integrate on-premises network with Azure virtual network
-
-- [x] __create and configure Azure VPN Gateway__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/connect-on-premises-network-with-vpn-gateway/index)
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways)
-
-- [x] __create and configure site to site VPN__
-
-  - [Learning Path](https://docs.microsoft.com/en-gb/learn/modules/connect-on-premises-network-with-vpn-gateway/2-connect-on-premises-networks-to-azure-using-site-to-site-vpn-gateways)
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/vpn-gateway/site-to-site-about)
-
-- [x] __configure Express Route__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/expressroute/)
-
-- [x] __configure Virtual WAN__
-
-  - [Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about)
-
-- [x] __verify on-premises connectivity__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-diagnose-on-premises-connectivity)
-
-- [x] __manage on-premises connectivity with Azure__
-
-  - TODO: Add Link
-
-## Implement Multi-Factor Authentication (MFA)
-
-- [x] __configure user accounts for MFA__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-mfa-mfasettings)
-
-- [x] __configure fraud alerts__
-
-  - [Packtpub](https://subscription.packtpub.com/book/networking_and_servers/9781838829025/16/ch16lvl1sec149/configuring-fraud-alerts)
-
-- [x] __configure bypass options__
-
-  - [Packtpub](https://subscription.packtpub.com/book/networking_and_servers/9781838829025/16/ch16lvl1sec150/configuring-bypass-options)
-
-- [x] __configure trusted IPs__
-
-  - [Lynda Video](https://www.lynda.com/Azure-tutorials/Configure-trusted-IPs-app-passwords/585262/639244-4.html)
-
-- [x] __configure verification methods__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/user-help/multi-factor-authentication-end-user-manage-settings)
-
-## Manage role-based access control (RBAC)
-
-- [x] __create a custom role__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/role-based-access-control/custom-roles)
-
-- [x] __configure access to Azure resources by assigning roles__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
-
-- [x] __configure management access to Azure__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/role-based-access-control/conditional-access-azure-management)
-
-- [x] __troubleshoot RBAC__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/role-based-access-control/troubleshooting)
-
-- [x] __implement Azure policies__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/governance/policy/overview)
-
-- [x] __assign RBAC roles N/A__
-
-  - [Azure Docs](https://docs.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal)
+## Manage workloads in Azure
+
+- [ ]	migrate workloads using Azure Migrate
+  - [About Azure Migrate](https://docs.microsoft.com/en-us/azure/migrate/migrate-services-overview)
+  - [ ] assess infrastructure
+    - [Prepare VMware VMs for assessment and migration to Azure](https://docs.microsoft.com/en-us/azure/migrate/tutorial-prepare-vmware)
+    - [Assess VMware VMs by using Azure Migrate Server Assessment](https://docs.microsoft.com/en-us/azure/migrate/tutorial-assess-vmware)
+  - [ ] select a migration method
+    - [Select a VMware migration option](https://docs.microsoft.com/en-us/azure/migrate/server-migrate-overview)
+  - [ ] prepare the on-premises for migration
+    - [Migrate VMware VMs to Azure (agentless)](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-vmware)
+    - [Migrate VMware VMs to Azure (agent-based)](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-vmware-agent)
+  - [ ] recommend target infrastructure
+- [ ] implement Azure Backup for VMs
+  - [An overview of Azure VM backup](https://docs.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction)
+  - [Get improved backup and restore performance with Azure Backup Instant Restore capability](https://docs.microsoft.com/en-us/azure/backup/backup-instant-restore-capability)
+- [ ] implement disaster recovery
+  - [Set up disaster recovery to a secondary Azure region for an Azure VM](https://docs.microsoft.com/en-us/azure/site-recovery/azure-to-azure-quickstart)
+- [ ] implement Azure Update Management
+  - [Update Management solution in Azure](https://docs.microsoft.com/en-us/azure/automation/automation-update-management)
+  - [Enable Update Management, Change Tracking, and Inventory solutions on multiple VMs](https://docs.microsoft.com/en-us/azure/automation/automation-onboard-solutions-from-browse)
+  - [Manage updates and patches for your Azure VMs](https://docs.microsoft.com/en-us/azure/automation/automation-tutorial-update-management)
+	
+## Implement load balancing and network security
+
+- [ ] implement Azure Load Balancer
+  - [Tutorial: Balance internal traffic load with a Basic load balancer in the Azure portal](https://docs.microsoft.com/en-us/azure/load-balancer/tutorial-load-balancer-basic-internal-portal)
+  - [Create an internal load balancer by using the Azure PowerShell module](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-get-started-ilb-arm-ps)
+  - [Quickstart: Create a Load Balancer to load balance VMs using the Azure portal](https://docs.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-portal)
+- [ ] implement an application gateway
+  - [Application Gateway configuration overview](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview)
+- [ ] implement a Web Application Firewall
+  - [Azure Web Application Firewall on Azure Application Gateway](https://docs.microsoft.com/en-us/azure/web-application-firewall/ag/ag-overview)
+- [ ] implement Azure Firewall
+  - [Tutorial: Deploy and configure Azure Firewall using the Azure portal](https://docs.microsoft.com/en-us/azure/firewall/tutorial-firewall-deploy-portal)
+- [ ] implement the Azure Front Door Service
+  - [What is Azure Front Door Service?](https://docs.microsoft.com/en-us/azure/frontdoor/front-door-overview)
+  - [Quickstart: Create a Front Door for a highly available global web application](https://docs.microsoft.com/en-us/azure/frontdoor/quickstart-create-front-door)
+- [ ] implement Azure Traffic Manager
+  - [What is Traffic Manager?](https://docs.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview)
+  - [Quickstart: Create a Traffic Manager profile using the Azure portal](https://docs.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile)
+- [ ] implement Network Security Groups and Application Security Groups
+  - [Security groups](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview)
+  - [Create, change, or delete a network security group](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group)
+- [ ] implement Bastion
+  - [Create an Azure Bastion host](https://docs.microsoft.com/en-us/azure/bastion/bastion-create-host-portal)
+
+## Implement and manage Azure governance solutions
+
+- [ ] create and manage hierarchical structure that contains management groups, subscriptions and resource groups
+  - [Azure Resource Manager overview](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview)
+  - [Organize your resources with Azure management groups](https://docs.microsoft.com/en-us/azure/governance/management-groups/overview)
+  - [Create management groups for resource organization and management](https://docs.microsoft.com/en-us/azure/governance/management-groups/create)
+  - [Manage Azure Resource Manager resource groups by using the Azure portal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal)
+  - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits)
+- [ ] assign RBAC roles
+  - [Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
+- [ ] create a custom RBAC role
+  - [Custom roles for Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/custom-roles)
+  - [Tutorial: Create a custom role for Azure resources using Azure PowerShell](https://docs.microsoft.com/en-us/azure/role-based-access-control/tutorial-custom-role-powershell)
+- [ ] configure access to Azure resources by assigning roles
+  - [Tutorial: Grant a user access to Azure resources using RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal)
+- [ ] configure management access to Azure
+  - [Manage access to Azure management with Conditional Access](https://docs.microsoft.com/en-us/azure/role-based-access-control/conditional-access-azure-management)
+  - [Manage access to Azure resources with Azure AD Privileged Identity Management](https://docs.microsoft.com/en-us/azure/role-based-access-control/pim-azure-resource)
+  - [Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
+- [ ] interpret effective permissions
+  - [What is role-based access control (RBAC) for Azure resources?](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview)
+  - [Quickstart: View the access a user has to Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)
+- [ ] set up and perform an access review
+  - [What are Azure AD access reviews?](https://docs.microsoft.com/en-us/azure/active-directory/governance/access-reviews-overview)
+- [ ] implement and configure an Azure Policy
+  - [What is Azure Policy?](https://docs.microsoft.com/en-us/azure/governance/policy/overview)
+  - [Quickstart: Create a policy assignment to identify non-compliant resources](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-portal)
+  - [Tutorial: Create and manage policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
+- [ ] implement and configure an Azure Blueprint
+  - [What is Azure Blueprints?](https://docs.microsoft.com/en-us/azure/governance/blueprints/overview)
+  - [Quickstart: Define and assign a blueprint in the portal](https://docs.microsoft.com/en-us/azure/governance/blueprints/create-blueprint-portal)
+
+## Manage security for applications
+
+- [ ] implement and configure KeyVault
+  - [What is Azure Key Vault?](https://docs.microsoft.com/en-us/azure/key-vault/key-vault-overview)
+  - [About keys, secrets, and certificates](https://docs.microsoft.com/en-us/azure/key-vault/about-keys-secrets-and-certificates)
+- [ ] implement and configure Azure AD Managed Identities
+  - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview)
+  - [Use a Windows VM system-assigned managed identity to access Resource Manager](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/tutorial-windows-vm-access-arm)
+- [ ] register and manage applications in Azure AD 
+  - [Tutorial: Register an application in Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=applications)
