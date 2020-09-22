@@ -182,9 +182,9 @@ Best practices to choose a partition key: https://docs.microsoft.com/en-gb/azure
 
 ### Cross-partition query
 
-	• Azure Cosmos DB automatically handles the queries against the single partition that has a partition key in the header request.
-	• If a query doesn't filter on the partition key, Azure Cosmos DB fans out the query across partitions.
-		○ The fan-out is done by issuing individual queries to all partitions, and it's not default behaviour. You have to explicitly mention in the using Feed options by setting EnableCrossPartitionQuery property to "on".
+- Azure Cosmos DB automatically handles the queries against the single partition that has a partition key in the header request.
+- If a query doesn't filter on the partition key, Azure Cosmos DB fans out the query across partitions.
+  - The fan-out is done by issuing individual queries to all partitions, and it's not default behaviour. You have to explicitly mention in the using Feed options by setting EnableCrossPartitionQuery property to "on".
 
 ### Defining a partition key
 
