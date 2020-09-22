@@ -1,14 +1,14 @@
 # Implement and Manage Data Platforms (10-15%)
 
-## Implement NoSQL databases
+## [Implement NoSQL databases](/4-data-platforms/notes-nosql.md)
 
-- [ ] configure storage account tables
+- [x] configure storage account tables
     - [Azure Table storage overview](https://docs.microsoft.com/en-us/azure/cosmos-db/table-storage-overview)
     - [Understanding the Table service data model](https://docs.microsoft.com/en-us/rest/api/storageservices/Understanding-the-Table-Service-Data-Model)
-- [ ] select appropriate CosmosDB APIs
+- [x] select appropriate CosmosDB APIs
     - [Choose the appropriate API for Azure Cosmos DB storage (Microsoft Learn module)](https://docs.microsoft.com/en-us/learn/modules/choose-api-for-cosmos-db)
     - [Welcome to Azure Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction)
-- [ ] set up replicas in CosmosDB
+- [x] set up replicas in CosmosDB
     - [Choose the right consistency level](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-choosing)
     - [Consistency levels and Azure Cosmos DB APIs](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-across-apis)
     - [Consistency, availability, and performance tradeoffs](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-tradeoffs)
