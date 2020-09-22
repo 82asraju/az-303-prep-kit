@@ -1,50 +1,30 @@
-# Implement authentication and secure data (5-10%)
+# Implement and Manage Data Platforms (10-15%)
 
-## Implement authentication
+## Implement NoSQL databases
 
-- [Authentication overview](https://docs.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-authentication)
+- [ ] configure storage account tables
+    - [Azure Table storage overview](https://docs.microsoft.com/en-us/azure/cosmos-db/table-storage-overview)
+    - [Understanding the Table service data model](https://docs.microsoft.com/en-us/rest/api/storageservices/Understanding-the-Table-Service-Data-Model)
+- [ ] select appropriate CosmosDB APIs
+    - [Choose the appropriate API for Azure Cosmos DB storage (Microsoft Learn module)](https://docs.microsoft.com/en-us/learn/modules/choose-api-for-cosmos-db)
+    - [Welcome to Azure Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction)
+- [ ] set up replicas in CosmosDB
+    - [Choose the right consistency level](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-choosing)
+    - [Consistency levels and Azure Cosmos DB APIs](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-across-apis)
+    - [Consistency, availability, and performance tradeoffs](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-tradeoffs)
 
-- [ ] __implement authentication by using certificates, forms-based authentication, tokens, or Windows-integrated authentication__
+## Implement Azure SQL databases
 
-  - [Integrated Windows Authentication (ASP.NET Web API example)](https://docs.microsoft.com/en-us/aspnet/web-api/overview/security/integrated-windows-authentication)
-
-  - [Certificates Based Authentication (Azure Docs)](https://docs.microsoft.com/en-us/azure/active-directory/authentication/active-directory-certificate-based-authentication-get-started)
-
-  - [Certificates Based Authentication (free Plularsight course)](https://app.pluralsight.com/player?course=microsoft-azure-authentication-scenarios-developers&author=sahil-malik&name=c89272de-77ad-4038-931d-df5c87c02401&clip=0&mode=live)
-
-  - [Forms-Based Authentication (free Plularsight course)](https://app.pluralsight.com/course-player?course=microsoft-azure-authentication-scenarios-developers&author=sahil-malik&name=1588d422-3e09-4635-96cc-353b5e6bca48&clip=0&mode=live)
-
-  - [Azure Authentication](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-scenarios)
-
-- [ ] __implement multi-factor authentication by using Azure AD__
-
-  - [MFA on Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-mfa-getstarted)
-
-  - [MFA on Plularsight (free course)](https://app.pluralsight.com/player?course=microsoft-azure-authentication-scenarios-developers&author=sahil-malik&name=0674f9c6-6fc8-4485-bb32-d7d92a8cb23e&clip=0&mode=live)
-
-- [ ] __implement OAuth2 authentication__
-
-  - [OAuth2](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols)
-
-- [ ] __implement Managed identities for Azure resources Service Principal authentication__
-
-  - [Managed identities](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview)
-
-## Implement secure data solutions
-
-- [ ] __encrypt and decrypt data at rest and in transit__
-
-  - [Data Encryption in Transit](https://docs.microsoft.com/en-us/azure/security/fundamentals/data-encryption-best-practices#protect-data-in-transit)
-  - [Data Encryption at Rest](https://docs.microsoft.com/en-us/azure/security/fundamentals/encryption-atrest)
-
-- [ ] __encrypt data with Always Encrypted__
-
-  - [Always Encrypted](https://docs.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sqlallproducts-allversions)
-
-- [ ] __implement Azure Confidential Compute and SSL/TLS communications__
-
-  - [Confidential Compute](https://azure.microsoft.com/en-us/solutions/confidential-compute/)
-
-- [ ] __create, read, update, and delete keys, secrets, and certificates by using the KeyVault API__
-
-  - [Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/key-vault-overview)
+- [ ] configure Azure SQL database settings
+    - [What is the Azure SQL Database service?](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-technical-overview)
+    - [Quickstart: Create a single database in Azure SQL Database using the Azure portal, PowerShell, and Azure CLI](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started)
+    - [Choose the right deployment option in Azure SQL](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-paas-vs-sql-server-iaas)
+- [ ] implement Azure SQL Database managed instances
+    - [SQL managed instance](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-managed-instance-index)
+    - [What is Azure SQL Database managed instance?](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-managed-instance)
+    - [Quickstart: Create an Azure SQL Database managed instance](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-managed-instance-get-started)
+- [ ] configure HA for an Azure SQL database
+    - [High-availability and Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-high-availability)
+- [ ] publish an Azure SQL database
+    - [Azure SQL database deployment](https://docs.microsoft.com/en-us/azure/devops/pipelines/targets/azure-sqldb)
+    - [Tutorial: Deploy your ASP.NET app and Azure SQL Database code by using Azure DevOps Projects](https://docs.microsoft.com/en-us/azure/devops-project/azure-devops-project-sql-database)
