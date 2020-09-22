@@ -1,8 +1,10 @@
-# AZ-300 exam preparation kit
+# AZ-303 exam preparation kit
 
 <img src="https://docs.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-expert-badge.svg" alt="Exam badge" width="200"/>
 
-I recently passed [Exam: AZ-300: Microsoft Azure Architect Technologies](https://docs.microsoft.com/en-gb/learn/certifications/exams/az-300) and this repo was my way of preparing for the exam.
+This repository has been forked from [Piotr1215](https://github.com/Piotr1215)'s [AZ-300 prep kit repository ](https://github.com/Piotr1215/az-300-prep-kit). I am in the process of updating it to AZ-303.
+
+I am soon to take the [Exam: AZ-303: Microsoft Azure Architect Technologies](https://docs.microsoft.com/en-gb/learn/certifications/exams/az-303) and this repo is my way of preparing for the exam.
 This exam is one of two to earn **Microsoft Certified: Azure Solutions Architect Expert** certification.
 
 You can clone this repo and mark your progress. If you want use this repo as a starter for your learning process you will need to reset the state of checkboxes. Currently most are marked as done, but you can easily do search and replace in your editor of choice (search for \[x] and replace with [ ], notice there is space between empty brackets).
