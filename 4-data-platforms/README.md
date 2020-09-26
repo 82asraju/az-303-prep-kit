@@ -13,7 +13,7 @@
     - [Consistency levels and Azure Cosmos DB APIs](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-across-apis)
     - [Consistency, availability, and performance tradeoffs](https://docs.microsoft.com/en-us/azure/cosmos-db/consistency-levels-tradeoffs)
 
-## Implement Azure SQL databases
+## [Implement Azure SQL databases](/4-data-platforms/notes-sql.md)
 
 - [ ] configure Azure SQL database settings
     - [What is the Azure SQL Database service?](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-technical-overview)
