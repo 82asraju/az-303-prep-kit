@@ -15,7 +15,7 @@
 
 ## [Implement Azure SQL databases](/4-data-platforms/notes-sql.md)
 
-- [ ] configure Azure SQL database settings
+- [x] configure Azure SQL database settings
     - [What is the Azure SQL Database service?](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-technical-overview)
     - [Quickstart: Create a single database in Azure SQL Database using the Azure portal, PowerShell, and Azure CLI](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-single-database-get-started)
     - [Choose the right deployment option in Azure SQL](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-paas-vs-sql-server-iaas)
@@ -23,7 +23,7 @@
     - [SQL managed instance](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-managed-instance-index)
     - [What is Azure SQL Database managed instance?](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-managed-instance)
     - [Quickstart: Create an Azure SQL Database managed instance](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-managed-instance-get-started)
-- [ ] configure HA for an Azure SQL database
+- [x] configure HA for an Azure SQL database
     - [High-availability and Azure SQL Database](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-high-availability)
 - [ ] publish an Azure SQL database
     - [Azure SQL database deployment](https://docs.microsoft.com/en-us/azure/devops/pipelines/targets/azure-sqldb)

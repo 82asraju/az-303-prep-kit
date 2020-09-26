@@ -36,7 +36,7 @@
   - [Azure Functions HTTP triggers and bindings overview](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook)
   - [What are Durable Functions?](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview)
 
-## Implement container-based applications
+## [Implement container-based applications](/3-solutions-for-apps/notes-containers.md)
 
 - [ ] create a container image
   - [Tutorial: Build and deploy container images in the cloud with Azure Container Registry Tasks](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tutorial-quick-task)
