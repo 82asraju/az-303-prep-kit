@@ -1,6 +1,6 @@
 # Implement workloads and security (25-30%)
 
-## Manage workloads in Azure
+## [Manage workloads in Azure](/2-management-&-security/notes-workloads.md)
 
 - [ ]	migrate workloads using Azure Migrate
   - [About Azure Migrate](https://docs.microsoft.com/en-us/azure/migrate/migrate-services-overview)
@@ -23,7 +23,7 @@
   - [Enable Update Management, Change Tracking, and Inventory solutions on multiple VMs](https://docs.microsoft.com/en-us/azure/automation/automation-onboard-solutions-from-browse)
   - [Manage updates and patches for your Azure VMs](https://docs.microsoft.com/en-us/azure/automation/automation-tutorial-update-management)
 	
-## Implement load balancing and network security
+## [Implement load balancing and network security](/2-management-&-security/notes-lb-network.md)
 
 - [ ] implement Azure Load Balancer
   - [Tutorial: Balance internal traffic load with a Basic load balancer in the Azure portal](https://docs.microsoft.com/en-us/azure/load-balancer/tutorial-load-balancer-basic-internal-portal)
@@ -47,7 +47,7 @@
 - [ ] implement Bastion
   - [Create an Azure Bastion host](https://docs.microsoft.com/en-us/azure/bastion/bastion-create-host-portal)
 
-## Implement and manage Azure governance solutions
+## [Implement and manage Azure governance solutions](/2-management-&-security/notes-governance.md)
 
 - [ ] create and manage hierarchical structure that contains management groups, subscriptions and resource groups
   - [Azure Resource Manager overview](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview)

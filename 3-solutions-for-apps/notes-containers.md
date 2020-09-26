@@ -1,8 +1,6 @@
-# Implement Solutions for Apps (10-15%)
+# Implement container-based applications
 
-## Implement container-based applications
-
-### Offerings
+## Offerings
 
 - Azure Container Instances (ACI)
   - Quickest and easiest way to run a container in Azure
@@ -15,9 +13,9 @@
 - Azure Service Fabric
 - Azure Kubernetes Service (AKS)
 
-### Running Containers on Azure Container Instances
+## Running Containers on Azure Container Instances
 
-#### ACI Use Cases
+### ACI Use Cases
 
 - Continuous integration build agents
   - Scale out to support multiple concurrent builds
@@ -30,7 +28,7 @@
 
 Not for permanently running servers
 
-#### ACI Features
+### ACI Features
 
 - Easy to create and manage
 - Networking
@@ -51,7 +49,7 @@ Not for permanently running servers
   - Run on the same server and share resources
 
 
-### Running Containers on Web App for Containers
+## Running Containers on Web App for Containers
 
 Shares most of the features available with regular web apps
 
@@ -65,11 +63,11 @@ Why Web App for Containers
 - Sandboxed environment
 - Trigger deployments from a container registry
 
-### Running Containers on Azure Service Fabric
+## Running Containers on Azure Service Fabric
 
 Azure Service Fabric and Azure Kubernetes Service are for deploying microservices
 
-#### Challenges of Microservices
+### Challenges of Microservices
 
 - Deployment
 - Health Monitoring
@@ -80,7 +78,7 @@ Azure Service Fabric and Azure Kubernetes Service are for deploying microservice
 - Orchestrators can help us
   - Azure Service Fabric
 
-#### Azure Service Fabric
+### Azure Service Fabric
 
 - An "application platform"
   - Scalable and reliable microservices
@@ -91,7 +89,7 @@ Azure Service Fabric and Azure Kubernetes Service are for deploying microservice
 - Cluster
   - Monitors service health
 
-#### Programming Models
+### Programming Models
 
 - Stateful
   - Co-locate compute and data
@@ -104,7 +102,7 @@ Azure Service Fabric and Azure Kubernetes Service are for deploying microservice
   - Constrain RAM and CPU allocation
   - Docker-compose YAML support
 		
-#### Service Fabric Benefits
+### Service Fabric Benefits
 
 - Powers many key Azure services
   - E.g. Cortana, Skype, Cosmos DB, and Power BI
@@ -115,9 +113,9 @@ Azure Service Fabric and Azure Kubernetes Service are for deploying microservice
   - Orchestration features
 
 
-## Configure Azure Kubernetes Service
+# Configure Azure Kubernetes Service
 
-### Kubernetes Basics
+## Kubernetes Basics
 
 - A "production grade container orchestration system"
 - Cluster
@@ -132,7 +130,7 @@ Azure Service Fabric and Azure Kubernetes Service are for deploying microservice
 - YAML - declarative deployments
 - Helm - package manager for k8s
 
-### Introducing Azure Kubernetes Service
+## Introducing Azure Kubernetes Service
 
 - Managed Kubernetes Service
   - Control plane is free
@@ -140,7 +138,7 @@ Azure Service Fabric and Azure Kubernetes Service are for deploying microservice
   - Simplified version upgrades
   - 100% upstream Kubernetes, the same software as regular kubernetes
 
-### Integration with Azure Services
+## Integration with Azure Services
 
 - Azure Monitor
 - Mount Azure file shares or disks
@@ -152,7 +150,7 @@ Azure Service Fabric and Azure Kubernetes Service are for deploying microservice
   - This lets Visual Studio or Visual Studio Code connect to an AKS cluster and debug your container 
   - Lets you deploy your containers to a shared cluster, but your containers can be only visible to you
 
-### Demo: Creating an AKS Cluster
+## Demo: Creating an AKS Cluster
 
 - Need to specify:
   - Cluster Name
