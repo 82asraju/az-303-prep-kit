@@ -1,6 +1,13 @@
 
 # Implement Azure SQL databases
 
+Microsoft manages the following key characteristics of any cloud-based service offerings:
+
+- High availability and on-demand scale
+- Business continuity
+- Automatic backups
+- Enterprise-grade security and compliance
+
 ## configure Azure SQL database settings
 
 ### Offerings
