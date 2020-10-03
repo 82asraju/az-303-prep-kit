@@ -4,7 +4,7 @@
 
 - [ ]	migrate workloads using Azure Migrate
   - [About Azure Migrate](https://docs.microsoft.com/en-us/azure/migrate/migrate-services-overview)
-  - [ ] assess infrastructure
+  - [x] assess infrastructure
     - [Prepare VMware VMs for assessment and migration to Azure](https://docs.microsoft.com/en-us/azure/migrate/tutorial-prepare-vmware)
     - [Assess VMware VMs by using Azure Migrate Server Assessment](https://docs.microsoft.com/en-us/azure/migrate/tutorial-assess-vmware)
   - [ ] select a migration method
