@@ -297,6 +297,63 @@ After you've verified that the test migration works as expected, you can migrate
 - For monitoring and management:
   - Consider deploying Azure Cost Management to monitor resource usage and spending.
 
+### Migrate VMware VMs to Azure (agent-based)
+
+#### Prepare Azure
+
+|Task|Details|
+|:--- |:--- |
+|Create an Azure Migrate project	|Your Azure account needs Contributor or Owner permissions to create a project.|
+|Verify Azure account permissions	|Your Azure account needs permissions to create a VM, and write to an Azure managed disk.|
+|Set up an Azure network	|Set up a network that Azure VMs will join after migration.|
+
+#### Assign Azure account permissions
+
+Assign the Virtual Machine Contributor role to the account, so that you have permissions to:
+
+- Create a VM in the selected resource group.
+- Create a VM in the selected virtual network.
+- Write to an Azure managed disk.
+
+#### Set up an Azure network
+
+Set up an Azure network. On-premises machines are replicated to Azure managed disks. When you fail over to Azure for migration, Azure VMs are created from these managed disks, and joined to the Azure network you set up.
+
+#### VMware account permissions
+
+|Task	|Role/Permissions	|Details|
+|:--- |:--- |:--- |
+|VM discovery	|At least a read-only user<br /><br />  Data Center object –> Propagate to Child Object, role=Read-only	|User assigned at datacenter level, and has access to all the objects in the datacenter.<br /><br />  To restrict access, assign the No access role with the Propagate to child object, to the child objects (vSphere hosts, datastores, VMs, and networks).|
+|Replication	|Create a role (Azure_Site_Recovery) with the required permissions, and then assign the role to a VMware user or group<br /><br />  Data Center object –> Propagate to Child Object, role=Azure_Site_Recovery<br /><br /> Datastore -> Allocate space, browse datastore, low-level file operations, remove file, update virtual machine files<br /><br /> Network -> Network assign<br /><br /> Resource -> Assign VM to resource pool, migrate powered off VM, migrate powered on VM<br /><br /> Tasks -> Create task, update task<br /><br /> Virtual machine -> Configuration<br /><br /> Virtual machine -> Interact -> answer question, device connection, configure CD media, configure floppy media, power off, power on, VMware tools install<br /><br /> Virtual machine -> Inventory -> Create, register, unregister<br /><br /> Virtual machine -> Provisioning -> Allow virtual machine download, allow virtual machine files upload<br /><br /> Virtual machine -> Snapshots -> Remove snapshots	|User assigned at datacenter level, and has access to all the objects in the datacenter.<br /><br /> To restrict access, assign the No access role with the Propagate to child object, to the child objects (vSphere hosts, datastores, VMsa, nd networks).|
+
+#### Prepare an account for Mobility service installation
+
+#### Prepare a machine for the replication appliance
+
+The appliance is used to replication machines to Azure. The appliance is single, highly available, on-premises VMware VM that hosts these components:
+
+- Configuration server: The configuration server coordinates communications between on-premises and Azure, and manages data replication.
+- Process server: The process server acts as a replication gateway. It receives replication data; optimizes it with caching, compression, and encryption, and sends it to a cache storage account in Azure. The process server also installs the Mobility Service agent on VMs you want to replicate, and performs automatic discovery of on-premises VMware VMs.
+
+Prepare for the appliance as follows:
+
+- Review appliance requirements. Generally, you set up the replication appliance a a VMware VM using a downloaded OVA file. The template creates a appliance that complies with all requirements.
+- MySQL must be installed on the appliance. Review installation methods.
+- Review the public cloud URLs, and Azure Government URLs that the appliance machine needs to access.
+- Review the ports that the replication appliance machine needs to access.
+
+#### Check VMware requirements
+
+#### Add the Azure Migrate:Server Migration tool
+
+#### Set up the replication appliance
+
+This procedure describes how to set up the appliance with a downloaded Open Virtualization Application (OVA) template. If you can't use this method, you can set up the appliance using a script.
+
+#### Import the template in VMware
+
+After downloading the OVF template, you import it into VMware to create the replication application on a VMware VM running Windows Server 2016.
+
 #### Links
 
   - [Migrate VMware VMs to Azure (agentless)](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-vmware)
