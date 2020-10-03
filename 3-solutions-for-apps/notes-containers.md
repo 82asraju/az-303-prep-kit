@@ -48,6 +48,9 @@ Not for permanently running servers
   - One or more containers
   - Run on the same server and share resources
 
+### Configuration
+
+When specifying environment variables on the az cli, use --secure-environment-variables rather than --environment-variables to ensure the env-variables are stored securely.
 
 ## Running Containers on Web App for Containers
 
