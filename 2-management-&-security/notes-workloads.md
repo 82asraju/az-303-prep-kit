@@ -39,8 +39,7 @@ The Azure Migrate: Server Migration tool helps you migrate to Azure:
 
 |Migrate	|Details|	
 |:--- |:---|
-|On-premises VMware VMs	|Migrate VMs to Azure using agentless or agent-based migration.
-For agentless migration, Server Migration uses an Azure Migrate appliance that you deploy on-premises. It's the same type of appliance you use for Server Assessment. For agent-based migration, Server Assessment uses a replication appliance.	|
+|On-premises VMware VMs	|Migrate VMs to Azure using agentless or agent-based migration. For agentless migration, Server Migration uses an Azure Migrate appliance that you deploy on-premises. It's the same type of appliance you use for Server Assessment. For agent-based migration, Server Assessment uses a replication appliance.	|
 |On-premises Hyper-V VMs	|Migrate VMs to Azure. Server Assessment uses provider agents installed on Hyper-V host for the migration.	|
 |On-premises physical servers	|You can migrate physical machines to Azure. You can also migrate other virtualized machines, and VMs from other public clouds, by treating them as virtual machines for the purpose of migration.	Server Assessment uses a replication appliance for the migration.|
 
@@ -82,6 +81,90 @@ Discovery works as follows:
 
 - It takes around 15 minutes for discovered VM metadata to appear in the portal.
 - Discovery of installed applications, roles, and features takes some time. The duration depends on the number of VMs being discovered. For 500 VMs, it takes approximately one hour for the application inventory to appear in the Azure Migrate portal.
+
+### Assess VMware VMs by using Azure Migrate Server Assessment
+
+#### Decide which assessment to run
+
+Decide whether you want to run an assessment using sizing criteria based on machine configuration data/metadata that's collected as-is on-premises, or on dynamic performance data.
+
+
+|Assessment	|Details	|Recommendation|
+|:--- |:--- |:--- | 
+|As-is on-premises	|Assess based on machine configuration data/metadata.	|Recommended Azure VM size is based on the on-premises VM size. The recommended Azure disk type is based on what you select in the storage type setting in the assessment.|
+|Performance-based	|Assess based on collected dynamic performance data.	|Recommended Azure VM size is based on CPU and memory utilization data. The recommended disk type is based on the IOPS and throughput of the on-premises disks.|
+
+- Assess servers -> Assessment type -> select Azure VM
+- In Discovery source:
+  - If you discovered machines using the appliance, select Machines discovered from Azure Migrate appliance.
+  - If you discovered machines using an imported CSV file, select Imported machines.
+
+- In Assessment properties > Target Properties:
+  - In Target location, specify the Azure region to which you want to migrate.
+    - Size and cost recommendations are based on the location that you specify.
+    - In Azure Government, you can target assessments in these regions
+  - In Storage type,
+    - If you want to use performance-based data in the assessment, select Automatic for Azure Migrate to recommend a storage type, based on disk IOPS and throughput.
+    - Alternatively, select the storage type you want to use for VM when you migrate it.
+  - In Reserved Instances, specify whether you want to use reserve instances for the VM when you migrate it.
+    - If you select to use a reserved instance, you can't specify 'Discount (%), or VM uptime.
+    - Learn more.
+- In VM Size:
+  - In Sizing criterion, select if you want to base the assessment on machine configuration data/metadata, or on performance-based data. If you use performance data:
+    - In Performance history, indicate the data duration on which you want to base the assessment
+    - In Percentile utilization, specify the percentile value you want to use for the performance sample.
+  - In VM Series, specify the Azure VM series you want to consider.
+    - If you're using performance-based assessment, Azure Migrate suggests a value for you.
+    - Tweak settings as needed. For example, if you don't have a production environment that needs A-series VMs in Azure, you can exclude A-series from the list of series.
+  - In Comfort factor, indicate the buffer you want to use during assessment. This accounts for issues like seasonal usage, short performance history, and likely increases in future usage. For example, if you use a comfort factor of two: Component | Effective utilization | Add comfort factor (2.0) Cores | 2 | 4 Memory | 8 GB | 16 GB
+- In Pricing:
+  - In Offer, specify the Azure offer if you're enrolled. Server Assessment estimates the cost for that offer.
+  - In Currency, select the billing currency for your account.
+  - In Discount (%), add any subscription-specific discounts you receive on top of the Azure offer. The default setting is 0%.
+  - In VM Uptime, specify the duration (days per month/hour per day) that VMs will run.
+    - This is useful for Azure VMs that won't run continuously.
+    - Cost estimates are based on the duration specified.
+    - Default is 31 days per month/24 hours per day.
+  - In EA Subscription, specify whether to take an Enterprise Agreement (EA) subscription discount into account for cost estimation.
+  - In Azure Hybrid Benefit, specify whether you already have a Windows Server license. If you do and they're covered with active Software Assurance of Windows Server Subscriptions, you can apply for the Azure Hybrid Benefit when you bring licenses to Azure.
+- In Assess Servers, click Next.
+- In Select machines to assess, select Create New, and specify a group name.
+- Select the appliance, and select the VMs you want to add to the group. Then click Next.
+
+**Note** For performance-based assessments, we recommend that you wait at least a day after starting discovery before you create an assessment. This provides time to collect performance data with higher confidence. Ideally, after you start discovery, wait for the performance duration you specify (day/week/month) for a high-confidence rating.
+
+#### Review an assessment
+
+An assessment describes:
+
+- Azure readiness: Whether VMs are suitable for migration to Azure.
+- Monthly cost estimation: The estimated monthly compute and storage costs for running the VMs in Azure.
+- Monthly storage cost estimation: Estimated costs for disk storage after migration.
+
+#### Review readiness
+
+- Click Azure readiness.
+- In Azure readiness, review the VM status:
+  - Ready for Azure: Used when Azure Migrate recommends a VM size and cost estimates, for VMs in the assessment.
+  - Ready with conditions: Shows issues and suggested remediation.
+  - Not ready for Azure: Shows issues and suggested remediation.
+  - Readiness unknown: Used when Azure Migrate can't assess readiness, because of data availability issues.
+- Select an Azure readiness status. You can view VM readiness details. You can also drill down to see VM details, including compute, storage, and network settings.
+
+#### Review cost estimates
+
+The assessment summary shows the estimated compute and storage cost of running VMs in Azure.
+
+- Review the monthly total costs. Costs are aggregated for all VMs in the assessed group.
+  - Cost estimates are based on the size recommendations for a machine, its disks, and its properties.
+  - Estimated monthly costs for compute and storage are shown.
+  - The cost estimation is for running the on-premises VMs on Azure VMs. The estimation doesn't consider PaaS or SaaS costs.
+- Review monthly storage costs. The view shows the aggregated storage costs for the assessed group, split over different types of storage disks.
+- You can drill down to see cost details for specific VMs.
+
+#### Review confidence rating
+
+This is a 5 star rating.
 
 #### Links
 
