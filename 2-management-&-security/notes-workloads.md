@@ -354,6 +354,128 @@ This procedure describes how to set up the appliance with a downloaded Open Virt
 
 After downloading the OVF template, you import it into VMware to create the replication application on a VMware VM running Windows Server 2016.
 
+#### Start appliance setup
+
+- When you sign in to the appliance, the Azure Site Recovery Configuration Tool will start running
+- The VM will connect to Azure
+- The tool will register an Azure AD App to identify the appliance
+
+#### Register the replication appliance
+
+1. In appliance setup, select Setup connectivity.
+2. Select the NIC (by default there's only one NIC) that the replication appliance uses for VM discovery, and to do a push installation of the Mobility service on source machines.
+3. Select the NIC that the replication appliance uses for connectivity with Azure. Then select Save. You cannot change this setting after it's configured.
+4. If the appliance is located behind a proxy server, you need to specify proxy settings.
+  - Specify the proxy name as http://ip-address, or http://FQDN. HTTPS proxy servers aren't supported.
+5. When prompted for the subscription, resource groups, and vault details, add the details that you noted when you downloaded the appliance template.
+6. In Install third-party software, accept the license agreement. Select Download and Install to install MySQL Server.
+7. Select Install VMware PowerCLI. Make sure all browser windows are closed before you do this. Then select Continue.
+8. In Validate appliance configuration, prerequisites are verified before you continue.
+9. In Configure vCenter Server/vSphere ESXi server, enter the FQDN or IP address of the vCenter server, or vSphere host, where the VMs you want to replicate are located. Enter the port on which the server is listening. Enter a friendly name to be used for the VMware server in the vault.
+10. Enter the credentials for the account you created for VMware discovery. Select Add > Continue.
+11. In Configure virtual machine credentials, enter the credentials you created for push installation of the Mobility service, when you enable replication for VMs.
+  - For Windows machines, the account needs local administrator privileges on the machines you want to replicate.
+  - For Linux, provide details for the root account.
+12. Select Finalize configuration to complete registration.
+
+After the replication appliance is registered, Azure Migrate Server Assessment connects to VMware servers using the specified settings, and discovers VMs. You can view discovered VMs in Manage > Discovered items, in the Other tab.
+
+#### Replicate VMs
+
+Select VMs for migration.
+
+**Note** In the portal you can select up to 10 machines at once for replication. If you need to replicate more, then group them in batches of 10.
+
+7. In Virtual Machines, select the machines that you want to replicate.
+  - If you've run an assessment for the VMs, you can apply VM sizing and disk type (premium/standard) recommendations from the assessment results. To do this, in Import migration settings from an Azure Migrate assessment?, select the Yes option.
+  - If you didn't run an assessment, or you don't want to use the assessment settings, select the No options.
+  - If you selected to use the assessment, select the VM group, and assessment name.
+8. In Availability options, select:
+  - Availability Zone to pin the migrated machine to a specific Availability Zone in the region. Use this option to distribute servers that form a multi-node application tier across Availability Zones. If you select this option, you'll need to specify the Availability Zone to use for each of the selected machine in the Compute tab. This option is only available if the target region selected for the migration supports Availability Zones
+  - Availability Set to place the migrated machine in an Availability Set. The target Resource Group that was selected must have one or more availability sets in order to use this option.
+  - No infrastructure redundancy required option if you don't need either of these availability configurations for the migrated machines.
+9. Check each VM you want to migrate. Then click Next: Target settings.
+10. In Target settings, select the subscription, and target region to which you'll migrate, and specify the resource group in which the Azure VMs will reside after migration.
+11. In Virtual Network, select the Azure VNet/subnet to which the Azure VMs will be joined after migration.
+12. In Availability options, select:
+  - Availability Zone to pin the migrated machine to a specific Availability Zone in the region. Use this option to distribute servers that form a multi-node application tier across Availability Zones. If you select this option, you'll need to specify the Availability Zone to use for each of the selected machine in the Compute tab. This option is only available if the target region selected for the migration supports Availability Zones
+  - Availability Set to place the migrated machine in an Availability Set. The target Resource Group that was selected must have one or more availability sets in order to use this option.
+  - No infrastructure redundancy required option if you don't need either of these availability configurations for the migrated machines.
+13. In Azure Hybrid Benefit:
+  - Select No if you don't want to apply Azure Hybrid Benefit. Then click Next.
+  - Select Yes if you have Windows Server machines that are covered with active Software Assurance or Windows Server subscriptions, and you want to apply the benefit to the machines you're migrating. Then click Next.
+14. In Compute, review the VM name, size, OS disk type, and availability configuration (if selected in the previous step). VMs must conform with Azure requirements.
+  - VM size: If you're using assessment recommendations, the VM size dropdown shows the recommended size. Otherwise Azure Migrate picks a size based on the closest match in the Azure subscription. Alternatively, pick a manual size in Azure VM size. - OS disk: Specify the OS (boot) disk for the VM. The OS disk is the disk that has the operating system bootloader and installer. - Availability Zone: Specify the Availability Zone to use. - Availability Set: Specify the Availability Set to use.
+15. In Disks, specify whether the VM disks should be replicated to Azure, and select the disk type (standard SSD/HDD or premium managed disks) in Azure. Then click Next.
+  - You can exclude disks from replication.
+  - If you exclude disks, won't be present on the Azure VM after migration.
+16. In Review and start replication, review the settings, and click Replicate to start the initial replication for the servers.
+
+**Note** You can update replication settings any time before replication starts, Manage > Replicating machines. Settings can't be changed after replication starts.
+
+#### Track and monitor
+
+1. Track job status in the portal notifications
+2. To monitor replication status, click Replicating servers in Azure Migrate: Server Migration.
+
+Replication occurs as follows:
+
+- When the Start Replication job finishes successfully, the machines begin their initial replication to Azure.
+- After initial replication finishes, delta replication begins. Incremental changes to on-premises disks are periodically replicated to the replica disks in Azure.
+
+#### Run a test migration
+
+When delta replication begins, you can run a test migration for the VMs, before running a full migration to Azure. We highly recommend that you do this at least once for each machine, before you migrate it.
+
+#### Migrate VMs
+
+After you've verified that the test migration works as expected, you can migrate the on-premises machines.
+
+1. In the Azure Migrate project > Servers > Azure Migrate: Server Migration, click Replicating servers.
+2. In Replicating machines, right-click the VM > Migrate.
+3. In Migrate > Shut down virtual machines and perform a planned migration with no data loss, select Yes > OK.
+  - By default Azure Migrate shuts down the on-premises VM to ensure minimum data loss.
+  - If you don't want to shut down the VM, select No
+
+#### Complete the migration
+
+1. After the migration is done, right-click the VM > Stop migration. This does the following:
+  - Stops replication for the on-premises machine.
+  - Removes the machine from the Replicating servers count in Azure Migrate: Server Migration.
+  - Cleans up replication state information for the VM.
+2. Install the Azure VM Windows or Linux agent on the migrated machines.
+3. Perform any post-migration app tweaks, such as updating database connection strings, and web server configurations.
+4. Perform final application and migration acceptance testing on the migrated application now running in Azure.
+5. Cut over traffic to the migrated Azure VM instance.
+6. Remove the on-premises VMs from your local VM inventory.
+7. Remove the on-premises VMs from local backups.
+8. Update any internal documentation to show the new location and IP address of the Azure VMs.
+
+#### Post-migration best practices
+
+- On-premises
+  - Move app traffic over to the app running on the migrated Azure VM instance.
+  - Remove the on-premises VMs from your local VM inventory.
+  - Remove the on-premises VMs from local backups.
+  - Update any internal documentation to show the new location and IP address of the Azure VMs.
+- Tweak Azure VM settings after migration:
+  - The Azure VM agent manages VM interaction with the Azure Fabric Controller. It's required for some Azure services, such as Azure Backup, Site Recovery, and Azure Security. When migrating VMare VMs with agent-based migration, the Mobility Service installer installs Azure VM agent on Windows machines. On Linux VMs, we recommend that you install the agent after migration.
+  - Manually uninstall the Mobility service from the Azure VM after migration.
+  - Manually uninstall VMware tools after migration.
+- In Azure:
+  - Perform any post-migration app tweaks, such as updating database connection strings, and web server configurations.
+  - Perform final application and migration acceptance testing on the migrated application now running in Azure.
+- Business continuity/disaster recovery
+  - Keep data secure by backing up Azure VMs using the Azure Backup service. Learn more.
+  - Keep workloads running and continuously available by replicating Azure VMs to a secondary region with Site Recovery. Learn more.
+- For increased security:
+  - Lock down and limit inbound traffic access with Azure Security Center - Just in time administration.
+  - Restrict network traffic to management endpoints with Network Security Groups.
+  - Deploy Azure Disk Encryption to help secure disks, and keep data safe from theft and unauthorized access.
+  - Read more about securing IaaS resources, and visit the Azure Security Center.
+- For monitoring and management:
+  - Consider deploying Azure Cost Management to monitor resource usage and spending.
+
 #### Links
 
   - [Migrate VMware VMs to Azure (agentless)](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-vmware)
