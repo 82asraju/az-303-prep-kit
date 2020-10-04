@@ -328,6 +328,18 @@ Set up an Azure network. On-premises machines are replicated to Azure managed di
 
 #### Prepare an account for Mobility service installation
 
+**The Mobility service must be installed on machines you want to replicate.**
+
+- The Azure Migrate replication appliance can do a push installation of this service when you enable replication for a machine, or you can install it manually, or using installation tools.
+- In this tutorial, we're going to install the Mobility service with the push installation.
+- For push installation, you need to prepare an account that Azure Migrate Server Migration can use to access the VM. This account is used only for the push installation, if you don't install the Mobility service manually.
+
+Prepare the account as follows:
+
+1. Prepare a domain or local account with permissions to install on the VM.
+2. For Windows VMs, if you're not using a domain account, disable Remote User Access control on the local machine by adding the DWORD entry LocalAccountTokenFilterPolicy, with a value of in the registry, under HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+3. For Linux VMs, prepare a root account on the source Linux server.
+
 #### Prepare a machine for the replication appliance
 
 The appliance is used to replication machines to Azure. The appliance is single, highly available, on-premises VMware VM that hosts these components:

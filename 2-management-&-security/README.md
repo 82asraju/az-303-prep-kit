@@ -9,7 +9,7 @@
     - [Assess VMware VMs by using Azure Migrate Server Assessment](https://docs.microsoft.com/en-us/azure/migrate/tutorial-assess-vmware)
   - [x] select a migration method
     - [Select a VMware migration option](https://docs.microsoft.com/en-us/azure/migrate/server-migrate-overview)
-  - [ ] prepare the on-premises for migration
+  - [x] prepare the on-premises for migration
     - [Migrate VMware VMs to Azure (agentless)](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-vmware)
     - [Migrate VMware VMs to Azure (agent-based)](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-vmware-agent)
   - [ ] recommend target infrastructure
