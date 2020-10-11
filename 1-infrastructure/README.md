@@ -1,6 +1,6 @@
 # Implement and Monitor an Azure Infrastructure (50-55%)
 
-## [Implement cloud infrastructure monitoring](/notes-infra-monitoring.md)
+## [Implement cloud infrastructure monitoring](/1-infrastructure/notes-infra-monitoring.md)
 
 [Azure Monitor on Azure Docs](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)
 
