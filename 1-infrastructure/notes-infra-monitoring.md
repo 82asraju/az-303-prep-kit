@@ -218,18 +218,82 @@ A resource is a specific instance of an Azure service, such as a virtual machine
 ### [Monitoring your cloud costs](https://docs.microsoft.com/en-us/azure/architecture/framework/cost/monitoring)
 
 ### [Use cost alerts to monitor usage and spending](https://docs.microsoft.com/en-us/azure/cost-management-billing/costs/cost-mgt-alerts-monitor-usage-spending)
+
 ### [Download or view your Azure billing invoice and daily usage data](https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/download-azure-invoice-daily-usage-date)
+
 ### monitor spend - [Use cost alerts to monitor usage and spending](https://docs.microsoft.com/en-us/azure/cost-management/cost-mgt-alerts-monitor-usage-spending)
+
 ### report on spend - [Tutorial: Manage costs by using Cloudyn](https://docs.microsoft.com/en-us/azure/cost-management/tutorial-manage-costs)
 
 ## configure advanced logging
 
 ### implement and configure Azure Monitor insights, including App Insights, Networks, Containers - [Overview of Insights in Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/insights-overview)
+
 #### configure a Log Analytics workspace - [Designing your Azure Monitor Logs deployment](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/design-logs-deployment)
 
+A Log Analytics workspace provides:
+
+- A geographic location for data storage.
+- Data isolation by granting different users access rights following one of our recommended design strategies.
+- Scope for configuration of settings like pricing tier, retention, and data capping.
+
 ## configure logging for workloads
-  - [ ] initiate automated responses by using Action Groups - [Create action group](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/action-groups#create-an-action-group-by-using-the-azure-portal)
+
+### initiate automated responses by using Action Groups - [Create action group](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/action-groups#create-an-action-group-by-using-the-azure-portal)
+
+- A Signal can be a resource stopping as well as a metric 
+- The Criteria/Logic Test will output a boolean
+- In an Action you can run PowerShell code as well as perform actions on resources
+- Monitor conditions are recorded over time so can be audited
+
+When defining an alert you specify:
+
+When defining, you specify:
+
+- Resource
+- Condition
+  - Signal Type is Metrics or Activity Log (administrative actions - create VM, stop VM)
+  - You get an estimated monthly cost for the Condition
+- Actions
+- The Rule Name, Description, Severity
+
+- Action Groups with a notification type of Email are rate limited to 1 message every 1 minute
+- Action Groups with a notification type of SMS are rate limited to 1 message every 5 minutes
+
+#### Notification Types
+
+- ITSM is for creating a ticket in your ticketing system.
+- You can have a Voice Call.
+- Can kick off a Runbook to run some PowerShell
+
+Define your Action Groups first so that you can share them between Alerts.
 
 ## configure and manage advanced alerts
-	- [ ] [collect alerts and metrics across multiple subscriptions](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-overview#alerts-experience)
-	- [ ] [view Alerts in Azure Monitor logs](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-log)
+
+### [collect alerts and metrics across multiple subscriptions](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-overview#alerts-experience)
+
+You can filter the **All Alerts** view by selecting values in the drop-down menus at the top of the page.
+
+|Column	|Description|
+|:--- |:---|
+|Subscription	|Select the Azure subscriptions for which you want to view the alerts. You can optionally choose to select all your subscriptions. Only alerts that you have access to in the selected subscriptions are included in the view.|
+|Resource group	|Select a single resource group. Only alerts with targets in the selected resource group are included in the view.|
+|Time range	|Only alerts fired within the selected time range are included in the view. Supported values are the past hour, the past 24 hours, the past 7 days, and the past 30 days.|
+
+Select the following values at the top of the Alerts page to open another page:
+
+|Value	|Description|
+|:---|:---|
+|Total alerts	|The total number of alerts that match the selected criteria. Select this value to open the All Alerts view with no filter.|
+|Smart groups	|The total number of smart groups that were created from the alerts that match the selected criteria. Select this value to open the smart groups list in the All Alerts view.|
+|Total alert rules	|The total number of alert rules in the selected subscription and resource group. Select this value to open the Rules view filtered on the selected subscription and resource group.|
+
+### [view Alerts in Azure Monitor logs](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-log)
+
+Log alerts allow users to use a Log Analytics query to evaluate resources logs every set frequency, and fire an alert based on the results. Rules can trigger one or more actions using Action Groups. Learn more about functionality and terminology of log alerts.
+
+This article shows you how to create and manage log alerts using Azure Monitor. Alert rules are defined by three components:
+
+- Target: A specific Azure resource to monitor.
+- Criteria: Logic to evaluate. If met, the alert fires.
+- Action: Notifications or automation - email, SMS, webhook, and so on.
