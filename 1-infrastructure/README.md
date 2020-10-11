@@ -1,10 +1,10 @@
 # Implement and Monitor an Azure Infrastructure (50-55%)
 
-## Implement cloud infrastructure monitoring 
+## [Implement cloud infrastructure monitoring](/notes-infra-monitoring.md)
 
 [Azure Monitor on Azure Docs](https://docs.microsoft.com/en-us/azure/azure-monitor/overview)
 
-- [ ] monitor security
+- [x] monitor security
   - [Strengthen your security posture with Azure Security Center](https://docs.microsoft.com/en-us/azure/security-center/security-center-monitoring)
   - [Security Control: Logging and Monitoring](https://docs.microsoft.com/en-us/azure/security/benchmarks/security-control-logging-monitoring)
   - [Azure infrastructure monitoring](https://docs.microsoft.com/en-us/azure/security/fundamentals/infrastructure-monitoring)
