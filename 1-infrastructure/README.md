@@ -42,9 +42,9 @@
 	- [x] [collect alerts and metrics across multiple subscriptions](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-overview#alerts-experience)
 	- [x] [view Alerts in Azure Monitor logs](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-log)
 
-## Implement storage accounts
+## [Implement storage accounts](/1-infrastructure/notes-storage-accounts.md)
 
-- [ ] select storage account options based on a use case
+- [x] select storage account options based on a use case
   - [Storage account overview - Azure Docs](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-overview)
   - [Introduction to Azure Storage](https://docs.microsoft.com/en-us/azure/storage/common/storage-introduction)
 - [ ] configure Azure Files and blob storage
