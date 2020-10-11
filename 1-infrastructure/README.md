@@ -47,10 +47,10 @@
 - [x] select storage account options based on a use case
   - [Storage account overview - Azure Docs](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-overview)
   - [Introduction to Azure Storage](https://docs.microsoft.com/en-us/azure/storage/common/storage-introduction)
-- [ ] configure Azure Files and blob storage
+- [x] configure Azure Files and blob storage
   - [Introduction to Azure Blob Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
   - [Create and Azure File Share](https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share)
-- [ ] configure network access to the storage account
+- [x] configure network access to the storage account
   - [Configure Azure Storage firewalls and virtual networks](https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security)
 - [ ] implement Shared Access Signatures and access policies
   - [Shared access signature overview](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview)
