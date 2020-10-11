@@ -97,27 +97,135 @@ Because Azure Monitor is an automatic system, it begins to collect data from the
 
 Events, captured from the event logs of monitored computers, are just one type of data source. Azure Monitor provides many other types of data sources. For example, the Heartbeat data source reports the health of all computers that report to your Log Analytics workspace. You can also capture data from performance counters, and update management records.
 
+#### Custom sources
+
+Azure Monitor can collect log data from any REST client using the Data Collector API. This allows you to create custom monitoring scenarios and extend monitoring to resources that don't expose telemetry through other sources.
+
+#### Application Insights
+
+Application Insights monitors the availability, performance, and usage of your web applications whether they're hosted in the cloud or on-premises. It leverages the powerful data analysis platform in Azure Monitor to provide you with deep insights into your application's operations and diagnose errors without waiting for a user to report them. Application Insights includes connection points to a variety of development tools and integrates with Visual Studio to support your DevOps processes.
+
+#### Azure Monitor for containers
+
+Azure Monitor for containers is a feature designed to monitor the performance of container workloads deployed to managed Kubernetes clusters hosted on Azure Kubernetes Service (AKS). It gives you performance visibility by collecting memory and processor metrics from controllers, nodes, and containers that are available in Kubernetes through the Metrics API. Container logs are also collected. After you enable monitoring from Kubernetes clusters, these metrics and logs are automatically collected for you through a containerized version of the Log Analytics agent for Linux.
+
+#### Azure Monitor for VMs
+
+Azure Monitor for VMs monitors your Azure virtual machines (VM) at scale by analyzing the performance and health of your Windows and Linux VMs, including their different processes and interconnected dependencies on other resources and external processes. The solution includes support for monitoring performance and application dependencies for VMs hosted on-premises or another cloud provider.
+
+#### Monitoring solutions
+
+Monitoring solutions in Azure Monitor are packaged sets of logic that provide insights for a particular application or service. They include logic for collecting monitoring data for the application or service, queries to analyze that data, and views for visualization. Monitoring solutions are available from Microsoft and partners to provide monitoring for various Azure services and other applications.
+
+#### Responding to critical situations
+
+In addition to allowing you to interactively analyze monitoring data, an effective monitoring solution must be able to proactively respond to critical conditions identified in the data that it collects. This could be sending a text or mail to an administrator responsible for investigating an issue. Or you could launch an automated process that attempts to correct an error condition.
+
+- Autoscale
+- Visualizing monitoring data
+- Dashboards - Azure dashboards allow you to combine different kinds of data, including both metrics and logs, into a single pane in the Azure portal
+- Views - visually present log data in Azure Monitor
+
+#### Integrate and export data
+
+You'll often have the requirement to integrate Azure Monitor with other systems and to build custom solutions that use your monitoring data. Other Azure services work with Azure Monitor to provide this integration.
+
+- Event Hub: Azure Event Hubs is a streaming platform and event ingestion service that can transform and store data using any real-time analytics provider or batching/storage adapters. Use Event Hubs to stream Azure Monitor data to partner SIEM and monitoring tools.
+- Logic Apps: Logic Apps is a service that allows you to automate tasks and business processes using workflows that integrate with different systems and services. Activities are available that read and write metrics and logs in Azure Monitor, which allows you to build workflows integrating with a variety of other systems.
+- API: Multiple APIs are available to read and write metrics and logs to and from Azure Monitor in addition to accessing generated alerts. You can also configure and retrieve alerts. This provides you with essentially unlimited possibilities to build custom solutions that integrate with Azure Monitor.
+
 ### [Quickstart: Monitor an Azure resource with Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/learn/quick-monitor-azure-resource)
+
 ### [Azure Monitor Workbooks](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/workbooks-overview)
+
+Workbooks provide a flexible canvas for data analysis and the creation of rich visual reports within the Azure portal. They allow you to tap into multiple data sources from across Azure, and combine them into unified interactive experiences.
+
+Workbooks are currently compatible with the following data sources:
+
+- Logs
+- Metrics
+- Azure Resource Graph
+- Alerts (Preview)
+- Workload Health
+- Azure Resource Health
+- Azure Data Explorer
+
 ### [Azure Monitor workbook visualizations](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/workbooks-visualizations)
+
+Workbooks provide a rich set of capabilities for visualizing your data. For detailed examples of each visualization type you can consult the example links below:
+
+- Text
+- Charts
+- Grids
+- Tiles
+- Trees
+- Graphs
+- Composite bar
+
 ### [Collect data from an Azure virtual machine with Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/learn/quick-collect-azurevm)
 
 ## monitor health and availability
-	- monitor networking - [Network monitoring solutions](https://docs.microsoft.com/en-us/azure/networking/network-monitoring-overview)
-	- monitor service health - [Azure Service Health](https://azure.microsoft.com/en-us/features/service-health)
-  - [Azure Service Health](https://azure.microsoft.com/en-us/features/service-health)
-  - [Resource Health overview](https://docs.microsoft.com/en-us/azure/service-health/resource-health-overview)
+
+### monitor networking - [Network monitoring solutions](https://docs.microsoft.com/en-us/azure/networking/network-monitoring-overview)
+
+Azure offers a host of solutions to monitor your networking assets. Azure has solutions and utilities to monitor network connectivity, the health of ExpressRoute circuits, and analyze network traffic in the cloud.
+
+#### Network Performance Monitor (NPM)
+
+Network Performance Monitor (NPM) is a suite of capabilities, each of which is geared towards monitoring the health of your network, network connectivity to your applications, and provides insights into the performance of your network. NPM is cloud-based and provides a hybrid network monitoring solution that monitors connectivity between:
+
+- Cloud deployments and on-premises locations
+- Multiple data centers and branch offices
+- Mission critical multi-tier applications/micro-services
+- User locations and web-based applications (HTTP/HTTPs)
+
+Performance Monitor, ExpressRoute Monitor, and Service Connectivity Monitor are monitoring capabilities within NPM and are described below.
+
+- **Performance Monitor** - part of NPM and is network monitoring for cloud, hybrid, and on-premises environments
+- **ExpressRoute Monitor** - offers comprehensive ExpressRoute monitoring for Azure Private peering and Microsoft peering connections. You can monitor E2E connectivity and performance between your branch offices and Azure over ExpressRoute
+- **Service Connectivity Monitor** - with Service Connectivity monitoring, you can now test reachability of applications and detect performance bottlenecks across on-premises, carrier networks and cloud/private data centers
+- **Traffic Analytics** - Traffic Analytics is a cloud-based solution that provides visibility into user and application activity on your cloud networks
+- **DNS Analytics** - Built for DNS Administrators, this solution collects, analyzes, and correlates DNS logs to provide security, operations, and performance-related insights. 
+
+### monitor service health - [Azure Service Health](https://azure.microsoft.com/en-us/features/service-health)
+
+- Review active incidents, planned maintenance, and health advisories in a personalized dashboard for service health based on your Azure subscriptions, services, and regions.
+- Get alerts about active incidents and upcoming maintenance
+- Download official reports and root cause analyses (RCAs)
+
+### [Resource Health overview](https://docs.microsoft.com/en-us/azure/service-health/resource-health-overview)
+
+**Azure Resource Health** helps you diagnose and get support for service problems that affect your Azure resources. It reports on the current and past health of your resources.
+
+[Azure status](https://status.azure.com/) reports on service problems that affect a broad set of Azure customers. Resource Health gives you a personalized dashboard of the health of your resources. Resource Health shows all the times that your resources have been unavailable because of Azure service problems. This data makes it easy for you to see if an SLA was violated.
+
+#### Resource definition and health assessment
+
+A resource is a specific instance of an Azure service, such as a virtual machine, web app, or SQL Database. Resource Health relies on signals from different Azure services to assess whether a resource is healthy.
+
+#### Health status
+
+- Available - means that there are no events detected that affect the health of the resource. In cases where the resource recovered from unplanned downtime during the last 24 hours, you'll see a "Recently resolved" notification.
+- Unavailable - means that the service detected an ongoing platform or non-platform event that affects the health of the resource.
+  - Platform events are triggered by multiple components of the Azure infrastructure. They include both scheduled actions (for example, planned maintenance) and unexpected incidents (for example, an unplanned host reboot or degraded host hardware that is predicted to fail after a specified time window).
+  - Non-platform events are triggered by user actions. Examples include stopping a virtual machine or reaching the maximum number of connections to Azure Cache for Redis.
+- Unknown - means that Resource Health hasn't received information about the resource for more than 10 minutes. Although this status isn't a definitive indication of the state of the resource, it's an important data point for troubleshooting.
+  - If the resource is running as expected, the status of the resource will change to Available after a few minutes.
+- Degraded - means that your resource detected a loss in performance, although it's still available for use.
 
 ## monitor cost
-  - [Monitoring your cloud costs](https://docs.microsoft.com/en-us/azure/architecture/framework/cost/monitoring)
-  - [Use cost alerts to monitor usage and spending](https://docs.microsoft.com/en-us/azure/cost-management-billing/costs/cost-mgt-alerts-monitor-usage-spending)
-  - [Download or view your Azure billing invoice and daily usage data](https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/download-azure-invoice-daily-usage-date)
-  - [] monitor spend - [Use cost alerts to monitor usage and spending](https://docs.microsoft.com/en-us/azure/cost-management/cost-mgt-alerts-monitor-usage-spending)
-  - [] report on spend - [Tutorial: Manage costs by using Cloudyn](https://docs.microsoft.com/en-us/azure/cost-management/tutorial-manage-costs)
+
+### [Monitoring your cloud costs](https://docs.microsoft.com/en-us/azure/architecture/framework/cost/monitoring)
+
+### [Use cost alerts to monitor usage and spending](https://docs.microsoft.com/en-us/azure/cost-management-billing/costs/cost-mgt-alerts-monitor-usage-spending)
+### [Download or view your Azure billing invoice and daily usage data](https://docs.microsoft.com/en-us/azure/cost-management-billing/manage/download-azure-invoice-daily-usage-date)
+### monitor spend - [Use cost alerts to monitor usage and spending](https://docs.microsoft.com/en-us/azure/cost-management/cost-mgt-alerts-monitor-usage-spending)
+### report on spend - [Tutorial: Manage costs by using Cloudyn](https://docs.microsoft.com/en-us/azure/cost-management/tutorial-manage-costs)
 
 ## configure advanced logging
-  - [ ] implement and configure Azure Monitor insights, including App Insights, Networks, Containers - [Overview of Insights in Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/insights-overview)
-	- [ ] configure a Log Analytics workspace - [Designing your Azure Monitor Logs deployment](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/design-logs-deployment)
+
+### implement and configure Azure Monitor insights, including App Insights, Networks, Containers - [Overview of Insights in Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/insights-overview)
+#### configure a Log Analytics workspace - [Designing your Azure Monitor Logs deployment](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/design-logs-deployment)
 
 ## configure logging for workloads
   - [ ] initiate automated responses by using Action Groups - [Create action group](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/action-groups#create-an-action-group-by-using-the-azure-portal)
