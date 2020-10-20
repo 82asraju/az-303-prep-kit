@@ -270,9 +270,76 @@ A shared access signature can take one of two forms:
 
 A shared access signature is a signed URI that points to one or more storage resources and includes a token that contains a special set of query parameters. The token indicates how the resources may be accessed by the client. One of the query parameters, the signature, is constructed from the SAS parameters and signed with the key that was used to create the SAS. This signature is used by Azure Storage to authorize access to the storage resource.
 
+SAS signature and authorization
+
+You can sign a SAS token in one of two ways:
+
+- With a user delegation key that was created using Azure Active Directory (Azure AD) credentials. A user delegation SAS is signed with the user delegation key.
+
+  To get the user delegation key and create the SAS, an Azure AD security principal must be assigned an Azure role that includes the Microsoft.Storage/storageAccounts/blobServices/generateUserDelegationKey action. For detailed information about Azure roles with permissions to get the user delegation key, see Create a user delegation SAS (REST API).
+
+- With the storage account key (Shared Key). Both a service SAS and an account SAS are signed with the storage account key. To create a SAS that is signed with the account key, an application must have access to the account key.
+
+When a request includes a SAS token, that request is authorized based on how that SAS token is signed. The access key or credentials that you use to create a SAS token are also used by Azure Storage to grant access to a client that possesses the SAS.
+
+The following table summarizes how each type of SAS token is authorized when it is included on a request to Azure Storage:
+
+|Type of SAS	|Type of authorization|
+|:-- |:-- |
+|User delegation SAS (Blob storage only)	|Azure AD|
+|Service SAS	|Shared Key|
+|Account SAS	|Shared Key|
+
+Microsoft recommends using a user delegation SAS when possible for superior security.
+
+### SAS token
+
+The SAS token is a string that you generate on the client side, for example by using one of the Azure Storage client libraries. The SAS token is not tracked by Azure Storage in any way. You can create an unlimited number of SAS tokens on the client side. After you create a SAS, you can distribute it to client applications that require access to resources in your storage account.
+
+When a client application provides a SAS URI to Azure Storage as part of a request, the service checks the SAS parameters and signature to verify that it is valid for authorizing the request. If the service verifies that the signature is valid, then the request is authorized. Otherwise, the request is declined with error code 403 (Forbidden).
+
+### When to use a shared access signature
+
+Use a SAS when you want to provide secure access to resources in your storage account to any client who does not otherwise have permissions to those resources.
+
+A common scenario where a SAS is useful is a service where users read and write their own data to your storage account. In a scenario where a storage account stores user data, there are two typical design patterns:
+
+1. Clients upload and download data via a front-end proxy service, which performs authentication. This front-end proxy service has the advantage of allowing validation of business rules, but for large amounts of data or high-volume transactions, creating a service that can scale to match demand may be expensive or difficult.
+2. A lightweight service authenticates the client as needed and then generates a SAS. Once the client application receives the SAS, they can access storage account resources directly with the permissions defined by the SAS and for the interval allowed by the SAS. The SAS mitigates the need for routing all data through the front-end proxy service.
+
+Many real-world services may use a hybrid of these two approaches. For example, some data might be processed and validated via the front-end proxy, while other data is saved and/or read directly using SAS.
+
+### [Best practices when using SAS](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview#best-practices-when-using-sas)
+
+When you use shared access signatures in your applications, you need to be aware of two potential risks:
+
+- If a SAS is leaked, it can be used by anyone who obtains it, which can potentially compromise your storage account.
+- If a SAS provided to a client application expires and the application is unable to retrieve a new SAS from your service, then the application's functionality may be hindered.
+
 ## implement Azure AD authentication for storage
 
-  - [Authorize access to blobs and queues using Azure Active Directory](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad)
+[Authorize access to blobs and queues using Azure Active Directory](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad)
+
+Azure Storage supports using Azure Active Directory (Azure AD) to authorize requests to Blob and Queue storage. With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user, group, or application service principal. The security principal is authenticated by Azure AD to return an OAuth 2.0 token. The token can then be used to authorize a request against Blob or Queue storage.
+
+Authorizing requests against Azure Storage with Azure AD provides superior security and ease of use over Shared Key authorization. Microsoft recommends using Azure AD authorization with your blob and queue applications when possible to minimize potential security vulnerabilities inherent in Shared Key.
+
+Authorization with Azure AD is available for all general-purpose and Blob storage accounts in all public regions and national clouds. Only storage accounts created with the Azure Resource Manager deployment model support Azure AD authorization.
+
+### Azure built-in roles for blobs and queues
+
+Azure provides the following Azure built-in roles for authorizing access to blob and queue data using Azure AD and OAuth:
+
+- Storage Blob Data Owner: Use to set ownership and manage POSIX access control for Azure Data Lake Storage Gen2. For more information, see Access control in Azure Data Lake Storage Gen2.
+- Storage Blob Data Contributor: Use to grant read/write/delete permissions to Blob storage resources.
+- Storage Blob Data Reader: Use to grant read-only permissions to Blob storage resources.
+- Storage Blob Delegator: Get a user delegation key to use to create a shared access signature that is signed with Azure AD credentials for a container or blob.
+- Storage Queue Data Contributor: Use to grant read/write/delete permissions to Azure queues.
+- Storage Queue Data Reader: Use to grant read-only permissions to Azure queues.
+- Storage Queue Data Message Processor: Use to grant peek, retrieve, and delete permissions to messages in Azure Storage queues.
+- Storage Queue Data Message Sender: Use to grant add permissions to messages in Azure Storage queues.
+
+Only roles explicitly defined for data access permit a security principal to access blob or queue data. Built-in roles such as **Owner**, **Contributor**, and **Storage Account Contributor** permit a security principal to manage a storage account, but do not provide access to the blob or queue data within that account via Azure AD. However, if a role includes the **Microsoft.Storage/storageAccounts/listKeys/action**, then a user to whom that role is assigned can access data in the storage account via Shared Key authorization with the account access keys.
 
 ## manage access keys
 
