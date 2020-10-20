@@ -341,14 +341,162 @@ Azure provides the following Azure built-in roles for authorizing access to blob
 
 Only roles explicitly defined for data access permit a security principal to access blob or queue data. Built-in roles such as **Owner**, **Contributor**, and **Storage Account Contributor** permit a security principal to manage a storage account, but do not provide access to the blob or queue data within that account via Azure AD. However, if a role includes the **Microsoft.Storage/storageAccounts/listKeys/action**, then a user to whom that role is assigned can access data in the storage account via Shared Key authorization with the account access keys.
 
+To learn how to assign an Azure built-in role to a security principal, see one of the following articles:
+
+- [Use the Azure portal to assign an Azure role for access to blob and queue data](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-rbac-portal)
+- [Use the Azure CLI to assign an Azure role for access to blob and queue data](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-rbac-cli)
+- [Use the Azure PowerShell module to assign an Azure role for access to blob and queue data](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-rbac-powershell)
+
+### Resource scope
+
+Before you assign an Azure role to a security principal, determine the scope of access that the security principal should have. Best practices dictate that it's always best to grant only the narrowest possible scope.
+
+The following list describes the levels at which you can scope access to Azure blob and queue resources, starting with the narrowest scope:
+
+- **An individual container.** At this scope, a role assignment applies to all of the blobs in the container, as well as container properties and metadata.
+- **An individual queue.** At this scope, a role assignment applies to messages in the queue, as well as queue properties and metadata.
+- **The storage account.** At this scope, a role assignment applies to all containers and their blobs, or to all queues and their messages.
+- **The resource group.** At this scope, a role assignment applies to all of the containers or queues in all of the storage accounts in the resource group.
+- **The subscription.** At this scope, a role assignment applies to all of the containers or queues in all of the storage accounts in all of the resource groups in the subscription.
+- **A management group.** At this scope, a role assignment applies to all of the containers or queues in all of the storage accounts in all of the resource groups in all of the subscriptions in the management group.
+
 ## manage access keys
 
-  - [Manage storage account access keys](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage)
+[Manage storage account access keys](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage)
+
+When you create a storage account, Azure generates two 512-bit storage account access keys. These keys can be used to authorize access to data in your storage account via Shared Key authorization.
+
+Microsoft recommends that you use Azure Key Vault to manage your access keys, and that you regularly rotate and regenerate your keys. Using Azure Key Vault makes it easy to rotate your keys without interruption to your applications. You can also manually rotate your keys.
+
+>  Note: Microsoft recommends using Azure Active Directory (Azure AD) to authorize requests against blob and queue data if possible, instead of Shared Key. Azure AD provides superior security and ease of use over Shared Key. For more information about authorizing access to data with Azure AD, see Authorize access to Azure blobs and queues using Azure Active Directory.
+
+### View Account Access Keys
+
+#### Portal
+
+In Storage Account under Settings -> Access Keys
+
+#### PowerShell
+
+    $storageAccountKey = `
+        (Get-AzStorageAccountKey `
+        -ResourceGroupName <resource-group> `
+        -Name <storage-account>).Value[0]
+
+#### Azure CLI
+
+    az storage account keys list \
+      --resource-group <resource-group> \
+      --account-name <storage-account>
+
+You can use either of the two keys to access Azure Storage, but in general it's a good practice to use the first key, and reserve the use of the second key for when you are rotating keys.
+
+To view or read an account's access keys, the user must either be a **Service Administrator**, or must be assigned an Azure role that includes the **Microsoft.Storage/storageAccounts/listkeys/action**. Some Azure built-in roles that include this action are the **Owner**, **Contributor**, and **Storage Account Key Operator Service Role** roles.
+
+### Use Azure Key Vault to manage your access keys
+
+Microsoft recommends using Azure Key Vault to manage and rotate your access keys. Your application can securely access your keys in Key Vault, so that you can avoid storing them with your application code. For more information about using Key Vault for key management, see the following articles:
+
+- [Manage storage account keys with Azure Key Vault and PowerShell](https://docs.microsoft.com/en-us/azure/key-vault/secrets/overview-storage-keys-powershell)
+- [Manage storage account keys with Azure Key Vault and the Azure CLI](https://docs.microsoft.com/en-us/azure/key-vault/secrets/overview-storage-keys)
+
+### Manually rotate access keys
+
+Microsoft recommends that you rotate your access keys periodically to help keep your storage account secure. If possible, use Azure Key Vault to manage your access keys. If you are not using Key Vault, you will need to rotate your keys manually.
+
+Two access keys are assigned so that you can rotate your keys. Having two keys ensures that your application maintains access to Azure Storage throughout the process.
+
+#### Portal
+
+In Storage Account under Settings -> Access Keys -> Regenerate
+
+#### PowerShell
+
+    New-AzStorageAccountKey -ResourceGroupName <resource-group> `
+      -Name <storage-account> `
+      -KeyName key1
+
+#### Azure CLI
+
+    az storage account keys renew \
+      --resource-group <resource-group> \
+      --account-name <storage-account>
+      --key primary
+
+> Note: Microsoft recommends using only one of the keys in all of your applications at the same time. If you use Key 1 in some places and Key 2 in others, you will not be able to rotate your keys without some application losing access.
+
+To rotate an account's access keys, the user must either be a Service Administrator, or must be assigned an Azure role that includes the **Microsoft.Storage/storageAccounts/regeneratekey/action**. Some Azure built-in roles that include this action are the **Owner**, **Contributor**, and **Storage Account Key Operator Service Role** roles.
 
 ## implement Azure storage replication
 
-  - [Azure Storage redundancy](https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy)
-  - [Disaster recovery and account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance)
+- [Azure Storage redundancy](https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy)
+- [Disaster recovery and account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance)
+
+Azure Storage always stores multiple copies of your data so that it is protected from planned and unplanned events, including transient hardware failures, network or power outages, and massive natural disasters. Redundancy ensures that your storage account meets the Service-Level Agreement (SLA) for Azure Storage even in the face of failures.
+
+When deciding which redundancy option is best for your scenario, consider the tradeoffs between lower costs and higher availability and durability. The factors that help determine which redundancy option you should choose include:
+
+- How your data is replicated in the primary region
+- Whether your data is replicated to a second region that is geographically distant to the primary region, to protect against regional disasters
+- Whether your application requires read access to the replicated data in the secondary region if the primary region becomes unavailable for any reason
+
+### Redundancy in the primary region
+
+Data in an Azure Storage account is always replicated three times in the primary region. Azure Storage offers two options for how your data is replicated in the primary region:
+
+- **Locally redundant storage (LRS)** copies your data synchronously three times within a single physical location in the primary region. LRS is the least expensive replication option, but is not recommended for applications requiring high availability.
+- **Zone-redundant storage (ZRS)** copies your data synchronously across three Azure availability zones in the primary region. For applications requiring high availability, Microsoft recommends using ZRS in the primary region, and also replicating to a secondary region.
+
+#### Locally redundant storage
+
+Locally redundant storage (LRS) replicates your data three times within a single physical location in the primary region. LRS provides at least 99.999999999% (11 nines) durability of objects over a given year.
+
+LRS is a good choice for the following scenarios:
+
+- If your application stores data that can be easily reconstructed if data loss occurs, you may opt for LRS.
+- If your application is restricted to replicating data only within a country or region due to data governance requirements, you may opt for LRS. In some cases, the paired regions across which the data is geo-replicated may be in another country or region. For more information on paired regions, see Azure regions.
+
+#### Zone-redundant storage
+
+Zone-redundant storage (ZRS) replicates your Azure Storage data synchronously across three Azure availability zones in the primary region. Each availability zone is a separate physical location with independent power, cooling, and networking. ZRS offers durability for Azure Storage data objects of at least 99.9999999999% (12 9's) over a given year.
+
+With ZRS, your data is still accessible for both read and write operations even if a zone becomes unavailable. If a zone becomes unavailable, Azure undertakes networking updates, such as DNS repointing. These updates may affect your application if you access data before the updates have completed. When designing applications for ZRS, follow practices for transient fault handling, including implementing retry policies with exponential back-off.
+
+A write request to a storage account that is using ZRS happens synchronously. The write operation returns successfully only after the data is written to all replicas across the three availability zones.
+
+Microsoft recommends using ZRS in the primary region for scenarios that require consistency, durability, and high availability. We also recommend using ZRS if you want to restrict an application to replicate data only within a country or region because of data governance requirements.
+
+ZRS provides excellent performance, low latency, and resiliency for your data if it becomes temporarily unavailable. However, ZRS by itself may not protect your data against a regional disaster where multiple zones are permanently affected. For protection against regional disasters, Microsoft recommends using geo-zone-redundant storage (GZRS), which uses ZRS in the primary region and also geo-replicates your data to a secondary region.
+
+### Redundancy in a secondary region
+
+For applications requiring high availability, you can choose to additionally copy the data in your storage account to a secondary region that is hundreds of miles away from the primary region. If your storage account is copied to a secondary region, then your data is durable even in the case of a complete regional outage or a disaster in which the primary region isn't recoverable.
+
+When you create a storage account, you select the primary region for the account. The paired secondary region is determined based on the primary region, and can't be changed. For more information about regions supported by Azure, see Azure regions.
+
+Azure Storage offers two options for copying your data to a secondary region:
+
+- **Geo-redundant storage (GRS)** copies your data synchronously three times within a single physical location in the primary region using LRS. It then copies your data asynchronously to a single physical location in the secondary region.
+- **Geo-zone-redundant storage (GZRS)** copies your data synchronously across three Azure availability zones in the primary region using ZRS. It then copies your data asynchronously to a single physical location in the secondary region.
+
+The primary difference between GRS and GZRS is how data is replicated in the primary region. Within the secondary region, data is always replicated synchronously three times using LRS. LRS in the secondary region protects your data against hardware failures.
+
+With GRS or GZRS, the data in the secondary region isn't available for read or write access unless there is a failover to the secondary region. For read access to the secondary region, configure your storage account to use read-access geo-redundant storage (RA-GRS) or read-access geo-zone-redundant storage (RA-GZRS).
+
+If the primary region becomes unavailable, you can choose to fail over to the secondary region. After the failover has completed, the secondary region becomes the primary region, and you can again read and write data. 
+
+>  Important: Because data is replicated to the secondary region asynchronously, a failure that affects the primary region may result in data loss if the primary region cannot be recovered. The interval between the most recent writes to the primary region and the last write to the secondary region is known as the recovery point objective (RPO). The RPO indicates the point in time to which data can be recovered. Azure Storage typically has an RPO of less than 15 minutes, although there's currently no SLA on how long it takes to replicate data to the secondary region.
+
+### Supported storage account types
+
+The following table shows which redundancy options are supported by each type of storage account. For information for storage account types, see Storage account overview.
+
+|LRS	|ZRS	|GRS/RA-GRS	|GZRS/RA-GZRS|
+|:--- |:--- |:--- |:--- |
+|General-purpose v2<br />General-purpose v1<br />Block blob storage<br />Blob storage<br />File storage|General-purpose v2<br />Block blob storage<br />File storage|General-purpose v2<br />General-purpose v1<br />Blob storage<br />|General-purpose v2|
+
+> Note: Azure Premium Disk Storage currently supports only locally redundant storage (LRS). Block blob storage accounts support locally redundant storage (LRS) and zone redundant storage (ZRS) in certain regions.
 
 ## implement Azure storage account failover
-  - [Initiate a storage account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-initiate-account-failover)
+
+- [Initiate a storage account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-initiate-account-failover)

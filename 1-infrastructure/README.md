@@ -52,11 +52,11 @@
   - [Create and Azure File Share](https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share)
 - [x] configure network access to the storage account
   - [Configure Azure Storage firewalls and virtual networks](https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security)
-- [ ] implement Shared Access Signatures and access policies
+- [x] implement Shared Access Signatures and access policies
   - [Shared access signature overview](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview)
-- [ ] implement Azure AD authentication for storage
+- [x] implement Azure AD authentication for storage
   - [Authorize access to blobs and queues using Azure Active Directory](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad)
-- [ ] manage access keys
+- [x] manage access keys
   - [Manage storage account access keys](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage)
 - [ ] implement Azure storage replication
   - [Azure Storage redundancy](https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy)
