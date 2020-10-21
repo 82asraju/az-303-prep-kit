@@ -58,10 +58,10 @@
   - [Authorize access to blobs and queues using Azure Active Directory](https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad)
 - [x] manage access keys
   - [Manage storage account access keys](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage)
-- [ ] implement Azure storage replication
+- [x] implement Azure storage replication
   - [Azure Storage redundancy](https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy)
   - [Disaster recovery and account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance)
-- [ ] implement Azure storage account failover
+- [x] implement Azure storage account failover
   - [Initiate a storage account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-initiate-account-failover)
 
 ## Implement VMs for Windows and Linux

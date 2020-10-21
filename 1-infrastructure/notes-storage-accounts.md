@@ -487,6 +487,34 @@ If the primary region becomes unavailable, you can choose to fail over to the se
 
 >  Important: Because data is replicated to the secondary region asynchronously, a failure that affects the primary region may result in data loss if the primary region cannot be recovered. The interval between the most recent writes to the primary region and the last write to the secondary region is known as the recovery point objective (RPO). The RPO indicates the point in time to which data can be recovered. Azure Storage typically has an RPO of less than 15 minutes, although there's currently no SLA on how long it takes to replicate data to the secondary region.
 
+#### Geo-redundant storage
+
+Geo-redundant storage (GRS) copies your data synchronously three times within a single physical location in the primary region using LRS. It then copies your data asynchronously to a single physical location in a secondary region that is hundreds of miles away from the primary region. GRS offers durability for Azure Storage data objects of at least 99.99999999999999% (16 9's) over a given year.
+
+A write operation is first committed to the primary location and replicated using LRS. The update is then replicated asynchronously to the secondary region. When data is written to the secondary location, it's also replicated within that location using LRS.
+
+#### Geo-zone-redundant storage
+
+Geo-zone-redundant storage (GZRS) combines the high availability provided by redundancy across availability zones with protection from regional outages provided by geo-replication. Data in a GZRS storage account is copied across three Azure availability zones in the primary region and is also replicated to a secondary geographic region for protection from regional disasters. Microsoft recommends using GZRS for applications requiring maximum consistency, durability, and availability, excellent performance, and resilience for disaster recovery.
+
+With a GZRS storage account, you can continue to read and write data if an availability zone becomes unavailable or is unrecoverable. Additionally, your data is also durable in the case of a complete regional outage or a disaster in which the primary region isn't recoverable. GZRS is designed to provide at least 99.99999999999999% (16 9's) durability of objects over a given year.
+
+Only general-purpose v2 storage accounts support GZRS and RA-GZRS. For more information about storage account types, see Azure storage account overview. GZRS and RA-GZRS support block blobs, page blobs (except for VHD disks), files, tables, and queues.
+
+### Read access to data in the secondary region
+
+Geo-redundant storage (with GRS or GZRS) replicates your data to another physical location in the secondary region to protect against regional outages. However, that data is available to be read only if the customer or Microsoft initiates a failover from the primary to secondary region. When you enable read access to the secondary region, your data is available to be read at all times, including in a situation where the primary region becomes unavailable. For read access to the secondary region, enable read-access geo-redundant storage (RA-GRS) or read-access geo-zone-redundant storage (RA-GZRS).
+
+> Note: Azure Files does not support read-access geo-redundant storage (RA-GRS) and read-access geo-zone-redundant storage (RA-GZRS).
+
+### Design your applications for read access to the secondary
+
+If your storage account is configured for read access to the secondary region, then you can design your applications to seamlessly shift to reading data from the secondary region if the primary region becomes unavailable for any reason.
+
+The secondary region is available for read access after you enable RA-GRS or RA-GZRS, so that you can test your application in advance to make sure that it will properly read from the secondary in the event of an outage. For more information about how to design your applications for high availability, see [Use geo-redundancy to design highly available applications](https://docs.microsoft.com/en-us/azure/storage/common/geo-redundant-design).
+
+When read access to the secondary is enabled, your application can be read from the secondary endpoint as well as from the primary endpoint. The secondary endpoint appends the suffix –secondary to the account name. For example, if your primary endpoint for Blob storage is myaccount.blob.core.windows.net, then the secondary endpoint is myaccount-secondary.blob.core.windows.net. The account access keys for your storage account are the same for both the primary and secondary endpoints.
+
 ### Supported storage account types
 
 The following table shows which redundancy options are supported by each type of storage account. For information for storage account types, see Storage account overview.
@@ -499,4 +527,36 @@ The following table shows which redundancy options are supported by each type of
 
 ## implement Azure storage account failover
 
-- [Initiate a storage account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-initiate-account-failover)
+[Initiate a storage account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-initiate-account-failover)
+
+If the primary endpoint for your geo-redundant storage account becomes unavailable for any reason, you can initiate an account failover. An account failover updates the secondary endpoint to become the primary endpoint for your storage account. Once the failover is complete, clients can begin writing to the new primary region. Forced failover enables you to maintain high availability for your applications.
+
+> Warning: An account failover typically results in some data loss. To understand the implications of an account failover and to prepare for data loss, review Understand the account failover process.
+
+### Initiate the failover
+
+#### Portal 
+
+Storage Account -> Settings -> Geo-replication
+
+1. Verify that your storage account is configured for geo-redundant storage (GRS) or read-access geo-redundant storage (RA-GRS). If it's not, then select Configuration under Settings to update your account to be geo-redundant.
+2. The Last Sync Time property indicates how far the secondary is behind from the primary. Last Sync Time provides an estimate of the extent of data loss that you will experience after the failover is completed. For more information about checking the Last Sync Time property, see Check the Last Sync Time property for a storage account.
+3. Select Prepare for failover.
+4. Review the confirmation dialog. When you are ready, enter Yes to confirm and initiate the failover.
+
+#### Az PowerShell
+
+    Invoke-AzStorageAccountFailover -ResourceGroupName <resource-group-name> -Name <account-name>
+
+#### Azure CLI
+
+    az storage account show \ --name accountName \ --expand geoReplicationStats
+    az storage account failover \ --name accountName
+
+### Important implications of account failover
+
+When you initiate an account failover for your storage account, the DNS records for the secondary endpoint are updated so that the secondary endpoint becomes the primary endpoint. Make sure that you understand the potential impact to your storage account before you initiate a failover.
+
+To estimate the extent of likely data loss before you initiate a failover, check the Last Sync Time property. For more information about checking the Last Sync Time property, see [Check the Last Sync Time property for a storage account](https://docs.microsoft.com/en-us/azure/storage/common/last-sync-time-get).
+
+After the failover, your storage account type is automatically converted to locally redundant storage (LRS) in the new primary region. You can re-enable geo-redundant storage (GRS) or read-access geo-redundant storage (RA-GRS) for the account. Note that converting from LRS to GRS or RA-GRS incurs an additional cost.
