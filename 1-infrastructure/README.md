@@ -64,11 +64,11 @@
 - [x] implement Azure storage account failover
   - [Initiate a storage account failover (preview)](https://docs.microsoft.com/en-us/azure/storage/common/storage-initiate-account-failover)
 
-## Implement VMs for Windows and Linux
+## [Implement VMs for Windows and Linux](/1-infrastructure/notes-virtual-machines.md)
 
 [Virtual Machines - Azure Docs](https://docs.microsoft.com/en-us/azure/virtual-machines/)
 
-- [ ] configure High Availability
+- [x] configure High Availability
   - [Availability options for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/availability)
   - [Manage the availability of Windows virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/manage-availability)
 - [ ] configure storage for VMs
