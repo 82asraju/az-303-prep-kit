@@ -101,9 +101,164 @@ When you subscribe to scheduled events, your VM is notified about upcoming maint
 Combine the Azure Load Balancer with an availability zone or set to get the most application resiliency. The Azure Load Balancer distributes traffic between multiple virtual machines. For our Standard tier virtual machines, the Azure Load Balancer is included. Not all virtual machine tiers include the Azure Load Balancer. For more information about load balancing your virtual machines, see Load Balancing virtual machines for Linux or Windows.
 
 ## configure storage for VMs
-  - [Attach a managed data disk to a Windows VM by using the Azure portal](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/attach-managed-disk-portal)
-  - [Attach a data disk to a Windows VM with PowerShell](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/attach-disk-ps)
-  - [What disk types are available in Azure?](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disks-types)
+
+### [Attach a managed data disk to a Windows VM by using the Azure portal](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/attach-managed-disk-portal)
+
+#### Add a data disk
+
+1. Go to the Azure portal to add a data disk. Search for and select Virtual machines.
+2. Select a virtual machine from the list.
+3. On the Virtual machine page, select Disks.
+4. On the Disks page, select Add data disk.
+5. In the drop-down for the new disk, select Create disk.
+6. In the Create managed disk page, type in a name for the disk and adjust the other settings as necessary. When you're done, select Create.
+7. In the Disks page, select Save to save the new disk configuration for the VM.
+8. After Azure creates the disk and attaches it to the virtual machine, the new disk is listed in the virtual machine's disk settings under Data disks.
+
+#### Initialize a new data disk
+
+1. Connect to the VM.
+2. Select the Windows Start menu inside the running VM and enter diskmgmt.msc in the search box. The Disk Management console opens.
+3. Disk Management recognizes that you have a new, uninitialized disk and the Initialize Disk window appears.
+4. Verify the new disk is selected and then select OK to initialize it.
+5. The new disk appears as unallocated. Right-click anywhere on the disk and select New simple volume. The New Simple Volume Wizard window opens.
+6. Proceed through the wizard, keeping all of the defaults, and when you're done select Finish.
+7. Close Disk Management.
+8. A pop-up window appears notifying you that you need to format the new disk before you can use it. Select Format disk.
+9. In the Format new disk window, check the settings, and then select Start.
+10. A warning appears notifying you that formatting the disks erases all of the data. Select OK.
+11. When the formatting is complete, select OK.
+
+### [Attach a data disk to a Windows VM with PowerShell](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/attach-disk-ps)
+
+First, review these tips:
+
+- The size of the virtual machine controls how many data disks you can attach. For more information, see Sizes for virtual machines.
+- To use premium SSDs, you'll need a premium storage-enabled VM type, like the DS-series or GS-series virtual machine.
+
+#### Add an empty data disk to a virtual machine
+
+This example shows how to add an empty data disk to an existing virtual machine.
+
+##### Using managed disks
+
+    $rgName = 'myResourceGroup'
+    $vmName = 'myVM'
+    $location = 'East US' 
+    $storageType = 'Premium_LRS'
+    $dataDiskName = $vmName + '_datadisk1'
+
+    $diskConfig = New-AzDiskConfig -SkuName $storageType -Location $location -CreateOption Empty -DiskSizeGB 128
+    $dataDisk1 = New-AzDisk -DiskName $dataDiskName -Disk $diskConfig -ResourceGroupName $rgName
+
+    $vm = Get-AzVM -Name $vmName -ResourceGroupName $rgName 
+    $vm = Add-AzVMDataDisk -VM $vm -Name $dataDiskName -CreateOption Attach -ManagedDiskId $dataDisk1.Id -Lun 1
+
+    Update-AzVM -VM $vm -ResourceGroupName $rgName
+
+#### Initialize the disk
+
+After you add an empty disk, you'll need to initialize it. To initialize the disk, you can sign in to a VM and use disk management. If you enabled WinRM and a certificate on the VM when you created it, you can use remote PowerShell to initialize the disk. You can also use a custom script extension:
+
+    $location = "location-name"
+    $scriptName = "script-name"
+    $fileName = "script-file-name"
+    Set-AzVMCustomScriptExtension -ResourceGroupName $rgName -Location $locName -VMName $vmName -Name $scriptName -TypeHandlerVersion "1.4" -StorageAccountName "mystore1" -StorageAccountKey "primary-key" -FileName $fileName -ContainerName "scripts"
+
+The script file can contain code to initialize the disks, for example:
+
+    $disks = Get-Disk | Where partitionstyle -eq 'raw' | sort number
+
+    $letters = 70..89 | ForEach-Object { [char]$_ }
+    $count = 0
+    $labels = "data1","data2"
+
+    foreach ($disk in $disks) {
+        $driveLetter = $letters[$count].ToString()
+        $disk | 
+        Initialize-Disk -PartitionStyle MBR -PassThru |
+        New-Partition -UseMaximumSize -DriveLetter $driveLetter |
+        Format-Volume -FileSystem NTFS -NewFileSystemLabel $labels[$count] -Confirm:$false -Force
+	$count++
+    }
+
+##### Using managed disks in an Availability Zone
+
+To create a disk in an Availability Zone, use New-AzDiskConfig with the -Zone parameter. The following example creates a disk in zone 1.
+
+    $diskConfig = New-AzDiskConfig -SkuName $storageType -Location $location -CreateOption Empty -DiskSizeGB 128 -Zone 1
+
+#### Attach an existing data disk to a VM
+
+You can attach an existing managed disk to a VM as a data disk.
+
+    $rgName = "myResourceGroup"
+    $vmName = "myVM"
+    $location = "East US" 
+    $dataDiskName = "myDisk"
+    $disk = Get-AzDisk -ResourceGroupName $rgName -DiskName $dataDiskName 
+    
+    $vm = Get-AzVM -Name $vmName -ResourceGroupName $rgName 
+    
+    $vm = Add-AzVMDataDisk -CreateOption Attach -Lun 0 -VM $vm -ManagedDiskId $disk.Id
+    
+    Update-AzVM -VM $vm -ResourceGroupName $rgName
+
+### [What disk types are available in Azure?](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disks-types)
+
+#### Disk comparison
+
+The following table provides a comparison of ultra disks, premium solid-state drives (SSD), standard SSD, and standard hard disk drives (HDD) for managed disks to help you decide what to use.
+
+|Detail	|Ultra disk	|Premium SSD	|Standard SSD	|Standard HDD|
+|:--|:--|:--|:--|:--|
+|Disk type	|SSD	|SSD	|SSD	|HDD|
+|Scenario	|IO-intensive workloads such as SAP HANA, top tier databases (for example, SQL, Oracle), and other transaction-heavy workloads.	|Production and performance sensitive workloads	|Web servers, lightly used enterprise applications and dev/test	|Backup, non-critical, infrequent access|
+|Max disk size	|65,536 gibibyte (GiB)	|32,767 GiB	|32,767 GiB	|32,767 GiB|
+|Max throughput	|2,000 MB/s	|900 MB/s	|750 MB/s	|500 MB/s|
+|Max IOPS	|160,000	|20,000|	6,000	|2,000|
+
+#### Ultra disk
+
+Azure ultra disks deliver high throughput, high IOPS, and consistent low latency disk storage for Azure IaaS VMs. Some additional benefits of ultra disks include the ability to dynamically change the performance of the disk, along with your workloads, without the need to restart your virtual machines (VM). Ultra disks are suited for data-intensive workloads such as SAP HANA, top tier databases, and transaction-heavy workloads. Ultra disks can only be used as data disks. We recommend using premium SSDs as OS disks.
+
+[Ultra Disk Sizes](https://docs.microsoft.com/en-us/azure/virtual-machines/disks-types#disk-size)
+
+#### Premium SSD
+
+Azure premium SSDs deliver high-performance and low-latency disk support for virtual machines (VMs) with input/output (IO)-intensive workloads. To take advantage of the speed and performance of premium storage disks, you can migrate existing VM disks to Premium SSDs. Premium SSDs are suitable for mission-critical production applications. Premium SSDs can only be used with VM series that are premium storage-compatible.
+
+[Premium SSD Sizes](https://docs.microsoft.com/en-us/azure/virtual-machines/disks-types#disk-size-1)
+
+When you provision a premium storage disk, unlike standard storage, you are guaranteed the capacity, IOPS, and throughput of that disk.
+
+#### Standard SSD
+
+Azure standard SSDs are a cost-effective storage option optimized for workloads that need consistent performance at lower IOPS levels. Standard SSD offers a good entry level experience for those who wish to move to the cloud, especially if you experience issues with the variance of workloads running on your HDD solutions on premises. Compared to standard HDDs, standard SSDs deliver better availability, consistency, reliability, and latency. Standard SSDs are suitable for Web servers, low IOPS application servers, lightly used enterprise applications, and Dev/Test workloads. Like standard HDDs, standard SSDs are available on all Azure VMs.
+
+[Standard SSD Sizes](https://docs.microsoft.com/en-us/azure/virtual-machines/disks-types#disk-size-2)
+
+Standard SSDs are designed to provide single-digit millisecond latencies and the IOPS and throughput up to the limits described in the preceding table 99% of the time. Actual IOPS and throughput may vary sometimes depending on the traffic patterns. Standard SSDs will provide more consistent performance than the HDD disks with the lower latency.
+
+#### Standard HDD
+
+Azure standard HDDs deliver reliable, low-cost disk support for VMs running latency-insensitive workloads. With standard storage, the data is stored on hard disk drives (HDDs). Latency, IOPS, and Throughput of Standard HDD disks may vary more widely as compared to SSD-based disks. Standard HDD Disks are designed to deliver write latencies under 10ms and read latencies under 20ms for most IO operations, however the actual performance may vary depending on the IO size and workload pattern. When working with VMs, you can use standard HDD disks for dev/test scenarios and less critical workloads. Standard HDDs are available in all Azure regions and can be used with all Azure VMs.
+
+[Standard HDD Sizes](https://docs.microsoft.com/en-us/azure/virtual-machines/disks-types#disk-size-3)
+
+#### Billing
+
+When using managed disks, the following billing considerations apply:
+
+- Disk type
+- Managed disk size
+- Snapshots
+- Outbound data transfers
+- Number of transactions
+
+#### Azure disk reservation
+
+Disk reservation is the option to purchase one year of disk storage in advance at a discount, reducing your total cost.
 
 ## select virtual machine size
   - [Sizes for Windows virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes)
@@ -113,7 +268,7 @@ Combine the Azure Load Balancer with an availability zone or set to get the most
   - [Deploy VMs to dedicated hosts using the portal](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/dedicated-hosts-portal)
   - [Azure Dedicated Hosts](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/dedicated-hosts)
 
-## deploy and configure scale sets]
+## deploy and configure scale sets
   - [What are virtual machine scale sets?](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
 
 ## configure Azure Disk Encryption
