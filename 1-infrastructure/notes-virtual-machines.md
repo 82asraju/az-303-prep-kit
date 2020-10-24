@@ -261,8 +261,41 @@ When using managed disks, the following billing considerations apply:
 Disk reservation is the option to purchase one year of disk storage in advance at a discount, reducing your total cost.
 
 ## select virtual machine size
-  - [Sizes for Windows virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes)
-  - [Sizes for Linux virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes)
+
+### [Sizes for Windows virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes)
+
+[Azure virtual machine sizes naming conventions](https://docs.microsoft.com/en-us/azure/virtual-machines/vm-naming-conventions)
+
+|Type	|Sizes	|Description|
+|:--|:--|:--|
+|[General purpose](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general)	|B, Dsv3, Dv3, Dasv4, Dav4, DSv2, Dv2, Av2, DC, DCv2, Dv4, Dsv4, Ddv4, Ddsv4	|Balanced CPU-to-memory ratio. Ideal for testing and development, small to medium databases, and low to medium traffic web servers.|
+|[Compute optimized](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-compute)|	F, Fs, Fsv2	|High CPU-to-memory ratio. Good for medium traffic web servers, network appliances, batch processes, and application servers.|
+|[Memory optimized](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-memory)|	Esv3, Ev3, Easv4, Eav4, Ev4, Esv4, Edv4, Edsv4, Mv2, M, DSv2, Dv2	|High memory-to-CPU ratio. Great for relational database servers, medium to large caches, and in-memory analytics.|
+|[Storage optimized](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-storage)	|Lsv2	|High disk throughput and IO ideal for Big Data, SQL, NoSQL databases, data warehousing and large transactional databases.|
+|[GPU](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu)	|NC, NCv2, NCv3, NCasT4_v3 (Preview), ND, NDv2 (Preview), NV, NVv3, NVv4	|Specialized virtual machines targeted for heavy graphic rendering and video editing, as well as model training and inferencing (ND) with deep learning. Available with single or multiple GPUs.|
+|[High performance compute](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-hpc)	|HB, HBv2, HC, H	|Our fastest and most powerful CPU virtual machines with optional high-throughput network interfaces (RDMA).|
+
+#### REST API
+
+For information on using the REST API to query for VM sizes, see the following:
+
+- [List available virtual machine sizes for resizing](https://docs.microsoft.com/en-us/rest/api/compute/virtualmachines/listavailablesizes)
+- [List available virtual machine sizes for a subscription](https://docs.microsoft.com/en-us/rest/api/compute/resourceskus/list)
+- [List available virtual machine sizes in an availability set](https://docs.microsoft.com/en-us/rest/api/compute/availabilitysets/listavailablesizes)
+
+#### ACU
+
+Learn more about how [Azure compute units (ACU)](https://docs.microsoft.com/en-us/azure/virtual-machines/acu) can help you compare compute performance across Azure SKUs.
+
+#### Pricing
+
+[Windows VM Pricing](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/windows/#Windows)
+
+### [Sizes for Linux virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes) (same as above)
+
+#### Pricing
+
+[Linux VM Pricing](https://azure.microsoft.com/pricing/details/virtual-machines/#Linux)
 
 ## implement Azure Dedicated Hosts
   - [Deploy VMs to dedicated hosts using the portal](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/dedicated-hosts-portal)
