@@ -298,11 +298,229 @@ Learn more about how [Azure compute units (ACU)](https://docs.microsoft.com/en-u
 [Linux VM Pricing](https://azure.microsoft.com/pricing/details/virtual-machines/#Linux)
 
 ## implement Azure Dedicated Hosts
-  - [Deploy VMs to dedicated hosts using the portal](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/dedicated-hosts-portal)
-  - [Azure Dedicated Hosts](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/dedicated-hosts)
+
+### [Azure Dedicated Hosts](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/dedicated-hosts)
+
+Azure Dedicated Host is a service that provides physical servers - able to host one or more virtual machines - dedicated to one Azure subscription. Dedicated hosts are the same physical servers used in our data centers, provided as a resource. You can provision dedicated hosts within a region, availability zone, and fault domain. Then, you can place VMs directly into your provisioned hosts, in whatever configuration best meets your needs.
+
+#### Benefits
+
+Reserving the entire host provides the following benefits:
+
+- Hardware isolation at the physical server level. No other VMs will be placed on your hosts. Dedicated hosts are deployed in the same data centers and share the same network and underlying storage infrastructure as other, non-isolated hosts.
+- Control over maintenance events initiated by the Azure platform. While the majority of maintenance events have little to no impact on your virtual machines, there are some sensitive workloads where each second of pause can have an impact. With dedicated hosts, you can opt-in to a maintenance window to reduce the impact to your service.
+- With the Azure hybrid benefit, you can bring your own licenses for Windows and SQL to Azure. Using the hybrid benefits provides you with additional benefits. For more information, see Azure Hybrid Benefit.
+
+#### Groups, hosts, and VMs
+
+A host group is a resource that represents a collection of dedicated hosts. You create a host group in a region and an availability zone, and add hosts to it.
+
+A host is a resource, mapped to a physical server in an Azure data center. The physical server is allocated when the host is created. A host is created within a host group. A host has a SKU describing which VM sizes can be created. Each host can host multiple VMs, of different sizes, as long as they are from the same size series.
+
+#### High Availability considerations
+
+For high availability, you should deploy multiple VMs, spread across multiple hosts (minimum of 2). With Azure Dedicated Hosts, you have several options to provision your infrastructure to shape your fault isolation boundaries.
+
+#### Use Availability Zones for fault isolation
+
+Availability zones are unique physical locations within an Azure region. Each zone is made up of one or more datacenters equipped with independent power, cooling, and networking. A host group is created in a single availability zone. Once created, all hosts will be placed within that zone. To achieve high availability across zones, you need to create multiple host groups (one per zone) and spread your hosts accordingly.
+
+If you assign a host group to an availability zone, all VMs created on that host must be created in the same zone.
+
+#### Use Fault Domains for fault isolation
+
+A host can be created in a specific fault domain. Just like VM in a scale set or availability set, hosts in different fault domains will be placed on different physical racks in the data center. When you create a host group, you are required to specify the fault domain count. When creating hosts within the host group, you assign fault domain for each host. The VMs do not require any fault domain assignment.
+
+Fault domains are not the same as colocation. Having the same fault domain for two hosts does not mean they are in proximity with each other.
+
+Fault domains are scoped to the host group. You should not make any assumption on anti-affinity between two host groups (unless they are in different availability zones).
+
+VMs deployed to hosts with different fault domains, will have their underlying managed disks services on multiple storage stamps, to increase the fault isolation protection.
+
+#### Using Availability Zones and Fault Domains
+
+You can use both capabilities together to achieve even more fault isolation. In this case, you will specify the availability zone and fault domain count in for each host group, assign a fault domain to each of your hosts in the group, and assign an availability zone to each of your VMs
+
+The Resource Manager sample template found [here](https://github.com/Azure/azure-quickstart-templates/blob/master/201-vm-dedicated-hosts/README.md) uses zones and fault domains to spread hosts for maximum resiliency in a region.
+
+#### Manual vs. automatic placement
+
+When creating a VM in Azure, you can select which dedicated host to use. You can also use the option to automatically place your VMs on existing hosts, within a host group.
+
+When creating a new host group, make sure the setting for automatic VM placement is selected. When creating your VM, select the host group and let Azure pick the best host for your VM.
+
+Host groups that are enabled for automatic placement do not require all the VMs to be automatically placed. You will still be able to explicitly pick a host, even when automatic placement is selected for the host group.
+
+#### Limitations
+
+Known issues and limitations when using automatic VM placement:
+
+- You will not be able to apply Azure Hybrid Benefits on your dedicated hosts.
+- You will not be able to redeploy your VM.
+- You will not be able to control maintenance for your dedicated hosts.
+- You will not be able to use Lsv2, NVasv4, NVsv3, Msv2, or M-series VMs with dedicated hosts
+
+#### Virtual machine scale set support (public preview)
+
+Virtual machine scale sets let you treat a group of virtual machines as a single resource, and apply availability, management, scaling and orchestration policies as a group. Your existing dedicated hosts can also be used for virtual machine scale sets.
+
+#### Pricing
+
+Users are charged per dedicated host, regardless how many VMs are deployed. In your monthly statement you will see a new billable resource type of hosts. The VMs on a dedicated host will still be shown in your statement, but will carry a price of 0.
+
+The host price is set based on VM family, type (hardware size), and region. A host price is relative to the largest VM size supported on the host.
+
+Software licensing, storage and network usage are billed separately from the host and VMs. There is no change to those billable items.
+
+For more information, see [Azure Dedicated Host pricing](https://aka.ms/ADHPricing).
+
+### [Deploy VMs to dedicated hosts using the portal](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/dedicated-hosts-portal)
+
+#### Create a host group
+
+A host group is a resource that represents a collection of dedicated hosts. You create a host group in a region and an availability zone, and add hosts to it. When planning for high availability, there are additional options. You can use one or both of the following options with your dedicated hosts:
+
+- Span across multiple availability zones. In this case, you are required to have a host group in each of the zones you wish to use.
+- Span across multiple fault domains which are mapped to physical racks.
+
+In either case, you are need to provide the fault domain count for your host group. If you do not want to span fault domains in your group, use a fault domain count of 1.
+
+You can also decide to use both availability zones and fault domains.
+
+In this example, we will create a host group using 1 availability zone and 2 fault domains.
+
+1. Open the Azure portal. If you would like to try the preview for Automatic placement, use this URL: https://aka.ms/vmssadh.
+2. Select Create a resource in the upper left corner.
+3. Search for Host group and then select Host Groups from the results.
+4. In the Host Groups page, select Create.
+5. Select the subscription you would like to use, and then select Create new to create a new resource group.
+6. Type myDedicatedHostsRG as the Name and then select OK.
+7. For Host group name, type myHostGroup.
+8. For Location, select East US.
+9. For Availability Zone, select 1.
+10. For Fault domain count, select 2.
+11. If you used the Automatic placement URL, select this option to automatically assign VMs and scale set instances to an available host in this group.
+12. Select Review + create and then wait for validation.
+13. Once you see the Validation passed message, select Create to create the host group.
+
+It should only take a few moments to create the host group.
+
+#### Create a dedicated host
+
+Now create a dedicated host in the host group. In addition to a name for the host, you are required to provide the SKU for the host. Host SKU captures the supported VM series as well as the hardware generation for your dedicated host.
+
+For more information about the host SKUs and pricing, see [Azure Dedicated Host pricing](https://aka.ms/ADHPricing).
+
+If you set a fault domain count for your host group, you will be asked to specify the fault domain for your host.
+
+1. Select Create a resource in the upper left corner.
+2. Search for Dedicated host and then select Dedicated hosts from the results.
+3. In the Dedicated Hosts page, select Create.
+4. Select the subscription you would like to use.
+5. Select myDedicatedHostsRG as the Resource group.
+6. In Instance details, type myHost for the Name and select East US for the location.
+7. In Hardware profile, select Standard Es3 family - Type 1 for the Size family, select myHostGroup for the Host group and then select 1 for the Fault domain. Leave the defaults for the rest of the fields.
+8. When you are done, select Review + create and wait for validation.
+9. Once you see the Validation passed message, select Create to create the host.
+
+#### Create a VM
+
+1. Choose Create a resource in the upper left corner of the Azure portal.
+2. In the search box above the list of Azure Marketplace resources, search for and select the image you want use, then choose Create.
+3. In the Basics tab, under Project details, make sure the correct subscription is selected and then select myDedicatedHostsRG as the Resource group.
+4. Under Instance details, type myVM for the Virtual machine name and choose East US for your Location.
+5. In Availability options select Availability zone, select 1 from the drop-down.
+6. For the size, select Change size. In the list of available sizes, choose one from the Esv3 series, like Standard E2s v3. You may need to clear the filter in order to see all of the available sizes.
+7. Complete the rest of the fields on the Basics tab as needed.
+8. At the top of the page, select the Advanced tab and in the Host section, select myHostGroup for Host group and myHost for the Host. 
+9. Leave the remaining defaults and then select the Review + create button at the bottom of the page.
+10. When you see the message that validation has passed, select Create.
+
+It will take a few minutes for your VM to be deployed.
+
+#### Create a scale set (preview)
+
+When you deploy a scale set, you specify the host group.
+
+1. Search for Scale set and select Virtual machine scale sets from the list.
+2. Select Add to create a new scale set.
+3. Complete the fields on the Basics tab as you usually would, but make sure you select a VM size that is from the series you chose for your dedicated host, like Standard E2s v3.
+4. On the Advanced tab, for Spreading algorithm select Max spreading.
+5. In Host group, select the host group from the drop-down. If you recently created the group, it might take a minute to get added to the list.
+
+#### Add an existing VM
+
+You can add an exiting VM to a dedicated host, but the VM must first be Stop\Deallocated. Before you move a VM to a dedicated host, make sure that the VM configuration is supported:
+
+- The VM size must be in the same size family as the dedicated host. For example, if your dedicated host is DSv3, then the VM size could be Standard_D4s_v3, but it could not be a Standard_A4_v2.
+- The VM needs to be located in same region as the dedicated host.
+- The VM can't be part of a proximity placement group. Remove the VM from the proximity placement group before moving it to a dedicated host. For more information, see Move a VM out of a proximity placement group
+- The VM can't be in an availability set.
+- If the VM is in an availability zone, it must be the same availability zone as the host group. The availability zone settings for the VM and the host group must match.
+
+Move the VM to a dedicated host using the portal.
+
+1. Open the page for the VM.
+2. Select Stop to stop\deallocate the VM.
+3. Select Configuration from the left menu.
+4. Select a host group and a host from the drop-down menus.
+5. When you are done, select Save at the top of the page.
+6. After the VM has been added to the host, select Overview from the left menu.
+7. At the top of the page, select Start to restart the VM.
 
 ## deploy and configure scale sets
-  - [What are virtual machine scale sets?](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
+
+### [What are virtual machine scale sets?](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview)
+
+Azure virtual machine scale sets let you create and manage a group of load balanced VMs. The number of VM instances can automatically increase or decrease in response to demand or a defined schedule. Scale sets provide high availability to your applications, and allow you to centrally manage, configure, and update a large number of VMs. With virtual machine scale sets, you can build large-scale services for areas such as compute, big data, and container workloads.
+
+#### Why use virtual machine scale sets?
+
+- Easy to create and manage multiple VMs
+  - When you have many VMs that run your application, it's important to maintain a consistent configuration across your environment. For reliable performance of your application, the VM size, disk configuration, and application installs should match across all VMs.
+  - With scale sets, all VM instances are created from the same base OS image and configuration. This approach lets you easily manage hundreds of VMs without additional configuration tasks or network management.
+  - Scale sets support the use of the Azure load balancer for basic layer-4 traffic distribution, and Azure Application Gateway for more advanced layer-7 traffic distribution and TLS termination.
+- Provides high availability and application resiliency
+  - Scale sets are used to run multiple instances of your application. If one of these VM instances has a problem, customers continue to access your application through one of the other VM instances with minimal interruption.
+  - For additional availability, you can use Availability Zones to automatically distribute VM instances in a scale set within a single datacenter or across multiple datacenters.
+- Allows your application to automatically scale as resource demand changes
+  - Customer demand for your application may change throughout the day or week. To match customer demand, scale sets can automatically increase the number of VM instances as application demand increases, then reduce the number of VM instances as demand decreases.
+  - Autoscale also minimizes the number of unnecessary VM instances that run your application when demand is low, while customers continue to receive an acceptable level of performance as demand grows and additional VM instances are automatically added. This ability helps reduce costs and efficiently create Azure resources as required.
+- Works at large-scale
+  - Scale sets support up to 1,000 VM instances. If you create and upload your own custom VM images, the limit is 600 VM instances.
+  - For the best performance with production workloads, use Azure Managed Disks.
+
+#### Differences between virtual machines and scale sets
+
+Scale sets are built from virtual machines. With scale sets, the management and automation layers are provided to run and scale your applications. You could instead manually create and manage individual VMs, or integrate existing tools to build a similar level of automation. The following table outlines the benefits of scale sets compared to manually managing multiple VM instances.
+
+|Scenario	|Manual group of VMs	|Virtual machine scale set|
+|:--|:--|:--|
+|Add additional VM instances	|Manual process to create, configure, and ensure compliance	|Automatically create from central configuration|
+|Traffic balancing and distribution	|Manual process to create and configure Azure load balancer or Application Gateway	|Can automatically create and integrate with Azure load balancer or Application Gateway|
+|High availability and redundancy	|Manually create Availability Set or distribute and track VMs across Availability Zones	|Automatic distribution of VM instances across Availability Zones or Availability Sets|
+|Scaling of VMs	|Manual monitoring and Azure Automation	|Autoscale based on host metrics, in-guest metrics, Application Insights, or schedule|
+
+There is no additional cost to scale sets. You only pay for the underlying compute resources such as the VM instances, load balancer, or Managed Disk storage. The management and automation features, such as autoscale and redundancy, incur no additional charges over the use of VMs.
+
+#### How to monitor your scale sets
+
+Use Azure Monitor for VMs, which has a simple onboarding process and will automate the collection of important CPU, memory, disk, and network performance counters from the VMs in your scale set. It also includes additional monitoring capabilities and pre-defined visualizations that help you focus on the availability and performance of your scale sets.
+
+Enable monitoring for your virtual machine scale set application with Application Insights to collect detailed information about your application including page views, application requests, and exceptions. Further verify the availability of your application by configuring an availability test to simulate user traffic.
+
+#### [Create a VM scale set in the Azure Portal](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/quick-create-portal)
+
+- Create a load balancer
+- Create a virtual machine scale set
+  - Type Scale set in the search box. In the results, under Marketplace, select Virtual machine scale sets. Select Create on the Virtual machine scale sets page, which will open the Create a virtual machine scale set page.
+  - Leave the default value of ScaleSet VMs for Orchestration mode.
+  - Select a marketplace image for Image. In this example, we have chosen Ubuntu Server 18.04 LTS.
+  - On the Networking page, under Load balancing, select Yes to put the scale set instances behind a load balancer.
+  - In Load balancing options, select Azure load balancer.
+  - In Select a load balancer, select myLoadBalancer that you created earlier.
+  - For Select a backend pool, select Create new, type myBackendPool, then select Create.
+
 
 ## configure Azure Disk Encryption
   - [Azure Disk Encryption for Linux VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-overview)
