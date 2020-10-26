@@ -521,7 +521,81 @@ Enable monitoring for your virtual machine scale set application with Applicatio
   - In Select a load balancer, select myLoadBalancer that you created earlier.
   - For Select a backend pool, select Create new, type myBackendPool, then select Create.
 
-
 ## configure Azure Disk Encryption
-  - [Azure Disk Encryption for Linux VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-overview)
-  - [Azure Disk Encryption for Windows VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-overview)
+
+### [Azure Disk Encryption for Linux VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-overview)
+
+Azure Disk Encryption helps protect and safeguard your data to meet your organizational security and compliance commitments. It uses the DM-Crypt feature of Linux to provide volume encryption for the OS and data disks of Azure virtual machines (VMs), and is integrated with Azure Key Vault to help you control and manage the disk encryption keys and secrets.
+
+If you use Azure Security Center, you're alerted if you have VMs that aren't encrypted. The alerts show as High Severity and the recommendation is to encrypt these VMs.
+
+- [Create and encrypt a Linux VM with Azure CLI quickstart](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-cli-quickstart)
+- [Create and encrypt a Linux VM with Azure PowerShell quickstart](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-powershell-quickstart)
+
+#### Supported VMs
+
+Linux VMs are available in a range of sizes. Azure Disk Encryption is not available on Basic, A-series VMs, or on virtual machines that do not meet these minimum memory requirements:
+
+|Virtual machine	|Minimum memory requirement|
+|:--|:--|
+|Linux VMs when only encrypting data volumes	|2 GB|
+|Linux VMs when encrypting both data and OS volumes, and where the root (/) file system usage is 4GB or less	|8 GB|
+|Linux VMs when encrypting both data and OS volumes, and where the root (/) file system usage is greater than 4GB	|The root file system usage * 2. For instance, a 16 GB of root file system usage requires at least 32GB of RAM|
+
+Once the OS disk encryption process is complete on Linux virtual machines, the VM can be configured to run with less memory.
+
+Azure Disk Encryption is also available for VMs with premium storage.
+
+Azure Disk Encryption is not available on Generation 2 VMs and Lsv2-series VMs. For more exceptions, see [Azure Disk Encryption: Unsupported scenarios.](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-linux#unsupported-scenarios)
+
+#### Supported operating systems
+
+Azure Disk Encryption is supported on a subset of the Azure-endorsed Linux distributions, which is itself a subset of all Linux server possible distributions.
+
+#### Encryption key storage requirements
+
+Azure Disk Encryption requires an Azure Key Vault to control and manage disk encryption keys and secrets. Your key vault and VMs must reside in the same Azure region and subscription.
+
+For details, see [Creating and configuring a key vault for Azure Disk Encryption](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-key-vault).
+
+### [Azure Disk Encryption for Windows VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-overview)
+
+Azure Disk Encryption helps protect and safeguard your data to meet your organizational security and compliance commitments. It uses the Bitlocker feature of Windows to provide volume encryption for the OS and data disks of Azure virtual machines (VMs), and is integrated with Azure Key Vault to help you control and manage the disk encryption keys and secrets.
+
+If you use Azure Security Center, you're alerted if you have VMs that aren't encrypted. The alerts show as High Severity and the recommendation is to encrypt these VMs.
+
+- [Create and encrypt a Windows VM with Azure CLI quickstart](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-cli-quickstart)
+- [Create and encrypt a Windows VM with Azure Powershell quickstart](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-powershell-quickstart)
+
+#### Supported VMs
+
+Windows VMs are available in a range of sizes. Azure Disk Encryption is not available on Basic, A-series VMs, or on virtual machines with a less than 2 GB of memory.
+
+Azure Disk Encryption is also available for VMs with premium storage.
+
+Azure Disk Encryption is not available on Generation 2 VMs and Lsv2-series VMs. For more exceptions, see [Azure Disk Encryption: Unsupported scenarios](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-windows#unsupported-scenarios).
+
+#### Supported operating systems
+
+- Windows client: Windows 8 and later.
+- Windows Server: Windows Server 2008 R2 and later.
+
+> Note:
+>
+> Windows Server 2008 R2 requires the .NET Framework 4.5 to be installed for encryption; install it from Windows Update with the optional update Microsoft .NET Framework 4.5.2 for Windows Server 2008 R2 x64-based systems (KB2901983).
+>
+> Windows Server 2012 R2 Core and Windows Server 2016 Core requires the bdehdcfg component to be installed on the VM for encryption.
+
+#### Group Policy requirements
+
+Azure Disk Encryption uses the BitLocker external key protector for Windows VMs. For domain joined VMs, don't push any group policies that enforce TPM protectors. For information about the group policy for "Allow BitLocker without a compatible TPM," see BitLocker Group Policy Reference.
+
+BitLocker policy on domain joined virtual machines with custom group policy must include the following setting: Configure user storage of BitLocker recovery information -> Allow 256-bit recovery key. Azure Disk Encryption will fail when custom group policy settings for BitLocker are incompatible. On machines that didn't have the correct policy setting, apply the new policy, force the new policy to update (gpupdate.exe /force), and then restarting may be required.
+
+Azure Disk Encryption will fail if domain level group policy blocks the AES-CBC algorithm, which is used by BitLocker.
+
+#### Encryption key storage requirements
+
+Azure Disk Encryption requires an Azure Key Vault to control and manage disk encryption keys and secrets. Your key vault and VMs must reside in the same Azure region and subscription.
+
+For details, see [Creating and configuring a key vault for Azure Disk Encryption](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-key-vault).
