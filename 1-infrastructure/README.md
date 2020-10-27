@@ -87,26 +87,26 @@
   - [Azure Disk Encryption for Linux VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-overview)
   - [Azure Disk Encryption for Windows VMs](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-overview)
 
-## Automate deployment and configuration of resources 
+## [Automate deployment and configuration of resources](/1-infrastructure/notes-resource-manager-templates.md)
 
 [Azure Resource Manager - Azure Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/)
 
-- [ ] save a deployment as an Azure Resource Manager template
+- [x] save a deployment as an Azure Resource Manager template
   - [Download the template for a VM](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/download-template)
-- [ ] modify Azure Resource Manager template
+- [x] modify Azure Resource Manager template
   - [Extend Azure Resource Manager template functionality](https://docs.microsoft.com/en-us/azure/architecture/building-blocks/extending-templates)
   - [Azure Resource Manager templates overview](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)
   - [Tutorial: Create and deploy your first Azure Resource Manager template](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-tutorial-create-first-template)
-- [ ] evaluate location of new resources
+- [x] evaluate location of new resources
   - [Conditional deployment in Resource Manager templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/conditional-resource-deployment)
   - [Set resource location in Resource Manager template](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/resource-location)
-- [ ] configure a virtual disk template
+- [x] configure a virtual disk template
   - [Create a VM from a VHD by using the Azure portal](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/create-vm-specialized-portal)
-- [ ] deploy from a template
+- [x] deploy from a template
   - [Download the template for a VM](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/download-template)
-- [ ] manage a template library
+- [x] manage a template library
   - [Azure Resource Manager templates overview](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)
-- [ ] create and execute an automation runbook
+- [x] create and execute an automation runbook
   - [Start a runbook in Azure Automation](https://docs.microsoft.com/en-us/azure/automation/start-runbooks)
 
 ## Implement virtual networking
