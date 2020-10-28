@@ -109,7 +109,7 @@
 - [x] create and execute an automation runbook
   - [Start a runbook in Azure Automation](https://docs.microsoft.com/en-us/azure/automation/start-runbooks)
 
-## Implement virtual networking
+## [Implement virtual networking](/1-infrastructure/notes-virtual-networking.md)
 
 [Azure networking - Azure Docs](https://docs.microsoft.com/en-us/azure/networking/)
 
