@@ -428,25 +428,383 @@ Conditional Access policies can be set to Report-only if you want to see how the
 ## configure fraud alerts
 
 [Reports in Azure Multi-Factor Authentication](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-mfa-reporting)
+
+To review and understand Azure AD Multi-Factor Authentication events, you can use the Azure Active Directory (Azure AD) sign-ins report. This report shows authentication details for events when a user is prompted for multi-factor authentication, and if any Conditional Access policies were in use. For detailed information on the sign-ins report, see the overview of sign-in activity reports in Azure AD.
+
+This article shows you how to view the Azure AD sign-ins report in the Azure portal, and then the MSOnline V1 PowerShell module.
+
+### View the Azure AD sign-ins report
+
+The sign-ins report provides you with information about the usage of managed applications and user sign-in activities, which includes information about multi-factor authentication (MFA) usage. The MFA data gives you insights into how MFA is working in your organization. It lets you answer questions like the following:
+
+- Was the sign-in challenged with MFA?
+- How did the user complete MFA?
+- Why was the user unable to complete MFA?
+- How many users are challenged for MFA?
+- How many users are unable to complete the MFA challenge?
+- What are the common MFA issues end users are running into?
+
+To view the sign-in activity report in the Azure portal, complete the following steps. You can also query data using the reporting API.
+
+1. Sign in to the Azure portal using an account with global administrator permissions.
+2. Search for and select Azure Active Directory, then choose Users from the menu on the left-hand side.
+3. Under Activity from the menu on the left-hand side, select Sign-ins.
+4. A list of sign-in events is shown, including the status. You can select an event to view more details.<br />The Authentication Details or Conditional Access tab of the event details shows you the status code or which policy triggered the MFA prompt.
+
+If available, the authentication is shown, such as text message, Microsoft Authenticator app notification, or phone call.
+
+The following details are shown on the *Authentication Details* window for a sign-in event that show if the MFA request was satisfied or denied:
+
+- If MFA was satisfied, this column provides more information about how MFA was satisfied.
+  - completed in the cloud
+  - has expired due to the policies configured on tenant
+  - registration prompted
+  - satisfied by claim in the token
+  - satisfied by claim provided by external provider
+  - satisfied by strong authentication
+  - skipped as flow exercised was Windows broker logon flow
+  - skipped due to app password
+  - skipped due to location
+  - skipped due to registered device
+  - skipped due to remembered device
+  - successfully completed
+
+- If MFA was denied, this column would provide the reason for denial.
+  - authentication in-progress
+  - duplicate authentication attempt
+  - entered incorrect code too many times
+  - invalid authentication
+  - invalid mobile app verification code
+  - misconfiguration
+  - phone call went to voicemail
+  - phone number has an invalid format
+  - service error
+  - unable to reach the user's phone
+  - unable to send the mobile app notification to the device
+  - unable to send the mobile app notification
+  - user declined the authentication
+  - user did not respond to mobile app notification
+  - user does not have any verification methods registered
+  - user entered incorrect code
+  - user entered incorrect PIN
+  - user hung up the phone call without succeeding the authentication
+  - user is blocked
+  - user never entered the verification code
+  - user not found
+  - verification code already used once
+
 [Configure Azure Multi-Factor Authentication settings](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-mfa-mfasettings)
+
+To customize the end-user experience for Azure AD Multi-Factor Authentication, you can configure options for settings like the account lockout thresholds or fraud alerts and notifications. Some settings are directly in the Azure portal for Azure Active Directory (Azure AD), and some in a separate Azure AD Multi-Factor Authentication portal.
+
+The following Azure AD Multi-Factor Authentication settings are available in the Azure portal:
+
+|Feature	|Description|
+|:--|:--|
+|Account lockout	|Temporarily lock accounts from using Azure AD Multi-Factor Authentication if there are too many denied authentication attempts in a row. This feature only applies to users who enter a PIN to authenticate. (MFA Server)|
+|Block/unblock users	|Block specific users from being able to receive Azure AD Multi-Factor Authentication requests. Any authentication attempts for blocked users are automatically denied. Users remain blocked for 90 days from the time that they are blocked or they're manually unblocked.|
+|Fraud alert	|Configure settings that allow users to report fraudulent verification requests.|
+|Notifications	|Enable notifications of events from MFA Server.|
+|OATH tokens	|Used in cloud-based Azure AD MFA environments to manage OATH tokens for users.|
+|Phone call settings	|Configure settings related to phone calls and greetings for cloud and on-premises environments.|
+|Providers	|This will show any existing authentication providers that you may have associated with your account. New authentication providers may not be created as of September 1, 2018|
+
+![Azure portal - Azure AD Multi-Factor Authentication settings](https://docs.microsoft.com/en-us/azure/active-directory/authentication/media/howto-mfa-mfasettings/multi-factor-authentication-settings-portal.png)
+
+### Account lockout
+
+To prevent repeated MFA attempts as part of an attack, the account lockout settings let you specify how many failed attempts to allow before the account becomes locked out for a period of time. The account lockout settings are only applied when a pin code is entered for the MFA prompt.
+
+The following settings are available:
+
+- Number of MFA denials to trigger account lockout
+- Minutes until account lockout counter is reset
+- Minutes until account is automatically unblocked
+- To configure account lockout settings, complete the following settings:
+
+1. Sign in to the Azure portal as an administrator.
+2. Browse to Azure Active Directory > Security > MFA > Account lockout.
+3. Enter the require values for your environment, then select Save.
+
+### Block and unblock users
+
+If a user's device has been lost or stolen, you can block Azure AD Multi-Factor Authentication attempts for the associated account. Any Azure AD Multi-Factor Authentication attempts for blocked users are automatically denied. Users remain blocked for 90 days from the time that they are blocked.
+
+#### Block a user
+
+To block a user, complete the following steps:
+
+1. Browse to Azure Active Directory > Security > MFA > Block/unblock users.
+2. Select Add to block a user.
+3. Select the Replication Group, then choose Azure Default.<br />Enter the username for the blocked user as username\@domain.com, then provide a comment in the Reason field.
+4. When ready, select OK to block the user.
+
+#### Unblock a user
+
+To unblock a user, complete the following steps:
+
+1. Browse to Azure Active Directory > Security > MFA > Block/unblock users.
+2. In the Action column next to the desired user, select Unblock.
+3. Enter a comment in the Reason for unblocking field.
+4. When ready, select OK to unblock the user.
+
+### Fraud alert
+
+The fraud alert feature lets users report fraudulent attempts to access their resources. When an unknown and suspicious MFA prompt is received, users can report the fraud attempt using the Microsoft Authenticator app or through their phone.
+
+The following fraud alert configuration options are available:
+
+- **Automatically block users who report fraud**: If a user reports fraud, the Azure AD MFA authentication attempts for the user account are blocked for 90 days or until an administrator unblocks their account. An administrator can review sign-ins by using the sign-in report, and take appropriate action to prevent future fraud. An administrator can then unblock the user's account.
+
+- **Code to report fraud during initial greeting**: When users receive a phone call to perform multi-factor authentication, they normally press # to confirm their sign-in. To report fraud, the user enters a code before pressing #. This code is 0 by default, but you can customize it.
+
+> Note
+>
+> The default voice greetings from Microsoft instruct users to press 0# to submit a fraud alert. If you want to use a code other than 0, record and upload your own custom voice greetings with appropriate instructions for your users.
+
+To enable and configure fraud alerts, complete the following steps:
+
+1. Browse to Azure Active Directory > Security > MFA > Fraud alert.
+2. Set the Allow users to submit fraud alerts setting to On.
+3. Configure the Automatically block users who report fraud or Code to report fraud during initial greeting setting as desired.
+4. When ready, select Save.
+
+### View fraud reports
+
+Select Azure Active Directory > Sign-ins > Authentication Details. The fraud report is now part of the standard Azure AD Sign-ins report and it will show in the "Result Detail" as MFA denied, Fraud Code Entered.
+
+### Notifications
+
+Email notifications can be configured when users report fraud alerts. These notifications are typically sent to identity administrators, as the user's account credentials are likely compromised. The following example shows what a fraud alert notification email looks like:
+
+![Example fraud alert notification email](https://docs.microsoft.com/en-us/azure/active-directory/authentication/media/howto-mfa-mfasettings/multi-factor-authentication-fraud-alert-email.png)
+
+To configure fraud alert notifications, complete the following settings:
+
+1. Browse to Azure Active Directory > Security > Multi-Factor Authentication > Notifications.
+2. Enter the email address to add into the next box.
+3. To remove an existing email address, select the ... option next to the desired email address, then select Delete.
+4. When ready, select Save.
+
+### Remember Multi-Factor Authentication
+
+The remember Multi-Factor Authentication feature lets users can bypass subsequent verifications for a specified number of days, after they've successfully signed-in to a device by using Multi-Factor Authentication. To enhance usability and minimize the number of times a user has to perform MFA on the same device, select a duration of 90 days or more.
+
+> Important
+>
+> If an account or device is compromised, remembering Multi-Factor Authentication for trusted devices can affect security. If a corporate account becomes compromised or a trusted device is lost or stolen, you should Revoke MFA Sessions.
+>
+> The restore action revokes the trusted status from all devices, and the user is required to perform multi-factor authentication again. You can also instruct your users to restore Multi-Factor Authentication on their own devices as noted in Manage your settings for multi-factor authentication.
+
+#### How the feature works
+
+The remember Multi-Factor Authentication feature sets a persistent cookie on the browser when a user selects the Don't ask again for X days option at sign-in. The user isn't prompted again for Multi-Factor Authentication from that same browser until the cookie expires. If the user opens a different browser on the same device or clears their cookies, they're prompted again to verify.
+
+The Don't ask again for X days option isn't shown on non-browser applications, regardless of whether the app supports modern authentication. These apps use refresh tokens that provide new access tokens every hour. When a refresh token is validated, Azure AD checks that the last multi-factor authentication occurred within the specified number of days.
+
+The feature reduces the number of authentications on web apps, which normally prompt every time. The feature can increase the number of authentications for modern authentication clients that normally prompt every 90 days, if a lower duration is configured. May also increase the number of authentications when combined with Conditional Access policies.
+
+> Important
+>
+> The remember Multi-Factor Authentication feature isn't compatible with the keep me signed in feature of AD FS, when users perform multi-factor authentication for AD FS through Azure Multi-Factor Authentication Server or a third-party multi-factor authentication solution.
+>
+> If your users select keep me signed in on AD FS and also mark their device as trusted for Multi-Factor Authentication, the user isn't automatically verified after the remember multi-factor authentication number of days expires. Azure AD requests a fresh multi-factor authentication, but AD FS returns a token with the original Multi-Factor Authentication claim and date, rather than performing multi-factor authentication again. This reaction sets off a verification loop between Azure AD and AD FS.
+>
+> The remember Multi-Factor Authentication feature is not compatible with B2B users and will not be visible for B2B users when signing into the invited tenants.
+
+#### Enable remember Multi-Factor Authentication
+
+To enable and configure the option for users to remember their MFA status and bypass prompts, complete the following steps:
+
+1. In the Azure portal, search for and select Azure Active Directory, then choose Users.
+2. Select Multi-Factor Authentication.
+3. Under Multi-Factor Authentication, select service settings.
+4. On the Service Settings page, under remember multi-factor authentication, select the Allow users to remember multi-factor authentication on devices they trust option.
+5. Set the number of days to allow trusted devices to bypass multi-factor authentication. For the optimal user experience, extend the duration to 90 or more days.
+6. Select Save.
+
+#### Mark a device as trusted
+
+After you enable the remember Multi-Factor Authentication feature, users can mark a device as trusted when they sign in by selecting the option for Don't ask again.
 
 ## configure bypass options
 
 [Configure Azure Multi-Factor Authentication settings](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-mfa-mfasettings)
+
+Use Trusted IPs and Devices, and Named Locations
 
 ## configure Trusted Ips
 
 [Quickstart: Configure named locations in Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/reports-monitoring/quickstart-configure-named-locations)
 [What is the location condition in Azure Active Directory Conditional Access?](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/location-condition)
 
+### Trusted IPs
+
+The Trusted IPs feature of Azure AD Multi-Factor Authentication bypasses multi-factor authentication prompts for users who sign in from a defined IP address range. You can set trusted IP ranges for your on-premises environments to when users are in one of those locations, there's no Azure AD Multi-Factor Authentication prompt.
+
+> Note
+>
+> The trusted IPs can include private IP ranges only when you use MFA Server. For cloud-based Azure AD Multi-Factor Authentication, you can only use public IP address ranges.
+>
+> IPv6 ranges are only supported in the Named location (preview) interface.
+
+If your organization deploys the NPS extension to provide MFA to on-premises applications note the source IP address will always appear to be the NPS server the authentication attempt flows through.
+
+|Azure AD tenant type	|Trusted IP feature options|
+|:--|:--|
+|Managed	|**Specific range of IP addresses**: Administrators specify a range of IP addresses that can bypass multi-factor authentication for users who sign in from the company intranet. A maximum of 50 trusted IP ranges can be configured.
+|Federated	|**All Federated Users**: All federated users who sign in from inside of the organization can bypass multi-factor authentication. The users bypass verification by using a claim that is issued by Active Directory Federation Services (AD FS).<br />**Specific range of IP addresses**: Administrators specify a range of IP addresses that can bypass multi-factor authentication for users who sign in from the company intranet.|
+
+Trusted IP bypass works only from inside of the company intranet. If you select the All Federated Users option and a user signs in from outside the company intranet, the user has to authenticate by using multi-factor authentication. The process is the same even if the user presents an AD FS claim.
+
+#### End-user experience inside of corpnet
+
+When the trusted IPs feature is disabled, multi-factor authentication is required for browser flows. App passwords are required for older rich client applications.
+
+When trusted IPs are used, multi-factor authentication isn't required for browser flows. App passwords aren't required for older rich client applications, provided that the user hasn't created an app password. After an app password is in use, the password remains required.
+
+#### End-user experience outside corpnet
+
+Regardless of whether trusted IP are defined, multi-factor authentication is required for browser flows. App passwords are required for older rich client applications.
+
+#### Enable named locations by using Conditional Access
+
+You can use Conditional Access rules to define named locations using the following steps:
+
+1. In the Azure portal, search for and select Azure Active Directory, then browse to Security > Conditional Access > Named locations.
+2. Select New location.
+3. Enter a name for the location.
+4. Select Mark as trusted location.
+5. Enter the IP Range in CIDR notation for your environment, such as 40.77.182.32/27.
+6. Select Create.
+
+### Enable the Trusted IPs feature by using Conditional Access
+
+To enable trusted IPs using Conditional Access policies, complete the following steps:
+
+1. In the Azure portal, search for and select Azure Active Directory, then browse to Security > Conditional Access > Named locations.
+2. Select Configure MFA trusted IPs.
+3. On the Service Settings page, under Trusted IPs, choose from any of the following two options:
+  - **For requests from federated users originating from my intranet**: To choose this option, select the check box. All federated users who sign in from the corporate network bypass multi-factor authentication by using a claim that is issued by AD FS. Ensure that AD FS has a rule to add the intranet claim to the appropriate traffic. If the rule does not exist, create the following rule in AD FS:<br /><br />c:[Type== "http://schemas.microsoft.com/ws/2012/01/insidecorporatenetwork"] => issue(claim = c);
+  - **For requests from a specific range of public IPs**: To choose this option, enter the IP addresses in the text box by using CIDR notation.
+    - For IP addresses that are in the range xxx.xxx.xxx.1 through xxx.xxx.xxx.254, use notation like xxx.xxx.xxx.0/24.
+    - For a single IP address, use notation like xxx.xxx.xxx.xxx/32.
+    - Enter up to 50 IP address ranges. Users who sign in from these IP addresses bypass multi-factor authentication.
+4. Select Save.
+
+### Enable the Trusted IPs feature by using service settings
+
+If you don't want to use Conditional Access policies to enable trusted IPs, you can configure the service settings for Azure AD Multi-Factor Authentication using the following steps:
+
+1. In the Azure portal, search for and select Azure Active Directory, then choose Users.
+2. Select Multi-Factor Authentication.
+3. Under Multi-Factor Authentication, select service settings.
+4. On the Service Settings page, under Trusted IPs, choose one (or both) of the following two options:
+  - **For requests from federated users on my intranet**: To choose this option, select the check box. All federated users who sign in from the corporate network bypass multi-factor authentication by using a claim that is issued by AD FS. Ensure that AD FS has a rule to add the intranet claim to the appropriate traffic. If the rule does not exist, create the following rule in AD FS:<br /><br />c:[Type== "http://schemas.microsoft.com/ws/2012/01/insidecorporatenetwork"] => issue(claim = c);
+  - **For requests from a specified range of IP address subnets**: To choose this option, enter the IP addresses in the text box by using CIDR notation.
+    - For IP addresses that are in the range xxx.xxx.xxx.1 through xxx.xxx.xxx.254, use notation like xxx.xxx.xxx.0/24.
+    - For a single IP address, use notation like xxx.xxx.xxx.xxx/32.
+    - Enter up to 50 IP address ranges. Users who sign in from these IP addresses bypass multi-factor authentication.
+5. Select Save.
+
 ## configure verification methods
 
 [Change your two-factor verification method and settings](https://docs.microsoft.com/en-us/azure/active-directory/user-help/multi-factor-authentication-end-user-manage-settings)
 [What is the Additional verification page?](https://docs.microsoft.com/en-us/azure/active-directory/user-help/multi-factor-authentication-end-user-first-time)
 
+### Verification methods
+
+You can choose the verification methods that are available for your users in the service settings portal. When your users enroll their accounts for Azure AD Multi-Factor Authentication, they choose their preferred verification method from the options that you have enabled. Guidance for the user enrollment process is provided in Set up my account for multi-factor authentication.
+
+The following verification methods are available:
+
+|Method	|Description|
+|:--|:--|
+|Call to phone	|Places an automated voice call. The user answers the call and presses # in the phone keypad to authenticate. The phone number is not synchronized to on-premises Active Directory.|
+|Text message to phone	|Sends a text message that contains a verification code. The user is prompted to enter the verification code into the sign-in interface. This process is called one-way SMS. Two-way SMS means that the user must text back a particular code. Two-way SMS is deprecated and not supported after November 14, 2018. Administrators should enable another method for users who previously used two-way SMS.|
+|Notification through mobile app	|Sends a push notification to your phone or registered device. The user views the notification and selects Verify to complete verification. The Microsoft Authenticator app is available for Windows Phone, Android, and iOS.|
+|Verification code from mobile app or hardware token	|The Microsoft Authenticator app generates a new OATH verification code every 30 seconds. The user enters the verification code into the sign-in interface. The Microsoft Authenticator app is available for Windows Phone, Android, and iOS.|
+
+For more information, see What authentication and verification methods are available in Azure AD?
+
+#### Enable and disable verification methods
+
+To enable or disable verification methods, complete the following steps:
+
+1. In the Azure portal, search for and select Azure Active Directory, then choose Users.
+2. Select Multi-Factor Authentication.
+3. Under Multi-Factor Authentication, select service settings.
+4. On the Service Settings page, under verification options, select/unselect the methods to provide to your users.
+5. Click Save.
+
 ## implement and manage guest accounts
 
 [What is guest user access in Azure Active Directory B2B?](https://docs.microsoft.com/en-us/azure/active-directory/b2b/what-is-b2b)
+
+Azure Active Directory (Azure AD) business-to-business (B2B) collaboration is a feature within External Identities that lets you invite guest users to collaborate with your organization. With B2B collaboration, you can securely share your company's applications and services with guest users from any other organization, while maintaining control over your own corporate data. Work safely and securely with external partners, large or small, even if they don't have Azure AD or an IT department. A simple invitation and redemption process lets partners use their own credentials to access your company's resources. Developers can use Azure AD business-to-business APIs to customize the invitation process or write applications like self-service sign-up portals. For licensing and pricing information related to guest users, refer to Azure Active Directory pricing.
+
+### Collaborate with any partner using their identities
+
+With Azure AD B2B, the partner uses their own identity management solution, so there is no external administrative overhead for your organization. Guest users sign in to your apps and services with their own work, school, or social identities.
+
+- The partner uses their own identities and credentials; Azure AD is not required.
+- You don't need to manage external accounts or passwords.
+- You don't need to sync accounts or manage account lifecycles.
+
+### Easily invite guest users from the Azure AD portal
+
+As an administrator, you can easily add guest users to your organization in the Azure portal.
+
+1. Create a new guest user in Azure AD, similar to how you'd add a new user.
+2. Assign guest users to apps or groups.
+3. Send an invitation email that contains a redemption link, or send a direct link to an app you want to share.
+
+![Screenshot showing the New Guest User invitation entry page](https://docs.microsoft.com/en-us/azure/active-directory/external-identities/media/what-is-b2b/add-a-b2b-user-to-azure-portal.png)
+
+- Guest users follow a few simple redemption steps to sign in.
+
+![Screenshot showing the Review permissions page](https://docs.microsoft.com/en-us/azure/active-directory/external-identities/media/what-is-b2b/consentscreen.png)
+
+### Use policies to securely share your apps and services
+
+You can use authorization policies to protect your corporate content. Conditional Access policies, such as multi-factor authentication, can be enforced:
+
+- At the tenant level.
+- At the application level.
+- For specific guest users to protect corporate apps and data.
+
+![Screenshot showing the Conditional Access option](https://docs.microsoft.com/en-us/azure/active-directory/external-identities/media/what-is-b2b/tutorial-mfa-policy-2.png)
+
+### Let application and group owners manage their own guest users
+
+You can delegate guest user management to application owners so that they can add guest users directly to any application they want to share, whether it's a Microsoft application or not.
+
+- Administrators set up self-service app and group management.
+- Non-administrators use their Access Panel to add guest users to applications or groups.
+
+![Screenshot showing the Access panel for a guest user](https://docs.microsoft.com/en-us/azure/active-directory/external-identities/media/what-is-b2b/access-panel-manage-app.png)
+
+### Customize the onboarding experience for B2B guest users
+
+Bring your external partners on board in ways customized to your organization's needs.
+
+- Use Azure AD entitlement management to configure policies that manage access for external users.
+- Use the B2B collaboration invitation APIs to customize your onboarding experiences.
+
+### Integrate with Identity providers
+
+Azure AD supports external identity providers like Facebook, Microsoft accounts, Google, or enterprise identity providers. You can set up federation with identity providers so your external users can sign in with their existing social or enterprise accounts instead of creating a new account just for your application. Learn more about identity providers for External Identities.
+
+![Screenshot showing the Identity providers page](https://docs.microsoft.com/en-us/azure/active-directory/external-identities/media/what-is-b2b/identity-providers.png)
+
+### Create a self-service sign-up user flow (Preview)
+
+With a self-service sign-up user flow, you can create a sign-up experience for external users who want to access your apps. As part of the sign-up flow, you can provide options for different social or enterprise identity providers, and collect information about the user. Learn about self-service sign-up and how to set it up.
+
+You can also use API connectors to integrate your self-service sign-up user flows with external cloud systems. You can connect with custom approval workflows, perform identity verification, validate user-provided information, and more.
+
+![Screenshot showing the user flows page](https://docs.microsoft.com/en-us/azure/active-directory/external-identities/media/what-is-b2b/self-service-sign-up-user-flow-overview.png)
+
 [Manage guest access with Azure AD access reviews](https://docs.microsoft.com/en-us/azure/active-directory/governance/manage-guest-access-with-access-reviews)
 [Quickstart: Add guest users to your directory in the Azure portal](https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-add-guest-users-portal)
 
