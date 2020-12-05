@@ -154,7 +154,7 @@
 - [x] manage multiple directories
   - [Understand how multiple Azure Active Directory tenants interact](https://docs.microsoft.com/en-us/azure/active-directory/users-groups-roles/licensing-directory-independence)
 
-## Implement and manage hybrid identities
+## [Implement and manage hybrid identities](/1-infrastructure/notes-hybrid-identities.md)
 
 [What is Azure AD Connect - Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/hybrid/whatis-azure-ad-connect)
 
