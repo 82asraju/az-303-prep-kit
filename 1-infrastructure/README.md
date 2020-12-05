@@ -119,7 +119,7 @@
   - [Virtual network peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview)
   - [Create, change, or delete a virtual network peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering)
 
-## Implement Azure Active Directory
+## [Implement Azure Active Directory](/1-infrastructure/notes-implement-azure-ad.md)
 
 [Azure Active Directory - Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/)
 
