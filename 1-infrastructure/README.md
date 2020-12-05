@@ -123,18 +123,18 @@
 
 [Azure Active Directory - Azure Docs](https://docs.microsoft.com/en-us/azure/active-directory/)
 
-- [ ]	add custom domains
+- [x]	add custom domains
   - [Add your custom domain name using the Azure Active Directory portal](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/add-custom-domain)
-- [ ] configure Azure AD Identity Protection
+- [x] configure Azure AD Identity Protection
   - [What is Azure Active Directory Identity Protection?](https://docs.microsoft.com/en-us/azure/active-directory/identity-protection/overview-identity-protection)
-- [ ] implement self-service password reset
+- [x] implement self-service password reset
   - [Plan an Azure Active Directory self-service password reset](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-sspr-deployment)
   - [How it works: Azure AD self-service password reset](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-sspr-howitworks)
   - [Licensing requirements for Azure AD self-service password reset](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-sspr-licensing)
-- [ ] implement Conditional Access including MFA
+- [x] implement Conditional Access including MFA
   - [Conditional Access: Require MFA for all users](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa)
   - [Conditional Access: Risk-based Conditional Access](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-risk)
-- [ ] configure user accounts for MFA
+- [x] configure user accounts for MFA
   - [Tutorial: Secure user sign-in events with Azure Multi-Factor Authentication](https://docs.microsoft.com/en-us/azure/active-directory/authentication/tutorial-enable-azure-mfa)
 - [ ] configure fraud alerts
   - [Reports in Azure Multi-Factor Authentication](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-mfa-reporting)

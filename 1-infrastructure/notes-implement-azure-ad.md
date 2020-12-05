@@ -233,6 +233,39 @@ You can use pre-built reports on Azure portal to measure the SSPR performance. I
 Audit logs for registration and password reset are available for 30 days. If security auditing within your corporation requires longer retention, the logs need to be exported and consumed into a SIEM tool such as Azure Sentinel, Splunk, or ArcSight.
 
 [How it works: Azure AD self-service password reset](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-sspr-howitworks)
+
+### Authentication methods
+
+When a user is enabled for SSPR, they must register at least one authentication method. We highly recommend that you choose two or more authentication methods so that your users have more flexibility in case they're unable to access one method when they need it. For more information, see [What are authentication methods?](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-authentication-methods).
+
+The following authentication methods are available for SSPR:
+
+- Mobile app notification
+- Mobile app code
+- Email
+- Mobile phone
+- Office phone
+- Security questions
+
+Users can only reset their password if they have registered an authentication method that the administrator has enabled.
+
+> Warning
+>
+> Accounts assigned Azure administrator roles are required to use methods as defined in the section Administrator reset policy differences.
+
+### Number of authentication methods required
+
+You can configure the number of the available authentication methods a user must provide to reset or unlock their password. This value can be set to either one or two.
+
+Users can, and should, register multiple authentication methods. Again, it's highly recommended that users register two or more authentication methods so they have more flexibility in case they're unable to access one method when they need it.
+
+### Write back passwords to your on-premises directory
+
+You can enable password writeback using the Azure portal. You can also temporarily disable password writeback without having to reconfigure Azure AD Connect.
+
+- If the option is set to Yes, then writeback is enabled. Federated, pass-through authentication, or password hash synchronized users are able to reset their passwords.
+- If the option is set to No, then writeback is disabled. Federated, pass-through authentication, or password hash synchronized users aren't able to reset their passwords.
+
 [Licensing requirements for Azure AD self-service password reset](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-sspr-licensing)
 
 ### Compare editions and features
@@ -254,11 +287,143 @@ Azure AD supports group-based licensing. Administrators can assign licenses in b
 ## implement Conditional Access including MFA
 
 [Conditional Access: Require MFA for all users](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa)
+
+As Alex Weinert, the Directory of Identity Security at Microsoft, mentions in his blog post Your Pa$$word doesn't matter:
+
+> Your password doesn't matter, but MFA does! Based on our studies, your account is more than 99.9% less likely to be compromised if you use MFA.
+
+The guidance in this article will help your organization create a balanced MFA policy for your environment.
+
+### User exclusions
+
+Conditional Access policies are powerful tools, we recommend excluding the following accounts from your policy:
+
+- **Emergency access** or **break-glass** accounts to prevent tenant-wide account lockout. In the unlikely scenario all administrators are locked out of your tenant, your emergency-access administrative account can be used to log into the tenant take steps to recover access.
+  - More information can be found in the article, Manage emergency access accounts in Azure AD.
+- **Service accounts** and **service principals**, such as the Azure AD Connect Sync Account. Service accounts are non-interactive accounts that are not tied to any particular user. They are normally used by back-end services allowing programmatic access to applications, but are also used to sign in to systems for administrative purposes. Service accounts like these should be excluded since MFA can't be completed programmatically. Calls made by service principals are not blocked by Conditional Access.
+  - If your organization has these accounts in use in scripts or code, consider replacing them with managed identities. As a temporary workaround, you can exclude these specific accounts from the baseline policy.
+
+### Application exclusions
+
+Organizations may have many cloud applications in use. Not all of those applications may require equal security. For example, the payroll and attendance applications may require MFA but the cafeteria probably doesn't. Administrators can choose to exclude specific applications from their policy.
+
+### Create a Conditional Access policy
+
+The following steps will help create a Conditional Access policy to require All users to perform multi-factor authentication.
+
+1. Sign in to the Azure portal as a global administrator, security administrator, or Conditional Access administrator.
+2. Browse to Azure Active Directory > Security > Conditional Access.
+3. Select New policy.
+4. Give your policy a name. We recommend that organizations create a meaningful standard for the names of their policies.
+5. Under Assignments, select Users and groups
+  - Under Include, select All users
+  - Under Exclude, select Users and groups and choose your organization's emergency access or break-glass accounts.
+  - Select Done.
+6. Under Cloud apps or actions > Include, select All cloud apps.
+  - Under Exclude, select any applications that do not require multi-factor authentication.
+7. Under Conditions > Client apps (Preview), under Select the client apps this policy will apply to leave all defaults selected and select Done.
+8. Under Access controls > Grant, select Grant access, Require multi-factor authentication, and select Select.
+9. Confirm your settings and set Enable policy to On.
+10. Select Create to create to enable your policy.
+
+### Named locations
+
+Organizations may choose to incorporate known network locations known as Named locations to their Conditional Access policies. These named locations may include trusted IPv4 networks like those for a main office location. For more information about configuring named locations, see the article What is the location condition in Azure Active Directory Conditional Access?
+
+In the example policy above, an organization may choose to not require multi-factor authentication if accessing a cloud app from their corporate network. In this case they could add the following configuration to the policy:
+
+1. Under Assignments, select Conditions > Locations.
+  - Configure Yes.
+  - Include Any location.
+  - Exclude All trusted locations.
+  - Select Done.
+2. Select Done.
+3. Save your policy changes.
+
 [Conditional Access: Risk-based Conditional Access](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-risk)
+
+Most users have a normal behavior that can be tracked, when they fall outside of this norm it could be risky to allow them to just sign in. You may want to block that user or maybe just ask them to perform multi-factor authentication to prove that they are really who they say they are.
+
+A sign-in risk represents the probability that a given authentication request isn't authorized by the identity owner. Organizations with Azure AD Premium P2 licenses can create Conditional Access policies incorporating Azure AD Identity Protection sign-in risk detections.
+
+There are two locations where this policy may be assigned. Organizations should choose one of the following options to enable a sign-in risk-based Conditional Access policy requiring a secure password change.
+
+### Enable with Conditional Access policy
+
+1. Sign in to the Azure portal as a global administrator, security administrator, or Conditional Access administrator.
+2. Browse to Azure Active Directory > Security > Conditional Access.
+3. Select New policy.
+4. Give your policy a name. We recommend that organizations create a meaningful standard for the names of their policies.
+5. Under Assignments, select Users and groups.
+  - Under Include, select All users.
+  - Under Exclude, select Users and groups and choose your organization's emergency access or break-glass accounts.
+  - Select Done.
+6. Under Cloud apps or actions > Include, select All cloud apps.
+7. Under Conditions > Sign-in risk, set Configure to Yes. Under Select the sign-in risk level this policy will apply to
+  - Select High and Medium.
+  - Select Done.
+8. Under Access controls > Grant, select Grant access, Require multi-factor authentication, and select Select.
+9. Confirm your settings and set Enable policy to On.
+10. Select Create to create to enable your policy.
+
+### Enable through Identity Protection
+
+1. Sign in to the Azure portal.
+2. Select All services, then browse to Azure AD Identity Protection.
+3. Select Sign-in risk policy.
+4. Under Assignments, select Users.
+  - Under Include, select All users.
+  - Under Exclude, select Select excluded users, choose your organization's emergency access or break-glass accounts, and select Select.
+  - Select Done.
+5. Under Conditions, select Sign-in risk, then choose Medium and above.
+  - Select Select, then Done.
+6. Under Controls > Access, choose Allow access, and then select Require multi-factor authentication.
+  - Select Select.
+7. Set Enforce Policy to On.
+8. Select Save.
 
 ## configure user accounts for MFA
 
 [Tutorial: Secure user sign-in events with Azure Multi-Factor Authentication](https://docs.microsoft.com/en-us/azure/active-directory/authentication/tutorial-enable-azure-mfa)
+
+### Create a Conditional Access policy
+
+The recommended way to enable and use Azure AD Multi-Factor Authentication is with Conditional Access policies. Conditional Access lets you create and define policies that react to sign in events and request additional actions before a user is granted access to an application or service.
+
+![Overview diagram of how Conditional Access works to secure the sign-in process](https://docs.microsoft.com/en-us/azure/active-directory/authentication/media/tutorial-enable-azure-mfa/conditional-access-overview.png)
+
+Conditional Access policies can be granular and specific, with the goal to empower users to be productive wherever and whenever, but also protect your organization. In this tutorial, let's create a basic Conditional Access policy to prompt for MFA when a user signs in to the Azure portal. In a later tutorial in this series, you configure Azure AD Multi-Factor Authentication using a risk-based Conditional Access policy.
+
+First, create a Conditional Access policy and assign your test group of users as follows:
+
+1. Sign in to the Azure portal using an account with global administrator permissions.
+2. Search for and select Azure Active Directory, then choose Security from the menu on the left-hand side.
+3. Select Conditional Access, then choose + New policy.
+4. Enter a name for the policy, such as MFA Pilot.
+5. Under Assignments, choose Users and groups, then the Select users and groups radio button.
+6. Check the box for Users and groups, then Select to browse the available Azure AD users and groups.
+7. Browse for and select your Azure AD group, such as MFA-Test-Group, then choose Select.
+8. To apply the Conditional Access policy for the group, select Done.
+
+### Configure the conditions for multi-factor authentication
+
+With the Conditional Access policy created and a test group of users assigned, now define the cloud apps or actions that trigger the policy. These cloud apps or actions are the scenarios you decide require additional processing, such as to prompt for MFA. For example, you could decide that access to a financial application or use of management tools requires as an additional verification prompt.
+
+For this tutorial, configure the Conditional Access policy to require MFA when a user signs in to the Azure portal.
+
+1. Select Cloud apps or actions. You can choose to apply the Conditional Access policy to All cloud apps or Select apps. To provide flexibility, you can also exclude certain apps from the policy.<br />For this tutorial, on the Include page, choose the Select apps radio button.
+2. Choose Select, then browse the list of available sign-in events that can be used.<br />For this tutorial, choose Microsoft Azure Management so the policy applies to sign-in events to the Azure portal.
+3. To apply the select apps, choose Select, then Done.
+
+Access controls let you define the requirements for a user to be granted access, such as needing an approved client app or using a device that's Hybrid Azure AD joined. In this tutorial, configure the access controls to require MFA during a sign-in event to the Azure portal.
+
+1. Under Access controls, choose Grant, then make sure the Grant access radio button is selected.
+2. Check the box for Require multi-factor authentication, then choose Select.
+
+Conditional Access policies can be set to Report-only if you want to see how the configuration would impact users, or Off if you don't want to the use policy right now. As a test group of users was targeted for this tutorial, lets enable the policy and then test Azure AD Multi-Factor Authentication.
+
+1. Set the Enable policy toggle to On.
+2. To apply the Conditional Access policy, select Create.
 
 ## configure fraud alerts
 
