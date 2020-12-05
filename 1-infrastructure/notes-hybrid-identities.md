@@ -58,7 +58,7 @@ Options where you can still use Express:
 - If you do not want to synchronize all OUs, you can still use Express and on the last page, unselect **Start the synchronization process...\***. Then run the installation wizard again and change the OUs in configuration options and enable scheduled sync.
 - You want to enable one of the features in Azure AD Premium, such as Password writeback. First go through express to get the initial installation completed. Then run the installation wizard again and change the configuration options.
 
-Custom
+### Custom
 
 The customized path allows many more options than express. It should be used in all cases where the configuration described in previous section for express is not representative for your organization.
 
@@ -271,15 +271,15 @@ After completion of the wizard, Seamless SSO is enabled on your tenant.
 
 In this article, we address frequently asked questions about Azure Active Directory Seamless Single Sign-On (Seamless SSO). Keep checking back for new content.
 
-Q: What sign-in methods do Seamless SSO work with
+**Q: What sign-in methods do Seamless SSO work with**
 
 Seamless SSO can be combined with either the Password Hash Synchronization or Pass-through Authentication sign-in methods. However this feature cannot be used with Active Directory Federation Services (ADFS).
 
-Q: Is Seamless SSO a free feature?
+**Q: Is Seamless SSO a free feature?**
 
 Seamless SSO is a free feature and you don't need any paid editions of Azure AD to use it.
 
-Q: Is Seamless SSO available in the Microsoft Azure Germany cloud and the Microsoft Azure Government cloud?
+**Q: Is Seamless SSO available in the Microsoft Azure Germany cloud and the Microsoft Azure Government cloud?**
 
 Seamless SSO is available for the Azure Government cloud. For details, view Hybrid Identity Considerations for Azure Government.
 
