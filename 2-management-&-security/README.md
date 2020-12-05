@@ -80,7 +80,7 @@
   - [What is Azure Blueprints?](https://docs.microsoft.com/en-us/azure/governance/blueprints/overview)
   - [Quickstart: Define and assign a blueprint in the portal](https://docs.microsoft.com/en-us/azure/governance/blueprints/create-blueprint-portal)
 
-## Manage security for applications
+## [Manage security for applications](/2-management-&-security/notes-security-for-apps.md)
 
 - [ ] implement and configure KeyVault
   - [What is Azure Key Vault?](https://docs.microsoft.com/en-us/azure/key-vault/key-vault-overview)
