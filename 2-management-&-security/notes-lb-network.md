@@ -428,18 +428,308 @@ Allows you to geo-distribute your application around the world.
 
 ### Links
 
-- [What is Traffic Manager?](https://docs.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview)
-- [Quickstart: Create a Traffic Manager profile using the Azure portal](https://docs.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile)
+[What is Traffic Manager?](https://docs.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview)
+
+Azure Traffic Manager is a DNS-based traffic load balancer that enables you to distribute traffic optimally to services across global Azure regions, while providing high availability and responsiveness.
+
+Traffic Manager uses DNS to direct client requests to the most appropriate service endpoint based on a traffic-routing method and the health of the endpoints. An endpoint is any Internet-facing service hosted inside or outside of Azure. Traffic Manager provides a range of traffic-routing methods and endpoint monitoring options to suit different application needs and automatic failover models. Traffic Manager is resilient to failure, including the failure of an entire Azure region.
+
+> Note
+>
+> Azure provides a suite of fully managed load-balancing solutions for your scenarios. If you are looking for Transport Layer Security (TLS) protocol termination ("SSL offload") or per-HTTP/HTTPS request, application-layer processing, review Application Gateway. If you are looking for regional load balancing, review Load Balancer. Your end-to-end scenarios might benefit from combining these solutions as needed.
+>
+> For an Azure load-balancing options comparison, see Overview of load-balancing options in Azure.
+
+Traffic Manager offers the following features:
+
+### Increase application availability
+
+Traffic Manager delivers high availability for your critical applications by monitoring your endpoints and providing automatic failover when an endpoint goes down.
+
+### Improve application performance
+
+Azure allows you to run cloud services or websites in datacenters located around the world. Traffic Manager improves application responsiveness by directing traffic to the endpoint with the lowest network latency for the client.
+
+### Perform service maintenance without downtime
+
+You can perform planned maintenance operations on your applications without downtime. Traffic Manager can direct traffic to alternative endpoints while the maintenance is in progress.
+
+### Combine hybrid applications
+
+Traffic Manager supports external, non-Azure endpoints enabling it to be used with hybrid cloud and on-premises deployments, including the "burst-to-cloud," "migrate-to-cloud," and "failover-to-cloud" scenarios.
+
+### Distribute traffic for complex deployments
+
+Using nested Traffic Manager profiles, multiple traffic-routing methods can be combined to create sophisticated and flexible rules to scale to the needs of larger, more complex deployments.
+
+[Quickstart: Create a Traffic Manager profile using the Azure portal](https://docs.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile)
+
+This quickstart describes how to create a Traffic Manager profile that delivers high availability for your web application.
+
+In this quickstart, you'll read about two instances of a web application. Each of them is running in a different Azure region. You'll create a Traffic Manager profile based on endpoint priority. The profile directs user traffic to the primary site running the web application. Traffic Manager continuously monitors the web application. If the primary site is unavailable, it provides automatic failover to the backup site.
+
+For this quickstart, you'll need two instances of a web application deployed in two different Azure regions (East US and West Europe). Each will serve as primary and failover endpoints for Traffic Manager.
+
+### Create a Traffic Manager profile
+
+Create a Traffic Manager profile that directs user traffic based on endpoint priority.
+
+### Add Traffic Manager endpoints
+
+Add the website in the East US as primary endpoint to route all the user traffic. Add the website in West Europe as a failover endpoint. When the primary endpoint is unavailable, traffic automatically routes to the failover endpoint.
 
 ## implement Network Security Groups and Application Security Groups
 
 ### Links
 
-- [Security groups](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview)
-- [Create, change, or delete a network security group](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group)
+[Security groups](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview)
+
+You can use an Azure network security group to filter network traffic to and from Azure resources in an Azure virtual network. A network security group contains security rules that allow or deny inbound network traffic to, or outbound network traffic from, several types of Azure resources. For each rule, you can specify source and destination, port, and protocol.
+
+This article describes properties of a network security group rule, the default security rules that are applied, and the rule properties that you can modify to create an augmented security rule.
+
+### Security rules
+
+A network security group contains zero, or as many rules as desired, within Azure subscription limits. Each rule specifies the following properties:
+
+|Property	|Explanation|
+|:--|:--|
+|Name	|A unique name within the network security group.|
+|Priority	|A number between 100 and 4096. Rules are processed in priority order, with lower numbers processed before higher numbers, because lower numbers have higher priority. Once traffic matches a rule, processing stops. As a result, any rules that exist with lower priorities (higher numbers) that have the same attributes as rules with higher priorities are not processed.|
+|Source or destination	|Any, or an individual IP address, classless inter-domain routing (CIDR) block (10.0.0.0/24, for example), service tag, or application security group. If you specify an address for an Azure resource, specify the private IP address assigned to the resource. Network security groups are processed after Azure translates a public IP address to a private IP address for inbound traffic, and before Azure translates a private IP address to a public IP address for outbound traffic. . Specifying a range, a service tag, or application security group, enables you to create fewer security rules. The ability to specify multiple individual IP addresses and ranges (you cannot specify multiple service tags or application groups) in a rule is referred to as augmented security rules. Augmented security rules can only be created in network security groups created through the Resource Manager deployment model. You cannot specify multiple IP addresses and IP address ranges in network security groups created through the classic deployment model.|
+|Protocol	|TCP, UDP, ICMP or Any.|
+|Direction	|Whether the rule applies to inbound, or outbound traffic.|
+|Port range	|You can specify an individual or range of ports. For example, you could specify 80 or 10000-10005. Specifying ranges enables you to create fewer security rules. Augmented security rules can only be created in network security groups created through the Resource Manager deployment model. You cannot specify multiple ports or port ranges in the same security rule in network security groups created through the classic deployment model.|
+|Action	|Allow or deny|
+
+Network security group security rules are evaluated by priority using the 5-tuple information (source, source port, destination, destination port, and protocol) to allow or deny the traffic. You may not create two security rules with the same priority and direction. A flow record is created for existing connections. Communication is allowed or denied based on the connection state of the flow record. The flow record allows a network security group to be stateful. If you specify an outbound security rule to any address over port 80, for example, it's not necessary to specify an inbound security rule for the response to the outbound traffic. You only need to specify an inbound security rule if communication is initiated externally. The opposite is also true. If inbound traffic is allowed over a port, it's not necessary to specify an outbound security rule to respond to traffic over the port.
+
+Existing connections may not be interrupted when you remove a security rule that enabled the flow. Traffic flows are interrupted when connections are stopped and no traffic is flowing in either direction, for at least a few minutes.
+
+There are limits to the number of security rules you can create in a network security group. For details, see [Azure limits](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits?toc=/azure/virtual-network/toc.json#azure-resource-manager-virtual-networking-limits).
+
+### [Default security rules](https://docs.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview#default-security-rules)
+
+Azure creates the following default rules in each network security group that you create (click link)
+
+In the Source and Destination columns, *VirtualNetwork*, *AzureLoadBalancer*, and *Internet* are service tags, rather than IP addresses. In the protocol column, Any encompasses TCP, UDP, and ICMP. When creating a rule, you can specify TCP, UDP, ICMP or Any. 0.0.0.0/0 in the Source and Destination columns represents all addresses. Clients like Azure portal, Azure CLI, or PowerShell can use * or any for this expression.
+
+You cannot remove the default rules, but you can override them by creating rules with higher priorities.
+
+### Augmented security rules
+
+Augmented security rules simplify security definition for virtual networks, allowing you to define larger and complex network security policies, with fewer rules. You can combine multiple ports and multiple explicit IP addresses and ranges into a single, easily understood security rule. Use augmented rules in the source, destination, and port fields of a rule. To simplify maintenance of your security rule definition, combine augmented security rules with service tags or application security groups. There are limits to the number of addresses, ranges, and ports that you can specify in a rule. For details, see Azure limits.
+
+### Service tags
+
+A service tag represents a group of IP address prefixes from a given Azure service. It helps to minimize the complexity of frequent updates on network security rules.
+
+For more information, see [Azure service tags](https://docs.microsoft.com/en-us/azure/virtual-network/service-tags-overview). For an example on how to use the Storage service tag to restrict network access, see Restrict network access to PaaS resources.
+
+### Application security groups
+
+Application security groups enable you to configure network security as a natural extension of an application's structure, allowing you to group virtual machines and define network security policies based on those groups. You can reuse your security policy at scale without manual maintenance of explicit IP addresses. To learn more, see [Application security groups](https://docs.microsoft.com/en-us/azure/virtual-network/application-security-groups).
+
+Application security groups enable you to configure network security as a natural extension of an application's structure, allowing you to group virtual machines and define network security policies based on those groups. You can reuse your security policy at scale without manual maintenance of explicit IP addresses. The platform handles the complexity of explicit IP addresses and multiple rule sets, allowing you to focus on your business logic. To better understand application security groups, consider the following example:
+
+![Application security groups](https://docs.microsoft.com/en-us/azure/virtual-network/media/security-groups/application-security-groups.png)
+
+In the previous picture, NIC1 and NIC2 are members of the AsgWeb application security group. NIC3 is a member of the AsgLogic application security group. NIC4 is a member of the AsgDb application security group. Though each network interface in this example is a member of only one network security group, a network interface can be a member of multiple application security groups, up to the Azure limits. None of the network interfaces have an associated network security group. NSG1 is associated to both subnets and contains the following rules:
+
+#### Allow-HTTP-Inbound-Internet
+This rule is needed to allow traffic from the internet to the web servers. Because inbound traffic from the internet is denied by the DenyAllInbound default security rule, no additional rule is needed for the AsgLogic or AsgDb application security groups.
+
+|Priority	|Source	|Source ports	|Destination	|Destination ports	|Protocol	|Access|
+|:--|:--|:--|:--|:--|:--|:--|
+|100	|Internet|	*|	AsgWeb|	80|	TCP	|Allow|
+
+#### Deny-Database-All
+
+Because the AllowVNetInBound default security rule allows all communication between resources in the same virtual network, this rule is needed to deny traffic from all resources.
+
+|Priority	|Source	|Source ports|	Destination	|Destination ports	|Protocol	|Access|
+|:--|:--|:--|:--|:--|:--|:--|
+|120	|*	|*	|AsgDb	|1433	|Any	|Deny|
+
+#### Allow-Database-BusinessLogic
+
+This rule allows traffic from the AsgLogic application security group to the AsgDb application security group. The priority for this rule is higher than the priority for the Deny-Database-All rule. As a result, this rule is processed before the Deny-Database-All rule, so traffic from the AsgLogic application security group is allowed, whereas all other traffic is blocked.
+
+|Priority	|Source|	Source ports	|Destination	|Destination ports	|Protocol	|Access|
+|:--|:--|:--|:--|:--|:--|:--|
+|110	|AsgLogic	|*	|AsgDb	|1433	|TCP|	Allow|
+
+The rules that specify an application security group as the source or destination are only applied to the network interfaces that are members of the application security group. If the network interface is not a member of an application security group, the rule is not applied to the network interface, even though the network security group is associated to the subnet.
+
+Application security groups have the following constraints:
+
+- There are limits to the number of application security groups you can have in a subscription, as well as other limits related to application security groups. For details, see Azure limits.
+- You can specify one application security group as the source and destination in a security rule. You cannot specify multiple application security groups in the source or destination.
+- All network interfaces assigned to an application security group have to exist in the same virtual network that the first network interface assigned to the application security group is in. For example, if the first network interface assigned to an application security group named AsgWeb is in the virtual network named VNet1, then all subsequent network interfaces assigned to ASGWeb must exist in VNet1. You cannot add network interfaces from different virtual networks to the same application security group.
+- If you specify an application security group as the source and destination in a security rule, the network interfaces in both application security groups must exist in the same virtual network. For example, if AsgLogic contained network interfaces from VNet1, and AsgDb contained network interfaces from VNet2, you could not assign AsgLogic as the source and AsgDb as the destination in a rule. All network interfaces for both the source and destination application security groups need to exist in the same virtual network.
+
+> Tip
+>
+> To minimize the number of security rules you need, and the need to change the rules, plan out the application security groups you need and create rules using service tags or application security groups, rather than individual IP addresses, or ranges of IP addresses, whenever possible.
+
+[Create, change, or delete a network security group](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group)
+
+### Work with network security groups
+
+You can create, view all, view details of, change, and delete a network security group. You can also associate or dissociate a network security group from a network interface or subnet.
+
+### [Create a network security group](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group#create-a-network-security-group)
+
+### View all network security groups
+
+Go to the Azure portal to view your network security groups. Search for and select Network security groups. The list of network security groups appears for your subscription.
+
+### Change a network security group
+
+1. Go to the Azure portal to view your network security groups. Search for and select Network security groups.
+2. Select the name of the network security group you want to change.
+
+The most common changes are to add a security rule, remove a rule, and associate or dissociate a network security group to or from a subnet or network interface.
+
+### Associate or dissociate a network security group to or from a subnet or network interface
+
+To associate a network security group to, or dissociate a network security group from a network interface, see Associate a network security group to, or dissociate a network security group from a network interface. To associate a network security group to, or dissociate a network security group from a subnet, see Change subnet settings.
+
+### Delete a network security group
+
+If a network security group is associated to any subnets or network interfaces, it can't be deleted. Dissociate a network security group from all subnets and network interfaces before attempting to delete it.
+
+1. Go to the Azure portal to view your network security groups. Search for and select Network security groups.
+2. Select the name of the network security group you want to delete.
+3. In the network security group's toolbar, select Delete. Then select Yes in the confirmation dialog box.
+
+### Work with security rules
+
+A network security group contains zero or more security rules. You can create, view all, view details of, change, and delete a security rule.
+
+### [Create a security rule](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group#create-a-security-rule)
+
+### View all security rules
+
+A network security group contains zero or more rules. To learn more about the information listed when viewing rules, see Network security group overview.
+
+1. Go to the Azure portal to view the rules of a network security group. Search for and select Network security groups.
+2. Select the name of the network security group that you want to view the rules for.
+3. In the network security group's menu bar, choose Inbound security rules or Outbound security rules.
+
+The list contains any rules you've created and the network security group's [default security rules](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview#default-security-rules).
+
+### Work with application security groups
+
+An application security group contains zero or more network interfaces. To learn more, see application security groups. All network interfaces in an application security group must exist in the same virtual network. To learn how to add a network interface to an application security group, see Add a network interface to an application security group.
+
+### [Create an application security group](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group#create-an-application-security-group)
+
+### Permissions
+
+To do tasks on network security groups, security rules, and application security groups, your account must be assigned to the Network contributor role or to a Custom role that's assigned the appropriate permissions as listed in the following tables:
+
+### Network security group
+
+|Action	|Name|
+|:--|:--|
+|Microsoft.Network/networkSecurityGroups/read	|Get network security group|
+|Microsoft.Network/networkSecurityGroups/write	|Create or update network security group|
+|Microsoft.Network/networkSecurityGroups/delete	|Delete network security group|
+|Microsoft.Network/networkSecurityGroups/join/action	|Associate a network security group to a subnet or network interface|
+
+### Network security group rule
+
+|Action	|Name|
+|:--|:--|
+|Microsoft.Network/networkSecurityGroups/securityRules/read	|Get rule|
+|Microsoft.Network/networkSecurityGroups/securityRules/write	|Create or update rule|
+|Microsoft.Network/networkSecurityGroups/securityRules/delete|	Delete rule|
+
+### Application security group
+
+|Action	|Name|
+|:--|:--|
+|Microsoft.Network/applicationSecurityGroups/joinIpConfiguration/action	|Join an IP configuration to an application security group|
+|Microsoft.Network/applicationSecurityGroups/joinNetworkSecurityRule/action	|Join a security rule to an application security group|
+|Microsoft.Network/applicationSecurityGroups/read	|Get an application security group|
+|Microsoft.Network/applicationSecurityGroups/write	|Create or update an application security group|
+|Microsoft.Network/applicationSecurityGroups/delete|	Delete an application security group|
 
 ## implement Bastion
 
 ### Links
 
-- [Create an Azure Bastion host](https://docs.microsoft.com/en-us/azure/bastion/bastion-create-host-portal)
+[What is Azure Bastion?](https://docs.microsoft.com/en-us/azure/bastion/bastion-overview)
+
+Azure Bastion is a service you deploy that lets you connect to a virtual machine using your browser and the Azure portal. The Azure Bastion service is a fully platform-managed PaaS service that you provision inside your virtual network. It provides secure and seamless RDP/SSH connectivity to your virtual machines directly from the Azure portal over TLS. When you connect via Azure Bastion, your virtual machines do not need a public IP address, agent, or special client software.
+
+Bastion provides secure RDP and SSH connectivity to all of the VMs in the virtual network in which it is provisioned. Using Azure Bastion protects your virtual machines from exposing RDP/SSH ports to the outside world, while still providing secure access using RDP/SSH.
+
+### Architecture
+
+Azure Bastion deployment is per virtual network, not per subscription/account or virtual machine. Once you provision an Azure Bastion service in your virtual network, the RDP/SSH experience is available to all your VMs in the same virtual network.
+
+RDP and SSH are some of the fundamental means through which you can connect to your workloads running in Azure. Exposing RDP/SSH ports over the Internet isn't desired and is seen as a significant threat surface. This is often due to protocol vulnerabilities. To contain this threat surface, you can deploy bastion hosts (also known as jump-servers) at the public side of your perimeter network. Bastion host servers are designed and configured to withstand attacks. Bastion servers also provide RDP and SSH connectivity to the workloads sitting behind the bastion, as well as further inside the network.
+
+![Azure Bastion Architecture](https://docs.microsoft.com/en-us/azure/bastion/media/bastion-overview/architecture.png)
+
+This figure shows the architecture of an Azure Bastion deployment. In this diagram:
+
+- The Bastion host is deployed in the virtual network.
+- The user connects to the Azure portal using any HTML5 browser.
+- The user selects the virtual machine to connect to.
+- With a single click, the RDP/SSH session opens in the browser.
+- No public IP is required on the Azure VM.
+
+### Key features
+
+The following features are available:
+
+- **RDP and SSH directly in Azure portal**: You can directly get to the RDP and SSH session directly in the Azure portal using a single click seamless experience.
+- **Remote Session over TLS and firewall traversal for RDP/SSH**: Azure Bastion uses an HTML5 based web client that is automatically streamed to your local device, so that you get your RDP/SSH session over TLS on port 443 enabling you to traverse corporate firewalls securely.
+- **No Public IP required on the Azure VM**: Azure Bastion opens the RDP/SSH connection to your Azure virtual machine using private IP on your VM. You don't need a public IP on your virtual machine.
+- **No hassle of managing NSGs**: Azure Bastion is a fully managed platform PaaS service from Azure that is hardened internally to provide you secure RDP/SSH connectivity. You don't need to apply any NSGs on Azure Bastion subnet. Because Azure Bastion connects to your virtual machines over private IP, you can configure your NSGs to allow RDP/SSH from Azure Bastion only. This removes the hassle of managing NSGs each time you need to securely connect to your virtual machines.
+- **Protection against port scanning**: Because you do not need to expose your virtual machines to public Internet, your VMs are protected against port scanning by rogue and malicious users located outside your virtual network.
+- **Protect against zero-day exploits. Hardening in one place only**: Azure Bastion is a fully platform-managed PaaS service. Because it sits at the perimeter of your virtual network, you don’t need to worry about hardening each of the virtual machines in your virtual network. The Azure platform protects against zero-day exploits by keeping the Azure Bastion hardened and always up to date for you.
+
+
+[Create an Azure Bastion host](https://docs.microsoft.com/en-us/azure/bastion/bastion-create-host-portal)
+
+This tutorial shows you how to connect to a virtual machine through your browser using Azure Bastion and the Azure portal. In the Azure portal, you deploy Bastion to your virtual network. After deploying Bastion, you connect to a VM via its private IP address using the Azure portal. Your VM does not need a public IP address or special software. Once the service is provisioned, the RDP/SSH experience is available to all of the virtual machines in the same virtual network. For more information about Azure Bastion, see [What is Azure Bastion?](https://docs.microsoft.com/en-us/azure/bastion/bastion-overview).
+
+### Prerequisites
+
+- A virtual network.
+- A Windows virtual machine in the virtual network.
+- The following required roles:
+  - Reader role on the virtual machine.
+  - Reader role on the NIC with private IP of the virtual machine.
+  - Reader role on the Azure Bastion resource.
+- Ports: To connect to the Windows VM, you must have the following ports open on your Windows VM:
+  - Inbound ports: RDP (3389)
+
+### Create a bastion host
+
+This section helps you create the bastion object in your VNet. This is required in order to create a secure connection to a VM in the VNet.
+
+1. From the Home page, select + Create a resource.
+2. On the New page, in the Search box, type Bastion, then select Enter to get to the search results. On the result for Bastion, verify that the publisher is Microsoft.
+3. Select Create.
+4. On the Create a Bastion page, configure a new Bastion resource.
+  - Subscription: The Azure subscription you want to use to create a new Bastion resource.
+  - Resource Group: The Azure resource group in which the new Bastion resource will be created. If you don't have an existing resource group, you can create a new one.
+  - Name: The name of the new Bastion resource.
+  - Region: The Azure public region that the resource will be created in.
+  - Virtual network: The virtual network in which the Bastion resource will be created. You can create a new virtual network in the portal during this process, or use an existing virtual network. If you are using an existing virtual network, make sure the existing virtual network has enough free address space to accommodate the Bastion subnet requirements. If you don't see your virtual network from the dropdown, make sure you have selected the correct Resource Group.
+  - Subnet: Once you create or select a virtual network, the subnet field will appear. The subnet in your virtual network where the new Bastion host will be deployed. The subnet will be dedicated to the Bastion host. Select Manage subnet configuration and create the Azure Bastion subnet. Select +Subnet and create a subnet using the following guidelines:
+    - The subnet must be named AzureBastionSubnet.
+    - The subnet must be at least /27 or larger.
+    
+    You don't need to fill out additional fields. Select OK and then, at the top of the page, select Create a Bastion to return to the Bastion configuration page.
+  - Public IP address: The public IP of the Bastion resource on which RDP/SSH will be accessed (over port 443). Create a new public IP. The public IP address must be in the same region as the Bastion resource you are creating. This is IP address does not have anything to do with any of the VMs that you want to connect to. It's the public IP for the Bastion host resource.
+  - Public IP address name: The name of the public IP address resource. For this tutorial, you can leave the default.
+  - Public IP address SKU: This setting is prepopulated by default to Standard. Azure Bastion uses/supports only the Standard Public IP SKU.
+  - Assignment: This setting is prepopulated by default to Static.
+5. When you have finished specifying the settings, select Review + Create. This validates the values. Once validation passes, you can create the Bastion resource.
+6. Select Create.

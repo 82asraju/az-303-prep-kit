@@ -36,13 +36,13 @@
 - [x] implement the Azure Front Door Service
   - [What is Azure Front Door Service?](https://docs.microsoft.com/en-us/azure/frontdoor/front-door-overview)
   - [Quickstart: Create a Front Door for a highly available global web application](https://docs.microsoft.com/en-us/azure/frontdoor/quickstart-create-front-door)
-- [ ] implement Azure Traffic Manager
+- [x] implement Azure Traffic Manager
   - [What is Traffic Manager?](https://docs.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview)
   - [Quickstart: Create a Traffic Manager profile using the Azure portal](https://docs.microsoft.com/en-us/azure/traffic-manager/quickstart-create-traffic-manager-profile)
-- [ ] implement Network Security Groups and Application Security Groups
+- [x] implement Network Security Groups and Application Security Groups
   - [Security groups](https://docs.microsoft.com/en-us/azure/virtual-network/security-overview)
   - [Create, change, or delete a network security group](https://docs.microsoft.com/en-us/azure/virtual-network/manage-network-security-group)
-- [ ] implement Bastion
+- [x] implement Bastion
   - [Create an Azure Bastion host](https://docs.microsoft.com/en-us/azure/bastion/bastion-create-host-portal)
 
 ## [Implement and manage Azure governance solutions](/2-management-&-security/notes-governance.md)
