@@ -41,3 +41,7 @@
 |CMK|Customer-Managed Keys|
 |VSS|Volume Shadow Copy Service|
 |SSPR|Self-Service Password Reset|
+
+## Limits
+
+[Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits)
