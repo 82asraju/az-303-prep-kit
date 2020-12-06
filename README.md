@@ -26,12 +26,7 @@ To put this in perspective, here is a random distribtion of questions based on w
 | Implement Solutions for Apps | 6-9 | (10-15%) |
 | Implement and Manage Data Platforms  | 6-9 | (10-15%) |
 
-See below announcement from exam page
-
-> Exam AZ-300: Microsoft Azure Architect Technologies
-> The content of this exam was updated on __December 4, 2019.__ Please download the Skills measured document below to see what changed.
-
-Each section of the exam material has its own README file linked below with links to Azure documentation, Plularsight videos (free), labs and other useful info.
+Each section of the exam material has its own README file linked below with links to Azure documentation, Pluralsight videos (free), labs and other useful info.
 There is also [Exercises folder](/Exercises) with a few scripts (mostly Azure CLI) to deploy resources on Azure quicker.
 
 * [ ] [Implement and Monitor an Azure Infrastructure (50-55%)](/1-infrastructure/README.md)
@@ -46,7 +41,7 @@ There is also [Exercises folder](/Exercises) with a few scripts (mostly Azure CL
 
 Best resource is to practice yourself what you learin in the portal, especially in the area of networking, virtual machines and active directory. Most of the resources listed below do not go deep enough into details and only way to understand the niuances of each topic is to practice it until "aha" moment is achieved.
 
-1. [Plularsight Courses](https://app.pluralsight.com/paths/certificate/microsoft-azure-architect-technologies-az-300)
+1. [Pluralsight Courses](https://app.pluralsight.com/paths/certificate/microsoft-azure-architect-technologies-az-300)
 
 2. [Udemy "AZ-300 Azure Architecture Technologies Certification Exam" by Scott Duffy](https://www.udemy.com/course/70534-azure/)
 
