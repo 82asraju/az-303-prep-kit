@@ -41,6 +41,7 @@
 |CMK|Customer-Managed Keys|
 |VSS|Volume Shadow Copy Service|
 |SSPR|Self-Service Password Reset|
+|SIEM|Security Information and Event Management|
 
 ## Limits
 

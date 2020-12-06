@@ -18,6 +18,8 @@ Availability zones expand the level of control you have to maintain the availabi
 
 Each Availability Zone has a distinct power source, network, and cooling. By architecting your solutions to use replicated VMs in zones, you can protect your apps and data from the loss of a datacenter. If one zone is compromised, then replicated apps and data are instantly available in another zone.
 
+![Availability Zones](https://docs.microsoft.com/en-us/azure/virtual-machines/media/virtual-machines-common-regions-and-availability/three-zones-per-region.png)
+
 ### Fault domains
 
 **A fault domain is a logical group of underlying hardware that share a common power source and network switch, similar to a rack within an on-premises datacenter.**
@@ -27,6 +29,12 @@ Each Availability Zone has a distinct power source, network, and cooling. By arc
 **An update domain is a logical group of underlying hardware that can undergo maintenance or be rebooted at the same time.**
 
 This approach ensures that at least one instance of your application always remains running as the Azure platform undergoes periodic maintenance. The order of update domains being rebooted may not proceed sequentially during maintenance, but only one update domain is rebooted at a time.
+
+![Fault domains](https://docs.microsoft.com/en-us/azure/virtual-machines/media/virtual-machines-common-manage-availability/md-fd-updated.png)
+
+VMs within an availability set are also automatically distributed across update domains.
+
+![Availability sets](https://docs.microsoft.com/en-us/azure/virtual-machines/media/virtual-machines-common-manage-availability/ud-fd-configuration.png)
 
 ### Virtual Machines Scale Sets
 
