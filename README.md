@@ -59,6 +59,10 @@ Best resource is to practice yourself what you learin in the portal, especially 
 
 [Glossary](/glossary.md)
 
+## Key Notes
+
+[Key Notes](/keynotes.md)
+
 ## Exam preparation tips
 
 ### #1: Understand exam structure
