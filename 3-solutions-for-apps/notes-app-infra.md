@@ -655,19 +655,94 @@ By default, all client requests to the app's production URL (`http://<app_name>.
 
 ## implement Logic Apps
 
+[Overview – What is Azure Logic Apps?](https://docs.microsoft.com/en-us/azure/logic-apps/logic-apps-overview)
+
+Azure Logic Apps is a cloud service that helps you schedule, automate, and orchestrate tasks, business processes, and workflows when you need to integrate apps, data, systems, and services across enterprises or organizations. Logic Apps simplifies how you design and build scalable solutions for app integration, data integration, system integration, enterprise application integration (EAI), and business-to-business (B2B) communication, whether in the cloud, on premises, or both.
+
+For example, here are just a few workloads you can automate with logic apps:
+
+- Process and route orders across on-premises systems and cloud services.
+- Send email notifications with Office 365 when events happen in various systems, apps, and services.
+- Move uploaded files from an SFTP or FTP server to Azure Storage.
+- Monitor tweets for a specific subject, analyze the sentiment, and create alerts or tasks for items that need review.
+
+### How do logic apps work?
+
+Every logic app workflow starts with a trigger, which fires when a specific event happens, or when new available data meets specific criteria. Many triggers provided by the connectors in Logic Apps include basic scheduling capabilities so that you can set up how regularly your workloads run. For more complex scheduling or advanced recurrences, you can use a Recurrence trigger as the first step in any workflow. Learn more about schedule-based workflows.
+
+Each time that the trigger fires, the Logic Apps engine creates a logic app instance that runs the actions in the workflow. These actions can also include data conversions and workflow controls, such as conditional statements, switch statements, loops, and branching. For example, this logic app starts with a Dynamics 365 trigger with the built-in criteria "When a record is updated". If the trigger detects an event that matches this criteria, the trigger fires and runs the workflow's actions. Here, these actions include XML transformation, data updates, decision branching, and email notifications.
+
+![Logic Apps Designer - example logic app](https://docs.microsoft.com/en-us/azure/logic-apps/media/logic-apps-overview/azure-logic-apps-designer.png)
+
+You can build your logic apps visually with the Logic Apps Designer, which is available in the Azure portal through your browser and in Visual Studio. For more custom logic apps, you can create or edit logic app definitions in JavaScript Object Notation (JSON) by working in the "code view" editor. You can also use Azure PowerShell commands and Azure Resource Manager templates for select tasks. Logic apps deploy and run in the cloud on Azure. For a more detailed introduction, watch this video: Use Azure Enterprise Integration Services to run cloud apps at scale
+
+### Access resources inside Azure virtual networks
+
+Logic apps can access secured resources, such as virtual machines (VMs) and other systems or services, that are inside an Azure virtual network when you create an integration service environment (ISE). An ISE is a dedicated instance of the Logic Apps service that uses dedicated resources and runs separately from the "global" multi-tenant Logic Apps service.
+
+### Pay only for what you use
+
+Logic Apps uses consumption-based pricing and metering unless you have logic apps previously created with App Service plans.
+
+Learn more about Logic Apps with these introductory videos:
+
+- [Integration with Logic Apps - Go from zero to hero](https://channel9.msdn.com/Events/Build/2017/C9R17)
+- [Enterprise integration with Microsoft Azure Logic Apps](https://channel9.msdn.com/Events/Ignite/Microsoft-Ignite-Orlando-2017/BRK2188)
+- [Building advanced business processes with Logic Apps](https://channel9.msdn.com/Events/Ignite/Microsoft-Ignite-Orlando-2017/BRK3179)
+
+### How does Logic Apps differ from Functions, WebJobs, and Power Automate?
+
+All these services help you "glue" and connect disparate systems together. Each service has their advantages and benefits, so combining their capabilities is the best way to quickly build a scalable, full-featured integration system. For more information, see Choose between Logic Apps, Functions, WebJobs, and Power Automate.
+
+### Key terms
+
+- **Workflow**: Visualize, design, build, automate, and deploy business processes as series of steps.
+- **Managed connectors**: Your logic apps need access to data, services, and systems. You can use prebuilt Microsoft-managed connectors that are designed to connect, access, and work with your data. See Connectors for Azure Logic Apps.
+- **Triggers**: Many Microsoft-managed connectors provide triggers that fire when events or new data meet specified conditions. For example, an event might be getting an email or detecting changes in your Azure Storage account. Each time the trigger fires, the Logic Apps engine creates a new logic app instance that runs the workflow.
+- **Actions**: Actions are all the steps that happen after the trigger. Each action usually maps to an operation that's defined by a managed connector, custom API, or custom connector.
+- **Enterprise Integration Pack**: For more advanced integration scenarios, Logic Apps includes capabilities from BizTalk Server. The Enterprise Integration Pack provides connectors that help logic apps easily perform validation, transformation, and more.
+
 ### Links
 
-  - [Overview – What is Azure Logic Apps?](https://docs.microsoft.com/en-us/azure/logic-apps/logic-apps-overview)
-  - [Quickstart: Create your first workflow by using Azure Logic Apps – Azure portal](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow)
-  - [Quickstart: Create automated tasks, processes, and workflows with Azure Logic Apps – Visual Studio](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-logic-apps-with-visual-studio)
-  - [Quickstart: Create and manage logic app workflow definitions by using Visual Studio Code](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-logic-apps-visual-studio-code)
+- [Quickstart: Create your first workflow by using Azure Logic Apps – Azure portal](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow)
+- [Quickstart: Create automated tasks, processes, and workflows with Azure Logic Apps – Visual Studio](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-logic-apps-with-visual-studio)
+- [Quickstart: Create and manage logic app workflow definitions by using Visual Studio Code](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-logic-apps-visual-studio-code)
   
 ## implement Azure Functions
 
+[An introduction to Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-overview)
+
+Azure Functions is a serverless solution that allows you to write less code, maintain less infrastructure, and save on costs. Instead of worrying about deploying and maintaining servers, the cloud infrastructure provides all the up-to-date servers needed to keep your applications running.
+
+You focus on the pieces of code that matter most to you, and Azure Functions handles the rest.
+
+### Scenarios
+
+In many cases, a function integrates with an array of cloud services to provide feature-rich implementations.
+
+The following are a common, *but by no means exhaustive*, set of scenarios for Azure Functions.
+
+|If you want to...	|then...|
+|:--|:--|
+|**Build a web API**	|Implement an endpoint for your web applications using the HTTP trigger|
+|**Process file uploads**	|Run code when a file is uploaded or changed in blob storage|
+|**Build a serverless workflow**	|Chain a series of functions together using durable functions|
+|**Respond to database changes**	|Run custom logic when a document is created or updated in Cosmos DB|
+|**Run scheduled tasks**	|Execute code at set times|
+|**Create reliable message queue systems**|	Process message queues using Queue Storage, Service Bus, or Event Hubs|
+|**Analyze IoT data streams**	|Collect and process data from IoT devices|
+|**Process data in real time**	|Use Functions and SignalR to respond to data in the moment|
+
+As you build your functions, you have the following options and resources available:
+
+- **Use your preferred language**: Write functions in C#, Java, JavaScript, PowerShell, or Python, or use a custom handler to use virtually any other language.
+- **Automate deployment**: From a tools-based approach to using external pipelines, there's a myriad of deployment options available.
+- **Troubleshoot a function**: Use monitoring tools and testing strategies to gain insights into your apps.
+- **Flexible pricing options**: With the Consumption plan, you only pay while your functions are running, while the Premium and App Service plans offer features for specialized needs.
+
 ### Links
 
-  - [An introduction to Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-overview)
-  - [Azure Functions triggers and bindings concepts](https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings)
-  - [Azure Functions trigger and binding example](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-example)
-  - [Azure Functions HTTP triggers and bindings overview](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook)
-  - [What are Durable Functions?](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview)
+- [Azure Functions triggers and bindings concepts](https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings)
+- [Azure Functions trigger and binding example](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-example)
+- [Azure Functions HTTP triggers and bindings overview](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook)
+- [What are Durable Functions?](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview)
