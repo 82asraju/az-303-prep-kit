@@ -221,8 +221,68 @@ The following limits apply when you use Azure Resource Manager and Azure resourc
 You can exceed some template limits by using a nested template.
 
 ## assign RBAC roles
-  - [Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
-  https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
+
+[Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
+
+Azure role-based access control (Azure RBAC) is the authorization system you use to manage access to Azure resources. To grant access, you assign roles to users, groups, service principals, or managed identities at a particular scope. This article describes how to assign roles using the Azure portal.
+
+If you need to assign administrator roles in Azure Active Directory, see View and assign administrator roles in Azure Active Directory.
+
+### Prerequisites
+
+To add or remove role assignments, you must have:
+
+`Microsoft.Authorization/roleAssignments/write` and `Microsoft.Authorization/roleAssignments/delete` permissions, such as User Access Administrator or Owner
+
+### Access control (IAM)
+
+Access control (IAM) is the page that you typically use to assign roles to grant access to Azure resources. It's also known as identity and access management and appears in several locations in the Azure portal. The following shows an example of the Access control (IAM) page for a subscription.
+
+To be the most effective with the Access control (IAM) page, it helps to follow these steps to assign a role.
+
+1. Determine who needs access. You can assign a role to a user, group, service principal, or managed identity.
+2. Find the appropriate role. Permissions are grouped together into roles. You can select from a list of several Azure built-in roles or you can use your own custom roles.
+3. Identify the needed scope. Azure provides four levels of scope: management group, subscription, resource group, and resource. For more information about scope, see Understand scope.
+4. Perform the steps in one of the following sections to assign a role.
+
+### Add a role assignment
+
+In Azure RBAC, to grant access to an Azure resource, you add a role assignment. Follow these steps to assign a role.
+
+1. In the Azure portal, click All services and then select the scope that you want to grant access to. For example, you can select Management groups, Subscriptions, Resource groups, or a resource.
+2. Click the specific resource for that scope.
+3. Click Access control (IAM).
+4. Click the Role assignments tab to view the role assignments at this scope.
+5. Click Add > Add role assignment.
+6. In the Role drop-down list, select a role such as Virtual Machine Contributor.
+7. In the Select list, select a user, group, service principal, or managed identity. If you don't see the security principal in the list, you can type in the Select box to search the directory for display names, email addresses, and object identifiers.
+8. Click Save to assign the role.
+   
+   After a few moments, the security principal is assigned the role at the selected scope.
+
+### Assign a user as an administrator of a subscription
+
+To make a user an administrator of an Azure subscription, assign them the Owner role at the subscription scope. The Owner role gives the user full access to all resources in the subscription, including the permission to grant access to others. These steps are the same as any other role assignment.
+
+### Add a role assignment for a managed identity (Preview)
+
+You can add role assignments for a managed identity by using the Access control (IAM) page as described earlier in this article. When you use the Access control (IAM) page, you start with the scope and then select the managed identity and role. This section describes an alternate way to add role assignments for a managed identity. Using these steps, you start with the managed identity and then select the scope and role.
+
+### [System-assigned managed identity](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal#system-assigned-managed-identity)
+
+Follow these steps to assign a role to a system-assigned managed identity by starting with the managed identity.
+
+### [User-assigned managed identity](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal#user-assigned-managed-identity)
+
+Follow these steps to assign a role to a user-assigned managed identity by starting with the managed identity.
+
+[RBAC Built-In Roles](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles)
+
+Azure role-based access control (Azure RBAC) has several Azure built-in roles that you can assign to users, groups, service principals, and managed identities. Role assignments are the way you control access to Azure resources. If the built-in roles don't meet the specific needs of your organization, you can create your own Azure custom roles.
+
+This article lists the Azure built-in roles, which are always evolving. To get the latest roles, use Get-AzRoleDefinition or az role definition list. If you are looking for administrator roles for Azure Active Directory (Azure AD), see Administrator role permissions in Azure Active Directory.
+
+The following table provides a brief description and the unique ID of each built-in role. Click the role name to see the list of Actions, NotActions, DataActions, and NotDataActions for each role. For information about what these actions mean and how they apply to the management and data planes, see Understand Azure role definitions.
 
 ## create a custom RBAC role
   - [Custom roles for Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/custom-roles)
