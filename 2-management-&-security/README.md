@@ -82,11 +82,11 @@
 
 ## [Manage security for applications](/2-management-&-security/notes-security-for-apps.md)
 
-- [ ] implement and configure KeyVault
+- [x] implement and configure KeyVault
   - [What is Azure Key Vault?](https://docs.microsoft.com/en-us/azure/key-vault/key-vault-overview)
   - [About keys, secrets, and certificates](https://docs.microsoft.com/en-us/azure/key-vault/about-keys-secrets-and-certificates)
-- [ ] implement and configure Azure AD Managed Identities
+- [x] implement and configure Azure AD Managed Identities
   - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview)
   - [Use a Windows VM system-assigned managed identity to access Resource Manager](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/tutorial-windows-vm-access-arm)
-- [ ] register and manage applications in Azure AD 
+- [x] register and manage applications in Azure AD 
   - [Tutorial: Register an application in Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=applications)

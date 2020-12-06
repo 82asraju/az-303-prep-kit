@@ -60,6 +60,10 @@ Best resource is to practice yourself what you learin in the portal, especially 
 
 7. [Quick-start ARM and Powershell templates](https://github.com/Azure/AzureStack-QuickStart-Templates)
 
+## Glossary of Terms
+
+[Glossary](/glossary.md)
+
 ## Exam preparation tips
 
 ### #1: Understand exam structure

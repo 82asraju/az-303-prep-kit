@@ -1,4 +1,3 @@
-
 # Manage workloads in Azure
 
 ##	migrate workloads using Azure Migrate
@@ -495,9 +494,139 @@ After you've verified that the test migration works as expected, you can migrate
 
 ### recommend target infrastructure
 
-- [ ] implement Azure Backup for VMs
-  - [An overview of Azure VM backup](https://docs.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction)
-  - [Get improved backup and restore performance with Azure Backup Instant Restore capability](https://docs.microsoft.com/en-us/azure/backup/backup-instant-restore-capability)
+TODO
+
+## implement Azure Backup for VMs
+
+[An overview of Azure VM backup](https://docs.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction)
+
+This article describes how the Azure Backup service backs up Azure virtual machines (VMs).
+
+Azure Backup provides independent and isolated backups to guard against unintended destruction of the data on your VMs. Backups are stored in a Recovery Services vault with built-in management of recovery points. Configuration and scaling are simple, backups are optimized, and you can easily restore as needed.
+
+As part of the backup process, a snapshot is taken, and the data is transferred to the Recovery Services vault with no impact on production workloads. The snapshot provides different levels of consistency, as described here.
+
+Azure Backup also has specialized offerings for database workloads like SQL Server and SAP HANA that are workload-aware, offer 15 minute RPO (recovery point objective), and allow backup and restore of individual databases.
+
+### Backup process
+
+Here's how Azure Backup completes a backup for Azure VMs:
+
+1. For Azure VMs that are selected for backup, Azure Backup starts a backup job according to the backup schedule you specify.
+2. During the first backup, a backup extension is installed on the VM if the VM is running.
+  - For Windows VMs, the VMSnapshot extension is installed.
+  - For Linux VMs, the VMSnapshotLinux extension is installed.
+3. For Windows VMs that are running, Backup coordinates with Windows Volume Shadow Copy Service (VSS) to take an app-consistent snapshot of the VM.
+  - By default, Backup takes full VSS backups.
+  - If Backup can't take an app-consistent snapshot, then it takes a file-consistent snapshot of the underlying storage (because no application writes occur while the VM is stopped).
+4. For Linux VMs, Backup takes a file-consistent backup. For app-consistent snapshots, you need to manually customize pre/post scripts.
+5. After Backup takes the snapshot, it transfers the data to the vault.
+  - The backup is optimized by backing up each VM disk in parallel.
+  - For each disk that's being backed up, Azure Backup reads the blocks on the disk and identifies and transfers only the data blocks that changed (the delta) since the previous backup.
+  - Snapshot data might not be immediately copied to the vault. It might take some hours at peak times. Total backup time for a VM will be less than 24 hours for daily backup policies.
+6. Changes made to a Windows VM after Azure Backup is enabled on it are:
+  - Microsoft Visual C++ 2013 Redistributable(x64) - 12.0.40660 is installed in the VM
+  - Startup type of Volume Shadow Copy service (VSS) changed to automatic from manual
+  - IaaSVmProvider Windows service is added
+7. When the data transfer is complete, the snapshot is removed, and a recovery point is created.
+
+![Azure virtual machine backup architecture](https://docs.microsoft.com/en-us/azure/backup/media/backup-azure-vms-introduction/vmbackup-architecture.png)
+
+### Encryption of Azure VM backups
+
+When you back up Azure VMs with Azure Backup, VMs are encrypted at rest with Storage Service Encryption (SSE). Azure Backup can also back up Azure VMs that are encrypted by using Azure Disk Encryption.
+
+|Encryption	|Details	|Support|
+|:--|:--|:--|
+|SSE	|With SSE, Azure Storage provides encryption at rest by automatically encrypting data before storing it. Azure Storage also decrypts data before retrieving it. Azure Backup supports backups of VMs with two types of Storage Service Encryption:<br /> - SSE with platform-managed keys: This encryption is by default for all disks in your VMs. See more here.<br /> - SSE with customer-managed keys. With CMK, you manage the keys used to encrypt the disks. See more here.|Azure Backup uses SSE for at-rest encryption of Azure VMs.|
+|Azure Disk Encryption	|Azure Disk Encryption encrypts both OS and data disks for Azure VMs.<br /><br />Azure Disk Encryption integrates with BitLocker encryption keys (BEKs), which are safeguarded in a key vault as secrets. Azure Disk Encryption also integrates with Azure Key Vault key encryption keys (KEKs).	|Azure Backup supports backup of managed and unmanaged Azure VMs encrypted with BEKs only, or with BEKs together with KEKs.<br /><br />Both BEKs and KEKs are backed up and encrypted.<br /><br />Because KEKs and BEKs are backed up, users with the necessary permissions can restore keys and secrets back to the key vault if needed. These users can also recover the encrypted VM.<br /><br />Encrypted keys and secrets can't be read by unauthorized users or by Azure.|
+
+For managed and unmanaged Azure VMs, Backup supports both VMs encrypted with BEKs only or VMs encrypted with BEKs together with KEKs.
+
+The backed-up BEKs (secrets) and KEKs (keys) are encrypted. They can be read and used only when they're restored back to the key vault by authorized users. Neither unauthorized users, or Azure, can read or use backed-up keys or secrets.
+
+BEKs are also backed up. So, if the BEKs are lost, authorized users can restore the BEKs to the key vault and recover the encrypted VMs. Only users with the necessary level of permissions can back up and restore encrypted VMs or keys and secrets.
+
+### Snapshot creation
+
+Azure Backup takes snapshots according to the backup schedule.
+
+- **Windows VMs**: For Windows VMs, the Backup service coordinates with VSS to take an app-consistent snapshot of the VM disks. By default, Azure Backup takes a full VSS backup (it truncates the logs of application such as SQL Server at the time of backup to get application level consistent backup). If you're using a SQL Server database on Azure VM backup, then you can modify the setting to take a VSS Copy backup (to preserve logs). For more information, see this article.
+- **Linux VMs**: To take app-consistent snapshots of Linux VMs, use the Linux pre-script and post-script framework to write your own custom scripts to ensure consistency.
+  - Azure Backup invokes only the pre/post scripts written by you.
+  - If the pre-scripts and post-scripts execute successfully, Azure Backup marks the recovery point as application-consistent. However, when you're using custom scripts, you're ultimately responsible for the application consistency.
+  - Learn more about how to configure scripts.
+
+### Snapshot consistency
+
+The following table explains the different types of snapshot consistency:
+
+|Snapshot	|Details	|Recovery	|Consideration|
+|Application-consistent	|App-consistent backups capture memory content and pending I/O operations. App-consistent snapshots use a VSS writer (or pre/post scripts for Linux) to ensure the consistency of the app data before a backup occurs.|	When you're recovering a VM with an app-consistent snapshot, the VM boots up. There's no data corruption or loss. The apps start in a consistent state.	|Windows: All VSS writers succeeded<br /><br />Linux: Pre/post scripts are configured and succeeded|
+|File-system consistent	|File-system consistent backups provide consistency by taking a snapshot of all files at the same time.|When you're recovering a VM with a file-system consistent snapshot, the VM boots up. There's no data corruption or loss. Apps need to implement their own "fix-up" mechanism to make sure that restored data is consistent.|Windows: Some VSS writers failed<br /><br />Linux: Default (if pre/post scripts aren't configured or failed)|
+|Crash-consistent	|Crash-consistent snapshots typically occur if an Azure VM shuts down at the time of backup. Only the data that already exists on the disk at the time of backup is captured and backed up.	|Starts with the VM boot process followed by a disk check to fix corruption errors. Any in-memory data or write operations that weren't transferred to disk before the crash are lost. Apps implement their own data verification. For example, a database app can use its transaction log for verification. If the transaction log has entries that aren't in the database, the database software rolls transactions back until the data is consistent.	|VM is in shutdown (stopped/ deallocated) state.|
+ 
+> Note
+>
+> If the provisioning state is succeeded, Azure Backup takes file-system consistent backups. If the provisioning state is unavailable or failed, crash-consistent backups are taken. If the provisioning state is creating or deleting, that means Azure Backup is retrying the operations.
+
+### Best practices
+
+When you're configuring VM backups, we suggest following these practices:
+
+- Modify the default schedule times that are set in a policy. For example, if the default time in the policy is 12:00 AM, increment the timing by several minutes so that resources are optimally used.
+- If you're restoring VMs from a single vault, we highly recommend that you use different general-purpose v2 storage accounts to ensure that the target storage account doesn't get throttled. For example, each VM must have a different storage account. For example, if 10 VMs are restored, use 10 different storage accounts.
+- For backup of VMs that are using premium storage with Instant Restore, we recommend allocating 50% free space of the total allocated storage space, which is required only for the first backup. The 50% free space isn't a requirement for backups after the first backup is complete
+- The limit on the number of disks per storage account is relative to how heavily the disks are being accessed by applications that are running on an infrastructure as a service (IaaS) VM. As a general practice, if 5 to 10 disks or more are present on a single storage account, balance the load by moving some disks to separate storage accounts.
+
+### Backup costs
+
+Azure VMs backed up with Azure Backup are subject to Azure Backup pricing.
+
+Billing doesn't start until the first successful backup finishes. At this point, the billing for both storage and protected VMs begins. Billing continues as long as any backup data for the VM is stored in a vault. If you stop protection for a VM, but backup data for the VM exists in a vault, billing continues.
+
+Billing for a specified VM stops only if the protection is stopped and all backup data is deleted. When protection stops and there are no active backup jobs, the size of the last successful VM backup becomes the protected instance size used for the monthly bill.
+
+The protected-instance size calculation is based on the actual size of the VM. The VM's size is the sum of all the data in the VM, excluding the temporary storage. Pricing is based on the actual data that's stored on the data disks, not on the maximum supported size for each data disk that's attached to the VM.
+
+Similarly, the backup storage bill is based on the amount of data that's stored in Azure Backup, which is the sum of the actual data in each recovery point.
+
+For example, take an A2-Standard-sized VM that has two additional data disks with a maximum size of 32 TB each. The following table shows the actual data stored on each of these disks:
+
+|Disk	|Max size	|Actual data present|
+|:--|:--|:--|
+|OS disk	|32 TB	|17 GB|
+|Local/temporary disk	|135 GB|	5 GB (not included for backup)|
+|Data disk 1	|32 TB|	30 GB|
+|Data disk 2	|32 TB	|0 GB|
+
+The actual size of the VM in this case is 17 GB + 30 GB + 0 GB = 47 GB. This protected-instance size (47 GB) becomes the basis for the monthly bill. As the amount of data in the VM grows, the protected-instance size used for billing changes to match.
+
+[Get improved backup and restore performance with Azure Backup Instant Restore capability](https://docs.microsoft.com/en-us/azure/backup/backup-instant-restore-capability)
+
+Based on feedback from users, we've renamed VM backup stack V2 to Instant Restore to reduce confusion with Azure Stack functionality. All Azure Backup users have now been upgraded to Instant Restore.
+
+The new model for Instant Restore provides the following feature enhancements:
+
+- Ability to use snapshots taken as part of a backup job that's available for recovery without waiting for data transfer to the vault to finish. It reduces the wait time for snapshots to copy to the vault before triggering restore.
+- Reduces backup and restore times by retaining snapshots locally, for two days by default. This default snapshot retention value is configurable to any value between 1 to 5 days.
+- Supports disk sizes up to 32 TB. Resizing of disks isn't recommended by Azure Backup.
+- Supports Standard SSD disks along with Standard HDD disks and Premium SSD disks.
+- Ability to use an unmanaged VMs original storage accounts (per disk), when restoring. This ability exists even when the VM has disks that are distributed across storage accounts. It speeds up restore operations for a wide variety of VM configurations.
+- For backup of VMs that are using unmanaged premium disks in storage accounts, with Instant Restore, we recommend allocating 50% free space of the total allocated storage space, which is required only for the first backup. The 50% free space isn't a requirement for backups after the first backup is complete.
+
+### What's new in this feature
+
+Currently, the backup job consists of two phases:
+
+1. Taking a VM snapshot.
+2. Transferring a VM snapshot to the Azure Recovery Services vault.
+
+A recovery point is considered created only after phases 1 and 2 are completed. As a part of this upgrade, a recovery point is created as soon as the snapshot is finished and this recovery point of snapshot type can be used to perform a restore using the same restore flow. You can identify this recovery point in the Azure portal by using “snapshot” as the recovery point type, and after the snapshot is transferred to the vault, the recovery point type changes to “snapshot and vault”.
+
+![Backup job in VM backup stack Resource Manager deployment model--storage and vault](https://docs.microsoft.com/en-us/azure/backup/media/backup-azure-vms/instant-rp-flow.png)
+
+By default, snapshots are retained for two days. This feature allows restore operation from these snapshots there by cutting down the restore times. It reduces the time required to transform and copy data back from the vault.
 
 - [ ] implement disaster recovery
   - [Set up disaster recovery to a secondary Azure region for an Azure VM](https://docs.microsoft.com/en-us/azure/site-recovery/azure-to-azure-quickstart)
