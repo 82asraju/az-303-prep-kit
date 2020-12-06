@@ -628,10 +628,106 @@ A recovery point is considered created only after phases 1 and 2 are completed. 
 
 By default, snapshots are retained for two days. This feature allows restore operation from these snapshots there by cutting down the restore times. It reduces the time required to transform and copy data back from the vault.
 
-- [ ] implement disaster recovery
-  - [Set up disaster recovery to a secondary Azure region for an Azure VM](https://docs.microsoft.com/en-us/azure/site-recovery/azure-to-azure-quickstart)
+## implement disaster recovery
 
-- [ ] implement Azure Update Management
-  - [Update Management solution in Azure](https://docs.microsoft.com/en-us/azure/automation/automation-update-management)
-  - [Enable Update Management, Change Tracking, and Inventory solutions on multiple VMs](https://docs.microsoft.com/en-us/azure/automation/automation-onboard-solutions-from-browse)
-  - [Manage updates and patches for your Azure VMs](https://docs.microsoft.com/en-us/azure/automation/automation-tutorial-update-management)
+[Set up disaster recovery to a secondary Azure region for an Azure VM](https://docs.microsoft.com/en-us/azure/site-recovery/azure-to-azure-quickstart)
+
+The Azure Site Recovery service contributes to your business continuity and disaster recovery (BCDR) strategy by keeping your business applications online during planned and unplanned outages. Site Recovery manages and orchestrates disaster recovery of on-premises machines and Azure virtual machines (VM), including replication, failover, and recovery.
+
+This quickstart describes how to set up disaster recovery for an Azure VM by replicating it to a secondary Azure region. In general, default settings are used to enable replication.
+
+### Prerequisites
+
+To complete this tutorial, you need an Azure subscription and a VM.
+
+- If you don't have an Azure account with an active subscription, you can create an account for free.
+- A VM with a minimum 1 GB of RAM is recommended. Learn more about how to create a VM.
+
+### Enable replication for the Azure VM
+
+The following steps enable VM replication to a secondary location.
+
+1. On the Azure portal, from Home > Virtual machines menu, select a VM to replicate.
+2. In Operations select Disaster recovery.
+3. From Basics > Target region, select the target region.
+4. To view the replication settings, select Review + Start replication. If you need to change any defaults, select Advanced settings.
+5. To start the job that enables VM replication select Start replication.
+
+![Screenshot of disaster recovery](https://docs.microsoft.com/en-us/azure/site-recovery/media/azure-to-azure-quickstart/enable-replication1.png)
+
+### Verify settings
+
+After the replication job finishes, you can check the replication status, modify replication settings, and test the deployment.
+
+1. On the Azure portal menu, select Virtual machines and select the VM that you replicated.
+2. In Operations select Disaster recovery.
+3. To view the replication details from the Overview select Essentials. More details are shown in the Health and status, Failover readiness, and the Infrastructure view map.
+
+![Screenshot of health status](https://docs.microsoft.com/en-us/azure/site-recovery/media/azure-to-azure-quickstart/replication-status.png)
+
+### Clean up resources
+
+To stop replication of the VM in the primary region, you must disable replication:
+
+- The source replication settings are cleaned up automatically.
+- The Site Recovery extension installed on the VM during replication isn't removed.
+- Site Recovery billing for the VM stops.
+
+To disable replication, do these steps:
+
+1. On the Azure portal menu, select Virtual machines and select the VM that you replicated.
+2. In Operations select Disaster recovery.
+3. From the Overview, select Disable Replication.
+4. To uninstall the Site Recovery extension, go to the VM's Settings > Extensions.
+
+## implement Azure Update Management
+
+[Update Management overview](https://docs.microsoft.com/en-us/azure/automation/update-management/overview)
+
+You can use Update Management in Azure Automation to manage operating system updates for your Windows and Linux virtual machines in Azure, in on-premises environments, and in other cloud environments. You can quickly assess the status of available updates on all agent machines and manage the process of installing required updates for servers.
+
+> Note
+>
+> You can't use a machine configured with Update Management to run custom scripts from Azure Automation. This machine can only run the Microsoft-signed update script.
+
+To download and install available Critical and Security patches automatically on your Azure VM, review Automatic VM guest patching for Windows VMs.
+
+Before deploying Update Management and enabling your machines for management, make sure that you understand the information in the following sections.
+
+### About Update Management
+
+Machines that are managed by Update Management rely on the following to perform assessment and to deploy updates:
+
+- Log Analytics agent for Windows or Linux
+- PowerShell Desired State Configuration (DSC) for Linux
+- Automation Hybrid Runbook Worker (automatically installed when you enable Update Management on the machine)
+- Microsoft Update or Windows Server Update Services (WSUS) for Windows machines
+- Either a private or public update repository for Linux machines
+
+The following diagram illustrates how Update Management assesses and applies security updates to all connected Windows Server and Linux servers in a workspace:
+
+![Update Management workflow](https://docs.microsoft.com/en-us/azure/automation/update-management/media/overview/update-mgmt-updateworkflow.png)
+
+Update Management can be used to natively deploy to machines in multiple subscriptions in the same tenant.
+
+You can deploy and install software updates on machines that require the updates by creating a scheduled deployment. Updates classified as optional aren't included in the deployment scope for Windows machines. Only required updates are included in the deployment scope.
+
+The scheduled deployment defines which target machines receive the applicable updates. It does so either by explicitly specifying certain machines or by selecting a computer group that's based on log searches of a specific set of machines (or on an Azure query that dynamically selects Azure VMs based on specified criteria). These groups differ from scope configuration, which is used to control the targeting of machines that receive the configuration to enable Update Management. This prevents them from performing and reporting update compliance, and install approved required updates.
+
+While defining a deployment, you also specify a schedule to approve and set a time period during which updates can be installed. This period is called the maintenance window. A 20-minute span of the maintenance window is reserved for reboots, assuming one is needed and you selected the appropriate reboot option. If patching takes longer than expected and there's less than 20 minutes in the maintenance window, a reboot won't occur.
+
+Updates are installed by runbooks in Azure Automation. You can't view these runbooks, and they don't require any configuration. When an update deployment is created, it creates a schedule that starts a master update runbook at the specified time for the included machines. The master runbook starts a child runbook on each agent to install the required updates.
+
+### Enable Update Management
+
+Here are the ways that you can enable Update Management and select machines to be managed:
+
+- Using an Azure Resource Manager template to deploy Update Management to a new or existing Automation account and Azure Monitor Log Analytics workspace in your subscription. It does not configure the scope of machines that should be managed, this is performed as a separate step after using the template.
+- From your Automation account for one or more Azure and non-Azure machines, including Arc enabled servers.
+- Using the Enable-AutomationSolution runbook method.
+- For a selected Azure VM from the Virtual machines page in the Azure portal. This scenario is available for Linux and Windows VMs.
+- For multiple Azure VMs by selecting them from the Virtual machines page in the Azure portal.
+
+> Note
+>
+> Update Management requires linking a Log Analytics workspace to your Automation account. For a definitive list of supported regions, see Azure Workspace mappings. The region mappings don't affect the ability to manage VMs in a separate region from your Automation account.
