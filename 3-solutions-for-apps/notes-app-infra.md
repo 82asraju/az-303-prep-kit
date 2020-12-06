@@ -319,23 +319,339 @@ To avoid unexpected charges, when you delete the last app in an App Service plan
 
 ### Links
 
-  - [Custom configuration and application settings in Azure Web Sites](https://azure.microsoft.com/en-us/resources/videos/configuration-and-app-settings-of-azure-web-sites)
-  - [Configure an App Service app in the Azure portal](https://docs.microsoft.com/en-us/azure/app-service/configure-common)
-  - [Buy a custom domain name for Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/manage-custom-dns-buy-domain)
+[Custom configuration and application settings in Azure Web Sites](https://azure.microsoft.com/en-us/resources/videos/configuration-and-app-settings-of-azure-web-sites)
+
+Video
+
+[Configure an App Service app in the Azure portal](https://docs.microsoft.com/en-us/azure/app-service/configure-common)
+
+Link covered above.
+
+[Buy a custom domain name for Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/manage-custom-dns-buy-domain)
+
+### Buy an App Service domain
+
+For pricing information on App Service domains, visit the App Service Pricing page and scroll down to App Service Domain.
+
+### Prepare the app
+
+To map a custom DNS name to a web app, the web app's App Service plan must be a paid tier (Shared, Basic, Standard, Premium, or Consumption for Azure Functions). In this step, you make sure that the App Service app is in the supported pricing tier.
+
+> Note
+>
+> App Service Free and Shared (preview) hosting plans are base tiers that run on the same Azure virtual machines as other App Service apps. Some apps might belong to other customers. These tiers are intended to be used only for development and testing purposes.
+
+Check to make sure that the app is not in the F1 tier. Custom DNS is not supported in the F1 tier.
+
+### Scale up the App Service plan
+
+Select any of the non-free tiers (D1, B1, B2, B3, or any tier in the Production category). For additional options, click See additional options.
+
+### Map App Service domain to your app
+
+It's easy to map a hostname in your App Service domain to an App Service app, as long as it's in the same subscription. You map the App Service domain or any of its subdomain directly in your app, and Azure creates the necessary DNS records for you.
+
+> Note
+>
+> If the domain and the app are in different subscriptions, you map the App Service domain to the app just like mapping an externally purchased domain. In this case, Azure DNS is the external domain provider, and you need to add the required DNS records manually.
+
+### Manage custom DNS records
+
+In Azure, DNS records for an App Service Domain are managed using Azure DNS. You can add, remove, and update DNS records, just like for an externally purchased domain. To manage custom DNS records:
 
 ## configure networking for an App Service
 
 ### Links
 
-  - [Networking considerations for an App Service Environment](https://docs.microsoft.com/en-us/azure/app-service/environment/network-info)
-  - [App Service networking features](https://docs.microsoft.com/en-us/azure/app-service/networking-features)
-  - [Integrate your app with an Azure Virtual Network](https://docs.microsoft.com/en-us/azure/app-service/web-sites-integrate-with-vnet)
+[Networking considerations for an App Service Environment](https://docs.microsoft.com/en-us/azure/app-service/environment/network-info)
+
+Azure App Service Environment is a deployment of Azure App Service into a subnet in your Azure virtual network (VNet). There are two deployment types for an App Service environment (ASE):
+
+- **External ASE**: Exposes the ASE-hosted apps on an internet-accessible IP address. For more information, see Create an External ASE.
+- **ILB ASE**: Exposes the ASE-hosted apps on an IP address inside your VNet. The internal endpoint is an internal load balancer (ILB), which is why it's called an ILB ASE. For more information, see Create and use an ILB ASE.
+
+All ASEs, External, and ILB, have a public VIP that is used for inbound management traffic and as the from address when making calls from the ASE to the internet. The calls from an ASE that go to the internet leave the VNet through the VIP assigned for the ASE. The public IP of this VIP is the source IP for all calls from the ASE that go to the internet. If the apps in your ASE make calls to resources in your VNet or across a VPN, the source IP is one of the IPs in the subnet used by your ASE. Because the ASE is within the VNet, it can also access resources within the VNet without any additional configuration. If the VNet is connected to your on-premises network, apps in your ASE also have access to resources there without additional configuration.
+
+![External ASE](https://docs.microsoft.com/en-us/azure/app-service/environment/media/network_considerations_with_an_app_service_environment/networkase-overflow.png)
+
+If you have an External ASE, the public VIP is also the endpoint that your ASE apps resolve to for:
+
+- HTTP/S
+- FTP/S
+- Web deployment
+- Remote debugging
+
+![ILB ASE](https://docs.microsoft.com/en-us/azure/app-service/environment/media/network_considerations_with_an_app_service_environment/networkase-overflow2.png)
+
+If you have an ILB ASE, the address of the ILB address is the endpoint for HTTP/S, FTP/S, web deployment, and remote debugging.
+
+[App Service networking features](https://docs.microsoft.com/en-us/azure/app-service/networking-features)
+
+*This article contains a lot of information about network integration options.*
+
+You can deploy applications in Azure App Service in multiple ways. By default, apps hosted in App Service are accessible directly through the internet and can reach only internet-hosted endpoints. But for many applications, you need to control the inbound and outbound network traffic. There are several features in App Service to help you meet those needs. The challenge is knowing which feature to use to solve a given problem. This article will help you determine which feature to use, based on some example use cases.
+
+There are two main deployment types for Azure App Service:
+
+- The multitenant public service hosts App Service plans in the Free, Shared, Basic, Standard, Premium, PremiumV2, and PremiumV3 pricing SKUs.
+- The single-tenant App Service Environment (ASE) hosts Isolated SKU App Service plans directly in your Azure virtual network.
+
+The features you use will depend on whether you're in the multitenant service or in an ASE.
+
+### Multitenant App Service networking features
+
+Azure App Service is a distributed system. The roles that handle incoming HTTP or HTTPS requests are called front ends. The roles that host the customer workload are called workers. All the roles in an App Service deployment exist in a multitenant network. Because there are many different customers in the same App Service scale unit, you can't connect the App Service network directly to your network.
+
+Instead of connecting the networks, you need features to handle the various aspects of application communication. The features that handle requests to your app can't be used to solve problems when you're making calls from your app. Likewise, the features that solve problems for calls from your app can't be used to solve problems to your app.
+
+|Inbound features	|Outbound features|
+|:--|:--|
+|App-assigned address	|Hybrid Connections|
+|Access restrictions	|Gateway-required VNet Integration|
+|Service endpoints	|VNet Integration|
+|Private endpoints	||
+
+Other than noted exceptions, you can use all of these features together. You can mix the features to solve your problems.
+
+### Default networking behavior
+
+Azure App Service scale units support many customers in each deployment. The Free and Shared SKU plans host customer workloads on multitenant workers. The Basic and higher plans host customer workloads that are dedicated to only one App Service plan. If you have a Standard App Service plan, all the apps in that plan will run on the same worker. If you scale out the worker, all the apps in that App Service plan will be replicated on a new worker for each instance in your App Service plan.
+
+### Outbound addresses
+
+The worker VMs are broken down in large part by the App Service plans. The Free, Shared, Basic, Standard, and Premium plans all use the same worker VM type. The PremiumV2 plan uses another VM type. PremiumV3 uses yet another VM type. When you change the VM family, you get a different set of outbound addresses. If you scale from Standard to PremiumV2, your outbound addresses will change. If you scale from PremiumV2 to PremiumV3, your outbound addresses will change. In some older scale units, both the inbound and outbound addresses will change when you scale from Standard to PremiumV2.
+
+There are a number of addresses that are used for outbound calls. The outbound addresses used by your app for making outbound calls are listed in the properties for your app. These addresses are shared by all the apps running on the same worker VM family in the App Service deployment. If you want to see all the addresses that your app might use in a scale unit, there's property called possibleOutboundAddresses that will list them.
+
+### Private Endpoint
+
+Private Endpoint is a network interface that connects you privately and securely to your Web App by Azure private link. Private Endpoint uses a private IP address from your virtual network, effectively bringing the web app into your virtual network. This feature is only for inbound flows to your web app. For more information, see Using private endpoints for Azure Web App.
+
+Some use cases for this feature:
+
+- Restrict access to your app from resources in a virtual network.
+- Expose your app on a private IP in your virtual network.
+- Protect your app with a WAF.
+
+Private endpoints prevent data exfiltration because the only thing you can reach across the private endpoint is the app with which it's configured.
+
+[Integrate your app with an Azure Virtual Network](https://docs.microsoft.com/en-us/azure/app-service/web-sites-integrate-with-vnet)
+
+This article describes the Azure App Service VNet Integration feature and how to set it up with apps in Azure App Service. With Azure Virtual Network (VNets), you can place many of your Azure resources in a non-internet-routable network. The VNet Integration feature enables your apps to access resources in or through a VNet. VNet Integration doesn't enable your apps to be accessed privately.
+
+Azure App Service has two variations on the VNet Integration feature:
+
+- The multitenant systems that support the full range of pricing plans except Isolated.
+- The App Service Environment, which deploys into your VNet and supports Isolated pricing plan apps.
+
+The VNet Integration feature is used in multitenant apps. If your app is in App Service Environment, then it's already in a VNet and doesn't require use of the VNet Integration feature to reach resources in the same VNet. For more information on all of the networking features, see App Service networking features.
+
+VNet Integration gives your app access to resources in your VNet, but it doesn't grant inbound private access to your app from the VNet. Private site access refers to making an app accessible only from a private network, such as from within an Azure virtual network. VNet Integration is used only to make outbound calls from your app into your VNet. The VNet Integration feature behaves differently when it's used with VNet in the same region and with VNet in other regions. The VNet Integration feature has two variations:
+
+- Regional VNet Integration: When you connect to Azure Resource Manager virtual networks in the same region, you must have a dedicated subnet in the VNet you're integrating with.
+- Gateway-required VNet Integration: When you connect to VNet in other regions or to a classic virtual network in the same region, you need an Azure Virtual Network gateway provisioned in the target VNet.
+
+The VNet Integration features:
+
+- Require a Standard, Premium, PremiumV2, PremiumV3, or Elastic Premium pricing plan.
+- Support TCP and UDP.
+- Work with Azure App Service apps and function apps.
+
+There are some things that VNet Integration doesn't support, like:
+
+- Mounting a drive.
+- Active Directory integration.
+- NetBIOS.
+
+Gateway-required VNet Integration provides access to resources only in the target VNet or in networks connected to the target VNet with peering or VPNs. Gateway-required VNet Integration doesn't enable access to resources available across Azure ExpressRoute connections or works with service endpoints.
+
+Regardless of the version used, VNet Integration gives your app access to resources in your VNet, but it doesn't grant inbound private access to your app from the VNet. Private site access refers to making your app accessible only from a private network, such as from within an Azure VNet. VNet Integration is only for making outbound calls from your app into your VNet.
+
+### Regional VNet Integration
+
+Using regional VNet Integration enables your app to access:
+
+- Resources in a VNet in the same region as your app.
+- Resources in VNets peered to the VNet your app is integrated with.
+- Service endpoint secured services.
+- Resources across Azure ExpressRoute connections.
+- Resources in the VNet you're integrated with.
+- Resources across peered connections, which include Azure ExpressRoute connections.
+- Private endpoints
+
+When you use VNet Integration with VNets in the same region, you can use the following Azure networking features:
+
+- **Network security groups (NSGs)**: You can block outbound traffic with an NSG that's placed on your integration subnet. The inbound rules don't apply because you can't use VNet Integration to provide inbound access to your app.
+- **Route tables (UDRs)**: You can place a route table on the integration subnet to send outbound traffic where you want.
+
+> Note
+>
+> If you route all of your outbound traffic into your VNet, it's subject to the NSGs and UDRs that are applied to your integration subnet. When you route all of your outbound traffic into your VNet, your outbound addresses are still the outbound addresses that are listed in your app properties unless you provide routes to send the traffic elsewhere.
+
+### Service endpoints
+
+Regional VNet Integration enables you to use service endpoints. To use service endpoints with your app, use regional VNet Integration to connect to a selected VNet and then configure service endpoints with the destination service on the subnet you used for the integration. If you then wanted to access a service over service endpoints:
+
+1. configure regional VNet Integration with your web app
+2. go to the destination service and configure service endpoints against the subnet used for integration
+
+### Azure DNS Private Zones
+
+After your app integrates with your VNet, it uses the same DNS server that your VNet is configured with. You can override this behavior on your app by configuring the app setting WEBSITE_DNS_SERVER with the address of your desired DNS server. If you had a custom DNS server configured with your VNet but wanted to have your app use Azure DNS private zones, you should set WEBSITE_DNS_SERVER with value 168.63.129.16.
+
+### Private endpoints
+
+If you want to make calls to Private Endpoints, then you need to ensure that your DNS lookups will resolve to the private endpoint. To ensure that the DNS lookups from your app will point to your private endpoints you can:
+
+- integrate with Azure DNS Private Zones. If your VNet doesn't have a custom DNS server, this will be automatic
+- manage the private endpoint in the DNS server used by your app. To do this you need to know the private endpoint address and then point the endpoint you are trying to reach to that address with an A record.
+- configure your own DNS server to forward to Azure DNS private zones
+
+### How regional VNet Integration works
+
+Apps in App Service are hosted on worker roles. The Basic and higher pricing plans are dedicated hosting plans where there are no other customers' workloads running on the same workers. Regional VNet Integration works by mounting virtual interfaces with addresses in the delegated subnet. Because the from address is in your VNet, it can access most things in or through your VNet like a VM in your VNet would. The networking implementation is different than running a VM in your VNet. That's why some networking features aren't yet available for this feature.
+
+![How regional VNet Integration works](https://docs.microsoft.com/en-us/azure/app-service/media/web-sites-integrate-with-vnet/vnetint-regionalworks.png)
+
+When regional VNet Integration is enabled, your app makes outbound calls to the internet through the same channels as normal. The outbound addresses that are listed in the app properties portal are the addresses still used by your app. What changes for your app are the calls to service endpoint secured services, or RFC 1918 addresses go into your VNet. If WEBSITE_VNET_ROUTE_ALL is set to 1, all outbound traffic can be sent into your VNet.
+
+### Gateway-required VNet Integration
+
+Gateway-required VNet Integration supports connecting to a VNet in another region or to a classic virtual network. Gateway-required VNet Integration:
+
+- Enables an app to connect to only one VNet at a time.
+- Enables up to five VNets to be integrated within an App Service plan.
+- Allows the same VNet to be used by multiple apps in an App Service plan without affecting the total number that can be used by an App Service plan. If you have six apps using the same VNet in the same App Service plan, that counts as one VNet being used.
+- Supports a 99.9% SLA due to the SLA on the gateway.
+- Enables your apps to use the DNS that the VNet is configured with.
+- Requires a Virtual Network route-based gateway configured with an SSTP point-to-site VPN before it can be connected to an app.
+
+You can't use gateway-required VNet Integration:
+
+- With a VNet connected with Azure ExpressRoute.
+- From a Linux app.
+- From a Windows container.
+- To access service endpoint secured resources.
+- With a coexistence gateway that supports both ExpressRoute and point-to-site or site-to-site VPNs.
+
+### Pricing details
+
+The regional VNet Integration feature has no additional charge for use beyond the App Service plan pricing tier charges.
+
+Three charges are related to the use of the gateway-required VNet Integration feature:
+
+- **App Service plan pricing tier charges**: Your apps need to be in a Standard, Premium, PremiumV2, or PremiumV3 App Service plan. For more information on those costs, see App Service pricing.
+- **Data transfer costs**: There's a charge for data egress, even if the VNet is in the same datacenter. Those charges are described in Data Transfer pricing details.
+- **VPN gateway costs**: There's a cost to the virtual network gateway that's required for the point-to-site VPN. For more information, see VPN gateway pricing.
 
 ## create and manage deployment slots
 
 ### Links
 
-  - [Set up staging environments in Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/deploy-staging-slots)
+[Set up staging environments in Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/deploy-staging-slots)
+
+When you deploy your web app, web app on Linux, mobile back end, or API app to Azure App Service, you can use a separate deployment slot instead of the default production slot when you're running in the Standard, Premium, or Isolated App Service plan tier. Deployment slots are live apps with their own host names. App content and configurations elements can be swapped between two deployment slots, including the production slot.
+
+Deploying your application to a non-production slot has the following benefits:
+
+- You can validate app changes in a staging deployment slot before swapping it with the production slot.
+- Deploying an app to a slot first and swapping it into production makes sure that all instances of the slot are warmed up before being swapped into production. This eliminates downtime when you deploy your app. The traffic redirection is seamless, and no requests are dropped because of swap operations. You can automate this entire workflow by configuring auto swap when pre-swap validation isn't needed.
+- After a swap, the slot with previously staged app now has the previous production app. If the changes swapped into the production slot aren't as you expect, you can perform the same swap immediately to get your "last known good site" back.
+Each App Service plan tier supports a different number of deployment slots. There's no additional charge for using deployment slots. To find out the number of slots your app's tier supports, see App Service limits.
+
+To scale your app to a different tier, make sure that the target tier supports the number of slots your app already uses. For example, if your app has more than five slots, you can't scale it down to the **Standard** tier, because the **Standard** tier supports only five deployment slots.
+
+### Add a slot
+
+The app must be running in the **Standard**, **Premium**, or **Isolated** tier in order for you to enable multiple deployment slots.
+
+The new deployment slot has no content, even if you clone the settings from a different slot. For example, you can publish to this slot with Git. You can deploy to the slot from a different repository branch or a different repository.
+
+### What happens during a swap
+
+#### Swap operation steps
+
+When you swap two slots (usually from a staging slot into the production slot), App Service does the following to ensure that the target slot doesn't experience downtime:
+
+1. Apply the following settings from the target slot (for example, the production slot) to all instances of the source slot:
+  - Slot-specific app settings and connection strings, if applicable.
+  - Continuous deployment settings, if enabled.
+  - App Service authentication settings, if enabled.
+  
+    Any of these cases trigger all instances in the source slot to restart. During swap with preview, this marks the end of the first phase. The swap operation is paused, and you can validate that the source slot works correctly with the target slot's settings.
+2. Wait for every instance in the source slot to complete its restart. If any instance fails to restart, the swap operation reverts all changes to the source slot and stops the operation.
+3. If local cache is enabled, trigger local cache initialization by making an HTTP request to the application root ("/") on each instance of the source slot. Wait until each instance returns any HTTP response. Local cache initialization causes another restart on each instance.
+4. If auto swap is enabled with custom warm-up, trigger Application Initiation by making an HTTP request to the application root ("/") on each instance of the source slot.
+
+   If applicationInitialization isn't specified, trigger an HTTP request to the application root of the source slot on each instance.
+
+   If an instance returns any HTTP response, it's considered to be warmed up.
+
+5. If all instances on the source slot are warmed up successfully, swap the two slots by switching the routing rules for the two slots. After this step, the target slot (for example, the production slot) has the app that's previously warmed up in the source slot.
+6. Now that the source slot has the pre-swap app previously in the target slot, perform the same operation by applying all settings and restarting the instances.
+
+At any point of the swap operation, all work of initializing the swapped apps happens on the source slot. The target slot remains online while the source slot is being prepared and warmed up, regardless of where the swap succeeds or fails. To swap a staging slot with the production slot, make sure that the production slot is always the target slot. This way, the swap operation doesn't affect your production app.
+
+### Which settings are swapped?
+
+When you clone configuration from another deployment slot, the cloned configuration is editable. Some configuration elements follow the content across a swap (not slot specific), whereas other configuration elements stay in the same slot after a swap (slot specific). The following lists show the settings that change when you swap slots.
+
+**Settings that are swapped**:
+
+- General settings, such as framework version, 32/64-bit, web sockets
+- App settings (can be configured to stick to a slot)
+- Connection strings (can be configured to stick to a slot)
+- Handler mappings
+- Public certificates
+- WebJobs content
+- Hybrid connections *
+- Virtual network integration *
+- Service endpoints *
+- Azure Content Delivery Network *
+
+Features marked with an asterisk (*) are planned to be unswapped.
+
+**Settings that aren't swapped**:
+
+- Publishing endpoints
+- Custom domain names
+- Non-public certificates and TLS/SSL settings
+- Scale settings
+- WebJobs schedulers
+- IP restrictions
+- Always On
+- Diagnostic settings
+- Cross-origin resource sharing (CORS)
+
+> Note
+>
+> Certain app settings that apply to unswapped settings are also not swapped. For example, since diagnostic settings are not swapped, related app settings like WEBSITE_HTTPLOGGING_RETENTION_DAYS and DIAGNOSTICS_AZUREBLOBRETENTIONDAYS are also not swapped, even if they don't show up as slot settings.
+
+To configure an app setting or connection string to stick to a specific slot (not swapped), go to the **Configuration** page for that slot. Add or edit a setting, and then select **deployment slot setting**. Selecting this check box tells App Service that the setting is not swappable.
+
+### Swap two slots
+
+You can swap deployment slots on your app's Deployment slots page and the Overview page. For technical details on the slot swap, see What happens during swap.
+
+> Important
+>
+> Before you swap an app from a deployment slot into production, make sure that production is your target slot and that all settings in the source slot are configured exactly as you want to have them in production.
+
+### Swap with preview (multi-phase swap)
+
+Before you swap into production as the target slot, validate that the app runs with the swapped settings. The source slot is also warmed up before the swap completion, which is desirable for mission-critical applications.
+
+When you perform a swap with preview, App Service performs the same swap operation but pauses after the first step. You can then verify the result on the staging slot before completing the swap.
+
+If you cancel the swap, App Service reapplies configuration elements to the source slot.
+
+### Roll back a swap
+
+If any errors occur in the target slot (for example, the production slot) after a slot swap, restore the slots to their pre-swap states by swapping the same two slots immediately.
+
+### Route traffic
+
+By default, all client requests to the app's production URL (`http://<app_name>.azurewebsites.net`) are routed to the production slot. You can route a portion of the traffic to another slot. This feature is useful if you need user feedback for a new update, but you're not ready to release it to production.
 
 ## implement Logic Apps
 
