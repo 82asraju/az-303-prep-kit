@@ -285,23 +285,276 @@ This article lists the Azure built-in roles, which are always evolving. To get t
 The following table provides a brief description and the unique ID of each built-in role. Click the role name to see the list of Actions, NotActions, DataActions, and NotDataActions for each role. For information about what these actions mean and how they apply to the management and data planes, see Understand Azure role definitions.
 
 ## create a custom RBAC role
-  - [Custom roles for Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/custom-roles)
-  - [Tutorial: Create a custom role for Azure resources using Azure PowerShell](https://docs.microsoft.com/en-us/azure/role-based-access-control/tutorial-custom-role-powershell)
+
+[Custom roles for Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/custom-roles)
+
+If the Azure built-in roles don't meet the specific needs of your organization, you can create your own custom roles. Just like built-in roles, you can assign custom roles to users, groups, and service principals at management group, subscription, and resource group scopes.
+
+Custom roles can be shared between subscriptions that trust the same Azure AD directory. There is a limit of 5,000 custom roles per directory. (For Azure Germany and Azure China 21Vianet, the limit is 2,000 custom roles.) Custom roles can be created using the Azure portal, Azure PowerShell, Azure CLI, or the REST API.
+
+### Custom role example
+
+    {
+      "Name": "Virtual Machine Operator",
+      "Id": "88888888-8888-8888-8888-888888888888",
+      "IsCustom": true,
+      "Description": "Can monitor and restart virtual machines.",
+      "Actions": [
+        "Microsoft.Storage/*/read",
+        "Microsoft.Network/*/read",
+        "Microsoft.Compute/*/read",
+        "Microsoft.Compute/virtualMachines/start/action",
+        "Microsoft.Compute/virtualMachines/restart/action",
+        "Microsoft.Authorization/*/read",
+        "Microsoft.ResourceHealth/availabilityStatuses/read",
+        "Microsoft.Resources/subscriptions/resourceGroups/read",
+        "Microsoft.Insights/alertRules/*",
+        "Microsoft.Insights/diagnosticSettings/*",
+        "Microsoft.Support/*"
+      ],
+      "NotActions": [],
+      "DataActions": [],
+      "NotDataActions": [],
+      "AssignableScopes": [
+        "/subscriptions/{subscriptionId1}",
+        "/subscriptions/{subscriptionId2}",
+        "/providers/Microsoft.Management/managementGroups/{groupId1}"
+      ]
+    }
+
+### Wildcard permissions
+
+Actions, NotActions, DataActions, and NotDataActions support wildcards (*) to define permissions. A wildcard (*) extends a permission to everything that matches the action string you provide. For example, suppose that you wanted to add all the permissions related to Azure Cost Management and exports. You could add all of these action strings:
+
+    Microsoft.CostManagement/exports/action
+    Microsoft.CostManagement/exports/read
+    Microsoft.CostManagement/exports/write
+    Microsoft.CostManagement/exports/delete
+    Microsoft.CostManagement/exports/run/action
+
+Instead of adding all of these strings, you could just add a wildcard string. For example, the following wildcard string is equivalent to the previous five strings. This would also include any future export permissions that might be added.
+
+    Microsoft.CostManagement/exports/*
+
+You can also have multiple wildcards in a string. For example, the following string represents all query permissions for Cost Management.
+
+    Microsoft.CostManagement/*/query/*
+
+### Steps to create a custom role
+
+When you create a custom role, you need to know the operations that are available to define your permissions. To view the list of operations, see the Azure Resource Manager resource provider operations. You will add the operations to the `Actions` or `NotActions` properties of the role definition. If you have data operations, you will add those to the `DataActions` or `NotDataActions` properties.
+
+### Who can create, delete, update, or view a custom role
+
+Just like built-in roles, the `AssignableScopes` property specifies the scopes that the role is available for assignment. The `AssignableScopes` property for a custom role also controls who can create, delete, update, or view the custom role.
+
+|Task	|Operation	|Description|
+|:--|:--|:--|
+|Create/delete a custom role	|`Microsoft.Authorization/roleDefinitions/write`	|Users that are granted this operation on all the `AssignableScopes` of the custom role can create (or delete) custom roles for use in those scopes. For example, Owners and User Access Administrators of management groups, subscriptions, and resource groups.|
+|Update a custom role	|`Microsoft.Authorization/roleDefinitions/write`	|Users that are granted this operation on all the `AssignableScopes` of the custom role can update custom roles in those scopes. For example, Owners and User Access Administrators of management groups, subscriptions, and resource groups.|
+|View a custom role	|`Microsoft.Authorization/roleDefinitions/read`	|Users that are granted this operation at a scope can view the custom roles that are available for assignment at that scope. All built-in roles allow custom roles to be available for assignment.|
+
+[Tutorial: Create a custom role for Azure resources using Azure PowerShell](https://docs.microsoft.com/en-us/azure/role-based-access-control/tutorial-custom-role-powershell)
 
 ## configure access to Azure resources by assigning roles
-  - [Tutorial: Grant a user access to Azure resources using RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal)
+
+[Tutorial: Grant a user access to Azure resources using RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal)
+
+Similar content to Add or Remove Role Assignments above.
 
 ## configure management access to Azure
-  - [Manage access to Azure management with Conditional Access](https://docs.microsoft.com/en-us/azure/role-based-access-control/conditional-access-azure-management)
-  - [Manage access to Azure resources with Azure AD Privileged Identity Management](https://docs.microsoft.com/en-us/azure/role-based-access-control/pim-azure-resource)
-  - [Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
+
+[Manage access to Azure management with Conditional Access](https://docs.microsoft.com/en-us/azure/role-based-access-control/conditional-access-azure-management)
+
+> Make sure you understand how Conditional Access works before setting up a policy to manage access to Azure management. Make sure you don't create conditions that could block your own access to the portal.
+
+Conditional Access in Azure Active Directory (Azure AD) controls access to cloud apps based on specific conditions that you specify. To allow access, you create Conditional Access policies that allow or block access based on whether or not the requirements in the policy are met.
+
+Typically, you use Conditional Access to control access to your cloud apps. You can also set up policies to control access to Azure management based on certain conditions (such as sign-in risk, location, or device) and to enforce requirements like multi-factor authentication.
+
+To create a policy for Azure management, you select Microsoft Azure Management under Cloud apps when choosing the app to which to apply the policy.
+
+![Conditional Access for Azure management](https://docs.microsoft.com/en-us/azure/role-based-access-control/media/conditional-access-azure-management/conditional-access-azure-mgmt.png)
+
+The policy you create applies to all Azure management endpoints, including the following:
+
+- Azure portal
+- Azure Resource Manager provider
+- Classic Service Management APIs
+- Azure PowerShell
+- Visual Studio subscriptions administrator portal
+- Azure DevOps
+- Azure Data Factory portal
+
+Note that the policy applies to Azure PowerShell, which calls the Azure Resource Manager API. It does not apply to [Azure AD PowerShell](https://docs.microsoft.com/en-us/powershell/azure/active-directory/install-adv2), which calls Microsoft Graph.
+
+For more information on how to set up a sample policy to enable Conditional Access for Microsoft Azure management, see the article [Conditional Access: Require MFA for Azure management](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-azure-management).
+
+[Manage access to Azure resources with Azure AD Privileged Identity Management](https://docs.microsoft.com/en-us/azure/role-based-access-control/pim-azure-resource)
+
+This article describes some best practices for using Azure role-based access control (Azure RBAC). These best practices are derived from our experience with Azure RBAC and the experiences of customers like yourself.
+
+### Only grant the access users need
+
+Using Azure RBAC, you can segregate duties within your team and grant only the amount of access to users that they need to perform their jobs. Instead of giving everybody unrestricted permissions in your Azure subscription or resources, you can allow only certain actions at a particular scope.
+
+When planning your access control strategy, it's a best practice to grant users the least privilege to get their work done. Avoid assigning broader roles at broader scopes even if it initially seems more convenient to do so. By limiting roles and scopes you limit what resources are at risk if the security principal is ever compromised.
+
+The following diagram shows a suggested pattern for using Azure RBAC.
+
+![Azure RBAC and least privilege](https://docs.microsoft.com/en-us/azure/role-based-access-control/media/best-practices/rbac-least-privilege.png)
+
+For information about how to add role assignments, see Add or remove Azure role assignments using the Azure portal.
+
+### Limit the number of subscription owners
+
+You should have a maximum of 3 subscription owners to reduce the potential for breach by a compromised owner. This recommendation can be monitored in Azure Security Center. For other identity and access recommendations in Security Center, see [Security recommendations - a reference guide](https://docs.microsoft.com/en-us/azure/security-center/recommendations-reference).
+
+### Use Azure AD Privileged Identity Management
+
+To protect privileged accounts from malicious cyber-attacks, you can use Azure Active Directory Privileged Identity Management (PIM) to lower the exposure time of privileges and increase your visibility into their use through reports and alerts. PIM helps protect privileged accounts by providing just-in-time privileged access to Azure AD and Azure resources. Access can be time bound after which privileges are revoked automatically.
+
+For more information, see What is [Azure AD Privileged Identity Management?](https://docs.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure).
+
+[Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
+
+Already covered above.
 
 ## interpret effective permissions
-  - [What is role-based access control (RBAC) for Azure resources?](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview)
-  - [Quickstart: View the access a user has to Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)
+
+[What is role-based access control (RBAC) for Azure resources?](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview)
+
+Access management for cloud resources is a critical function for any organization that is using the cloud. Azure role-based access control (Azure RBAC) helps you manage who has access to Azure resources, what they can do with those resources, and what areas they have access to.
+
+Azure RBAC is an authorization system built on Azure Resource Manager that provides fine-grained access management of Azure resources.
+
+### What can I do with Azure RBAC?
+
+Here are some examples of what you can do with Azure RBAC:
+
+- Allow one user to manage virtual machines in a subscription and another user to manage virtual networks
+- Allow a DBA group to manage SQL databases in a subscription
+- Allow a user to manage all resources in a resource group, such as virtual machines, websites, and subnets
+- Allow an application to access all resources in a resource group
+
+### How Azure RBAC works
+
+The way you control access to resources using Azure RBAC is to create role assignments. This is a key concept to understand – it's how permissions are enforced. A role assignment consists of three elements: security principal, role definition, and scope.
+
+### Security principal
+
+A security principal is an object that represents a user, group, service principal, or managed identity that is requesting access to Azure resources. You can assign a role to any of these security principals.
+
+![Security principal for a role assignment](https://docs.microsoft.com/en-us/azure/role-based-access-control/media/shared/rbac-security-principal.png)
+
+### Role definition
+
+A role definition is a collection of permissions. It's typically just called a role. A role definition lists the operations that can be performed, such as read, write, and delete. Roles can be high-level, like owner, or specific, like virtual machine reader.
+
+![Role definition for a role assignment](https://docs.microsoft.com/en-us/azure/role-based-access-control/media/shared/rbac-role-definition.png)
+
+Azure includes several built-in roles that you can use. For example, the Virtual Machine Contributor role allows a user to create and manage virtual machines. If the built-in roles don't meet the specific needs of your organization, you can create your own Azure custom roles.
+
+### Scope
+
+Scope is the set of resources that the access applies to. When you assign a role, you can further limit the actions allowed by defining a scope. This is helpful if you want to make someone a Website Contributor, but only for one resource group.
+
+In Azure, you can specify a scope at four levels: management group, subscription, resource group, or resource. Scopes are structured in a parent-child relationship. You can assign roles at any of these levels of scope.
+
+![Scope for a role assignment](https://docs.microsoft.com/en-us/azure/role-based-access-control/media/shared/rbac-scope.png)
+
+### Role assignments
+
+A role assignment is the process of attaching a role definition to a user, group, service principal, or managed identity at a particular scope for the purpose of granting access. Access is granted by creating a role assignment, and access is revoked by removing a role assignment.
+
+The following diagram shows an example of a role assignment. In this example, the Marketing group has been assigned the Contributor role for the pharma-sales resource group. This means that users in the Marketing group can create or manage any Azure resource in the pharma-sales resource group. Marketing users do not have access to resources outside the pharma-sales resource group, unless they are part of another role assignment.
+
+![Role assignment to control access](https://docs.microsoft.com/en-us/azure/role-based-access-control/media/overview/rbac-overview.png)
+
+You can create role assignments using the Azure portal, Azure CLI, Azure PowerShell, Azure SDKs, or REST APIs.
+
+[Quickstart: View the access a user has to Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)
+
+You can use the Access control (IAM) blade in Azure role-based access control (Azure RBAC) to view the access a user or another security principal has to Azure resources. However, sometimes you just need to quickly view the access for a single user or another security principal. The easiest way to do this is to use the Check access feature in the Azure portal.
+
+### View role assignments
+
+The way that you view the access for a user is to list their roles assignments. Follow these steps to view the role assignments for a single user, group, service principal, or managed identity at the subscription scope.
+
+1. In the Azure portal, click All services and then Subscriptions.
+2. Click your subscription.
+3. Click Access control (IAM).
+4. Click the Check access tab.
+5. In the Find list, select the type of security principal you want to check access for.
+6. In the search box, enter a string to search the directory for display names, email addresses, or object identifiers.
+7. Click the security principal to open the assignments pane.
+    
+   On this pane, you can see the roles assigned to the selected security principal and the scope. If there are any deny assignments at this scope or inherited to this scope, they will be listed.
 
 ## set up and perform an access review
-  - [What are Azure AD access reviews?](https://docs.microsoft.com/en-us/azure/active-directory/governance/access-reviews-overview)
+
+[What are Azure AD access reviews?](https://docs.microsoft.com/en-us/azure/active-directory/governance/access-reviews-overview)
+
+Azure Active Directory (Azure AD) access reviews enable organizations to efficiently manage group memberships, access to enterprise applications, and role assignments. User's access can be reviewed on a regular basis to make sure only the right people have continued access.
+
+### Why are access reviews important?
+
+Azure AD enables you to collaborate with users from inside your organization and with external users. Users can join groups, invite guests, connect to cloud apps, and work remotely from their work or personal devices. The convenience of using self-service has led to a need for better access management capabilities.
+
+- As new employees join, how do you ensure they have the access they need to be productive?
+- As people move teams or leave the company, how do you make sure that their old access is removed?
+- Excessive access rights can lead to compromises.
+- Excessive access right may also lead audit findings as they indicate a lack of control over access.
+- You have to proactively engage with resource owners to ensure they regularly review who has access to their resources.
+
+### When should you use access reviews?
+
+- **Too many users in privileged roles**: It's a good idea to check how many users have administrative access, how many of them are Global Administrators, and if there are any invited guests or partners that have not been removed after being assigned to do an administrative task. You can recertify the role assignment users in Azure AD roles such as Global Administrators, or Azure resources roles such as User Access Administrator in the Azure AD Privileged Identity Management (PIM) experience.
+- **When automation is not possible**: You can create rules for dynamic membership on security groups or Microsoft 365 Groups, but what if the HR data is not in Azure AD or if users still need access after leaving the group to train their replacement? You can then create a review on that group to ensure those who still need access should have continued access.
+- **When a group is used for a new purpose**: If you have a group that is going to be synced to Azure AD, or if you plan to enable the application Salesforce for everyone in the Sales team group, it would be useful to ask the group owner to review the group membership prior to the group being used in a different risk content.
+- **Business critical data access**: for certain resources, it might be required to ask people outside of IT to regularly sign out and give a justification on why they need access for auditing purposes.
+- **To maintain a policy's exception list**: In an ideal world, all users would follow the access policies to secure access to your organization's resources. However, sometimes there are business cases that require you to make exceptions. As the IT admin, you can manage this task, avoid oversight of policy exceptions, and provide auditors with proof that these exceptions are reviewed regularly.
+- **Ask group owners to confirm they still need guests in their groups**: Employee access might be automated with some on premises Identity and Access Management (IAM), but not invited guests. If a group gives guests access to business sensitive content, then it's the group owner's responsibility to confirm the guests still have a legitimate business need for access.
+- **Have reviews recur periodically**: You can set up recurring access reviews of users at set frequencies such as weekly, monthly, quarterly or annually, and the reviewers will be notified at the start of each review. Reviewers can approve or deny access with a friendly interface and with the help of smart recommendations.
+
+> Note
+>
+> If you are ready to try Access reviews take a look at [Create an access review of groups or applications](https://docs.microsoft.com/en-us/azure/active-directory/governance/create-access-review)
+
+### Where do you create reviews?
+
+Depending on what you want to review, you will create your access review in Azure AD access reviews, Azure AD enterprise apps (in preview), or Azure AD PIM.
+
+|Access rights of users	|Reviewers can be	|Review created in	|Reviewer experience|
+|:--|:--|:--|:--|
+|Security group members<br />Office group members|Specified reviewers<br />Group owners<br />Self-review|Azure AD access reviews<br />Azure AD groups|Access panel|
+|Assigned to a connected app|Specified reviewers<br />Self-review	|Azure AD access reviews<br />Azure AD enterprise apps (in preview)	|Access panel|
+|Azure AD role	|Specified reviewers<br />Self-review	|Azure AD PIM	|Azure portal|
+|Azure resource role	|Specified reviewers<br />Self-review	|Azure AD PIM	|Azure portal|
+
+### License requirements
+
+Using this feature requires an Azure AD Premium P2 license. To find the right license for your requirements, see Comparing generally available features of the Free, Office 365 Apps, and Premium editions.
+
+### How many licenses must you have?
+
+Your directory needs at least as many Azure AD Premium P2 licenses as the number of employees who will be performing the following tasks:
+
+- Member users who are assigned as reviewers
+- Member users who perform a self-review
+- Member users as group owners who perform an access review
+- Member users as application owners who perform an access review
+
+For guest users, licensing needs will depend on the licensing model you’re using. However, the below guest users’ activities are considered Azure AD Premium P2 usage:
+
+- Guest users who are assigned as reviewers
+- Guest users who perform a self-review
+- Guest users as group owners who perform an access review
+- Guest users as application owners who perform an access review
+
+Azure AD Premium P2 licenses are not required for users with the Global Administrator or User Administrator roles who set up access reviews, configure settings, or apply the decisions from the reviews.
+
+[Create an access review of groups and applications in Azure AD access reviews](https://docs.microsoft.com/en-us/azure/active-directory/governance/create-access-review)
 
 ## implement and configure an Azure Policy
   - [What is Azure Policy?](https://docs.microsoft.com/en-us/azure/governance/policy/overview)

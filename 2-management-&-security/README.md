@@ -47,28 +47,28 @@
 
 ## [Implement and manage Azure governance solutions](/2-management-&-security/notes-governance.md)
 
-- [ ] create and manage hierarchical structure that contains management groups, subscriptions and resource groups
+- [x] create and manage hierarchical structure that contains management groups, subscriptions and resource groups
   - [Azure Resource Manager overview](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview)
   - [Organize your resources with Azure management groups](https://docs.microsoft.com/en-us/azure/governance/management-groups/overview)
   - [Create management groups for resource organization and management](https://docs.microsoft.com/en-us/azure/governance/management-groups/create)
   - [Manage Azure Resource Manager resource groups by using the Azure portal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal)
   - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits)
-- [ ] assign RBAC roles
+- [x] assign RBAC roles
   - [Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
   https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
-- [ ] create a custom RBAC role
+- [x] create a custom RBAC role
   - [Custom roles for Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/custom-roles)
   - [Tutorial: Create a custom role for Azure resources using Azure PowerShell](https://docs.microsoft.com/en-us/azure/role-based-access-control/tutorial-custom-role-powershell)
-- [ ] configure access to Azure resources by assigning roles
+- [x] configure access to Azure resources by assigning roles
   - [Tutorial: Grant a user access to Azure resources using RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal)
-- [ ] configure management access to Azure
+- [x] configure management access to Azure
   - [Manage access to Azure management with Conditional Access](https://docs.microsoft.com/en-us/azure/role-based-access-control/conditional-access-azure-management)
   - [Manage access to Azure resources with Azure AD Privileged Identity Management](https://docs.microsoft.com/en-us/azure/role-based-access-control/pim-azure-resource)
   - [Add or remove role assignments using Azure RBAC and the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
-- [ ] interpret effective permissions
+- [x] interpret effective permissions
   - [What is role-based access control (RBAC) for Azure resources?](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview)
   - [Quickstart: View the access a user has to Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)
-- [ ] set up and perform an access review
+- [x] set up and perform an access review
   - [What are Azure AD access reviews?](https://docs.microsoft.com/en-us/azure/active-directory/governance/access-reviews-overview)
 - [ ] implement and configure an Azure Policy
   - [What is Azure Policy?](https://docs.microsoft.com/en-us/azure/governance/policy/overview)
