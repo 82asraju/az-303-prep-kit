@@ -88,6 +88,8 @@ The following table provides a comparison of ultra disks, premium solid-state dr
 2. Run the Invoke-WebRequest PowerShell cmdlet to retrieve an access token
 3. Call Azure Resource Manager using the access token
 
+## Use the IP 169.254.169.254 to get the access token for the system managed identity
+
 ## Creating a Linux VM image
 
 1. Sysprep
