@@ -23,17 +23,17 @@
 	
 ## [Implement load balancing and network security](/2-management-&-security/notes-lb-network.md)
 
-- [ ] implement Azure Load Balancer
+- [x] implement Azure Load Balancer
   - [Tutorial: Balance internal traffic load with a Basic load balancer in the Azure portal](https://docs.microsoft.com/en-us/azure/load-balancer/tutorial-load-balancer-basic-internal-portal)
   - [Create an internal load balancer by using the Azure PowerShell module](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-get-started-ilb-arm-ps)
   - [Quickstart: Create a Load Balancer to load balance VMs using the Azure portal](https://docs.microsoft.com/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-portal)
-- [ ] implement an application gateway
+- [x] implement an application gateway
   - [Application Gateway configuration overview](https://docs.microsoft.com/en-us/azure/application-gateway/configuration-overview)
-- [ ] implement a Web Application Firewall
+- [x] implement a Web Application Firewall
   - [Azure Web Application Firewall on Azure Application Gateway](https://docs.microsoft.com/en-us/azure/web-application-firewall/ag/ag-overview)
-- [ ] implement Azure Firewall
+- [x] implement Azure Firewall
   - [Tutorial: Deploy and configure Azure Firewall using the Azure portal](https://docs.microsoft.com/en-us/azure/firewall/tutorial-firewall-deploy-portal)
-- [ ] implement the Azure Front Door Service
+- [x] implement the Azure Front Door Service
   - [What is Azure Front Door Service?](https://docs.microsoft.com/en-us/azure/frontdoor/front-door-overview)
   - [Quickstart: Create a Front Door for a highly available global web application](https://docs.microsoft.com/en-us/azure/frontdoor/quickstart-create-front-door)
 - [ ] implement Azure Traffic Manager
