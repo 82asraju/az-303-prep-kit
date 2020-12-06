@@ -70,11 +70,11 @@
   - [Quickstart: View the access a user has to Azure resources](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)
 - [x] set up and perform an access review
   - [What are Azure AD access reviews?](https://docs.microsoft.com/en-us/azure/active-directory/governance/access-reviews-overview)
-- [ ] implement and configure an Azure Policy
+- [x] implement and configure an Azure Policy
   - [What is Azure Policy?](https://docs.microsoft.com/en-us/azure/governance/policy/overview)
   - [Quickstart: Create a policy assignment to identify non-compliant resources](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-portal)
   - [Tutorial: Create and manage policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
-- [ ] implement and configure an Azure Blueprint
+- [x] implement and configure an Azure Blueprint
   - [What is Azure Blueprints?](https://docs.microsoft.com/en-us/azure/governance/blueprints/overview)
   - [Quickstart: Define and assign a blueprint in the portal](https://docs.microsoft.com/en-us/azure/governance/blueprints/create-blueprint-portal)
 
