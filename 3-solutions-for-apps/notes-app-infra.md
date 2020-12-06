@@ -174,14 +174,146 @@ Deploy the code in your local folder (hellodotnetcore) using the az webapp up co
 
 ### Links
 
-  - [Deploy a custom Linux container to Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-docker)
+[Deploy a custom Linux container to Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-docker)
+
+### Create an image
+
+To complete this quickstart, you will need a suitable web app image stored in an Azure Container Registry. Follow the instructions in Quickstart: Create a private container registry using the Azure portal, but use the mcr.microsoft.com/azuredocs/go image instead of the hello-world image. For reference, the sample Dockerfile is found in Azure Samples repo.
+
+> Important
+>
+> Be sure to set the Admin User option to Enable when you create the container registry. You can also set it from the Access keys section of your registry page in the Azure portal. This setting is required for App Service access.
+
+### Sign in
+
+Next, launch VS Code and log into your Azure account using the App Service extension. To do this, select the Azure logo in the Activity Bar, navigate to the **APP SERVICE** explorer, then select Sign in to Azure and follow the instructions.
+
+### Check prerequisites
+
+Now you can check whether you have all the prerequisites installed and configured properly.
+
+In VS Code, you should see your Azure email address in the Status Bar and your subscription in the **APP SERVICE** explorer.
+
+Next, verify that you have Docker installed and running. The following command will display the Docker version if it is running.
+
+    docker --version
+
+Finally, ensure that your Azure Container Registry is connected. To do this, select the Docker logo in the Activity Bar, then navigate to REGISTRIES.
+
+### Deploy the image to Azure App Service
+
+Now that everything is configured, you can deploy your image to Azure App Service directly from the Docker extension explorer.
+
+Find the image under the **Registries** node in the **DOCKER** explorer, and expand it to show its tags. Right-click a tag and then select **Deploy Image to Azure App Service**.
+
+From here, follow the prompts to choose a subscription, a globally unique app name, a Resource Group, and an App Service Plan. Choose B1 Basic for the pricing tier, and a region.
+
+After deployment, your app is available at `http://<app name>.azurewebsites.net`.
+
+A Resource Group is a named collection of all your application's resources in Azure. For example, a Resource Group can contain a reference to a website, a database, and an Azure Function.
+
+An App Service Plan defines the physical resources that will be used to host your website. This quickstart uses a Basic hosting plan on Linux infrastructure, which means the site will be hosted on a Linux machine alongside other websites. If you start with the Basic plan, you can use the Azure portal to scale up so that yours is the only site running on a machine.
+
+### Browse the website
+
+The Output panel will open during deployment to indicate the status of the operation. When the operation completes, find the app you created in the APP SERVICE explorer, right-click it, then select Browse Website to open the site in your browser.
 
 ## create and configure an App Service plan
 
 ### Links
 
-  - [Azure App Service plan overview](https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans)
-  - [Manage an App Service plan in Azure](https://docs.microsoft.com/en-us/azure/app-service/app-service-plan-manage)
+[Azure App Service plan overview](https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans)
+
+In App Service (Web Apps, API Apps, or Mobile Apps), an app always runs in an App Service plan. In addition, Azure Functions also has the option of running in an App Service plan. An App Service plan defines a set of compute resources for a web app to run. These compute resources are analogous to the server farm in conventional web hosting. One or more apps can be configured to run on the same computing resources (or in the same App Service plan).
+
+When you create an App Service plan in a certain region (for example, West Europe), a set of compute resources is created for that plan in that region. Whatever apps you put into this App Service plan run on these compute resources as defined by your App Service plan. Each App Service plan defines:
+
+- Region (West US, East US, etc.)
+- Number of VM instances
+- Size of VM instances (Small, Medium, Large)
+- Pricing tier (Free, Shared, Basic, Standard, Premium, PremiumV2, PremiumV3, Isolated)
+
+The pricing tier of an App Service plan determines what App Service features you get and how much you pay for the plan. There are a few categories of pricing tiers:
+
+- **Shared compute**: **Free** and **Shared**, the two base tiers, runs an app on the same Azure VM as other App Service apps, including apps of other customers. These tiers allocate CPU quotas to each app that runs on the shared resources, and the resources cannot scale out.
+- **Dedicated compute**: The **Basic**, **Standard**, **Premium**, **PremiumV2**, and **PremiumV3** tiers run apps on dedicated Azure VMs. Only apps in the same App Service plan share the same compute resources. The higher the tier, the more VM instances are available to you for scale-out.
+- **Isolated**: This tier runs dedicated Azure VMs on dedicated Azure Virtual Networks. It provides network isolation on top of compute isolation to your apps. It provides the maximum scale-out capabilities.
+
+> Note
+>
+> App Service Free and Shared (preview) hosting plans are base tiers that run on the same Azure virtual machines as other App Service apps. Some apps might belong to other customers. These tiers are intended to be used only for development and testing purposes.
+
+Each tier also provides a specific subset of App Service features. These features include custom domains and TLS/SSL certificates, autoscaling, deployment slots, backups, Traffic Manager integration, and more. The higher the tier, the more features are available. To find out which features are supported in each pricing tier, see App Service plan details.
+
+> Note
+>
+> The new PremiumV3 pricing tier guarantees machines with faster processors (minimum 195 ACU per virtual CPU), SSD storage, and quadruple memory-to-core ratio compared to Standard tier. PremiumV3 also supports higher scale via increased instance count while still providing all the advanced capabilities found in Standard tier. All features available in the existing PremiumV2 tier are included in PremiumV3.
+>
+>Similar to other dedicated tiers, three VM sizes are available for this tier:
+>
+> - Small (2 CPU core, 8 GiB of memory)
+> - Medium (4 CPU cores, 16 GiB of memory)
+> - Large (8 CPU cores, 32 GiB of memory) 
+> For PremiumV3 pricing information, see App Service Pricing.
+>
+> To get started with the new PremiumV3 pricing tier, see [Configure PremiumV3 tier for App Service](https://docs.microsoft.com/en-us/azure/app-service/app-service-configure-premium-tier).
+
+### How does my app run and scale?
+
+In the **Free** and **Shared** tiers, an app receives CPU minutes on a shared VM instance and cannot scale out. In other tiers, an app runs and scales as follows.
+
+When you create an app in App Service, it is put into an App Service plan. When the app runs, it runs on all the VM instances configured in the App Service plan. If multiple apps are in the same App Service plan, they all share the same VM instances. If you have multiple deployment slots for an app, all deployment slots also run on the same VM instances. If you enable diagnostic logs, perform backups, or run WebJobs, they also use CPU cycles and memory on these VM instances.
+
+In this way, the App Service plan is the scale unit of the App Service apps. If the plan is configured to run five VM instances, then all apps in the plan run on all five instances. If the plan is configured for autoscaling, then all apps in the plan are scaled out together based on the autoscale settings.
+
+### How much does my App Service plan cost?
+
+This section describes how App Service apps are billed. For detailed, region-specific pricing information, see [App Service Pricing](https://azure.microsoft.com/pricing/details/app-service/).
+
+Except for Free tier, an App Service plan carries a charge on the compute resources it uses.
+
+- In the **Shared** tier, each app receives a quota of CPU minutes, so each app is charged for the CPU quota.
+- In the dedicated compute tiers (**Basic**, **Standard**, **Premium**, **PremiumV2**, **PremiumV3**), the App Service plan defines the number of VM instances the apps are scaled to, so each VM instance in the App Service plan is charged. These VM instances are charged the same regardless how many apps are running on them. To avoid unexpected charges, see Clean up an App Service plan.
+- In the **Isolated** tier, the App Service Environment defines the number of isolated workers that run your apps, and each worker is charged. In addition, there's a flat Stamp Fee for the running the App Service Environment itself.
+
+You don't get charged for using the App Service features that are available to you (configuring custom domains, TLS/SSL certificates, deployment slots, backups, etc.). The exceptions are:
+
+- App Service Domains - you pay when you purchase one in Azure and when you renew it each year.
+- App Service Certificates - you pay when you purchase one in Azure and when you renew it each year.
+- IP-based TLS connections - There's an hourly charge for each IP-based TLS connection, but some Standard tier or above gives you one IP-based TLS connection for free. SNI-based TLS connections are free.
+ Note
+
+If you integrate App Service with another Azure service, you may need to consider charges from these other services. For example, if you use Azure Traffic Manager to scale your app geographically, Azure Traffic Manager also charges you based on your usage. To estimate your cross-services cost in Azure, see Pricing calculator.
+
+### Want to optimize and save on your cloud spending?
+
+Azure services cost money. Azure Cost Management helps you set budgets and configure alerts to keep spending under control. Analyze, manage, and optimize your Azure costs with Cost Management. To learn more, see the quickstart on analyzing your costs.
+
+[Manage an App Service plan in Azure](https://docs.microsoft.com/en-us/azure/app-service/app-service-plan-manage)
+
+*Basic App Service Plan management*
+
+### Move an app to another App Service plan
+
+You can move an app to another App Service plan, as long as the source plan and the target plan are in the same resource group and geographical region.
+
+### Move an app to a different region
+
+The region in which your app runs is the region of the App Service plan it's in. However, you cannot change an App Service plan's region. If you want to run your app in a different region, one alternative is app cloning. Cloning makes a copy of your app in a new or existing App Service plan in any region.
+
+### Scale an App Service plan
+
+To scale up an App Service plan's pricing tier, see Scale up an app in Azure.
+
+To scale out an app's instance count, see Scale instance count manually or automatically.
+
+### Delete an App Service plan
+
+To avoid unexpected charges, when you delete the last app in an App Service plan, App Service also deletes the plan by default. If you choose to keep the plan instead, you should change the plan to Free tier so you're not charged.
+
+> Important
+>
+> App Service plans that have no apps associated with them still incur charges because they continue to reserve the configured VM instances.
 
 ## configure an App Service
 
